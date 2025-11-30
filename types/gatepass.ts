@@ -1,6 +1,6 @@
-export type GatepassStatus = "Pending Approval" | "Approved" | "Out" | "Returned" | "Replaced"
+export type GatepassStatus = 'Pending Approval' | 'Approved' | 'Out' | 'Returned' | 'Replaced'
 
-export type GatepassType = "Item" | "Machinery" | "Equipment" | "Tool" | "Vehicle" | "Other"
+export type GatepassType = 'Item' | 'Machinery' | 'Equipment' | 'Tool' | 'Vehicle' | 'Other'
 
 export interface Attachment {
   id: string
@@ -52,8 +52,8 @@ export interface Gatepass {
 
 export interface GatepassFilterOptions {
   search: string
-  status: GatepassStatus | "All"
-  itemType: GatepassType | "All"
+  status: GatepassStatus | 'All'
+  itemType: GatepassType | 'All'
   dateRange: {
     from: string | null
     to: string | null
@@ -62,7 +62,7 @@ export interface GatepassFilterOptions {
 }
 
 export interface GatepassSortOptions {
-  field: keyof Gatepass | ""
-  direction: "asc" | "desc"
+  field: keyof Gatepass | ''
+  direction: 'asc' | 'desc'
 }
 

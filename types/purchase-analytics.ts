@@ -14,6 +14,6 @@ export interface AnalyticsFilters {
     start: string
     end: string
   }
-  view: "monthly" | "quarterly" | "yearly"
+  view: 'monthly' | 'quarterly' | 'yearly'
 }
 

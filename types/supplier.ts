@@ -17,7 +17,7 @@ export interface Supplier {
   address?: string
   website?: string
   notes?: string
-  status: "active" | "inactive"
+  status: 'active' | 'inactive'
   products: SupplierProduct[]
 }
 

@@ -12,7 +12,7 @@ export interface StockIssue {
   issueDate: string
   issueTo: string
   reason: string
-  status: "pending" | "approved" | "rejected"
+  status: 'pending' | 'approved' | 'rejected'
   items: StockIssueItem[]
   createdBy: string
   createdAt: string

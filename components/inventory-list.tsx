@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Clock, Download, Search, Tag } from "lucide-react"
+import { useState } from 'react';
+import { Clock, Download, Search, Tag } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { PriceHistoryDialog } from "@/components/price-history-dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { mockItemGroups } from "@/data/mock-item-groups"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { PriceHistoryDialog } from '@/components/price-history-dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { mockItemGroups } from '@/data/mock-item-groups';
 
 interface InventoryItem {
   stockCode: string
@@ -29,90 +29,90 @@ interface InventoryItem {
 // Sample data
 const inventoryItems: InventoryItem[] = [
   {
-    stockCode: "EP0001",
-    description: "PVC INSULATION TAPE (ELECTRICAL)",
-    uom: "PCS",
+    stockCode: 'EP0001',
+    description: 'PVC INSULATION TAPE (ELECTRICAL)',
+    uom: 'PCS',
     quantity: 100,
     unitCost: 23.99,
     totalValue: 2399.0,
     priceHistory: [
       {
-        date: "2024-01-01",
-        documentNo: "PO-240101",
-        supplier: "Electrical Supplies Co",
+        date: '2024-01-01',
+        documentNo: 'PO-240101',
+        supplier: 'Electrical Supplies Co',
         price: 23.99,
       },
       {
-        date: "2023-12-01",
-        documentNo: "PO-231201",
-        supplier: "Electrical Supplies Co",
+        date: '2023-12-01',
+        documentNo: 'PO-231201',
+        supplier: 'Electrical Supplies Co',
         price: 22.5,
       },
       {
-        date: "2023-11-01",
-        documentNo: "PO-231101",
-        supplier: "Best Electronics",
+        date: '2023-11-01',
+        documentNo: 'PO-231101',
+        supplier: 'Best Electronics',
         price: 21.99,
       },
     ],
   },
   {
-    stockCode: "BN0013",
+    stockCode: 'BN0013',
     description: '1"X 5" M/S BOLT & NUT',
-    uom: "PCS",
+    uom: 'PCS',
     quantity: 44,
     unitCost: 5.76,
     totalValue: 253.44,
     priceHistory: [
       {
-        date: "2024-01-01",
-        documentNo: "PO-240101",
-        supplier: "Hardware Solutions",
+        date: '2024-01-01',
+        documentNo: 'PO-240101',
+        supplier: 'Hardware Solutions',
         price: 5.76,
       },
       {
-        date: "2023-12-15",
-        documentNo: "PO-231215",
-        supplier: "Hardware Solutions",
+        date: '2023-12-15',
+        documentNo: 'PO-231215',
+        supplier: 'Hardware Solutions',
         price: 5.5,
       },
     ],
   },
-]
+];
 
 export function InventoryList() {
-  const [search, setSearch] = useState("")
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null)
-  const [priceHistoryOpen, setPriceHistoryOpen] = useState(false)
-  const [groupFilter, setGroupFilter] = useState("all")
+  const [search, setSearch] = useState('');
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
+  const [groupFilter, setGroupFilter] = useState('all');
 
   // Get item codes that belong to the selected group
   const getItemCodesInGroup = (groupId: string) => {
-    if (groupId === "all") return null
+    if (groupId === 'all') return null;
 
-    const group = mockItemGroups.find((g) => g.id === groupId)
-    if (!group) return null
+    const group = mockItemGroups.find((g) => g.id === groupId);
+    if (!group) return null;
 
-    return group.items.map((item) => item.code)
-  }
+    return group.items.map((item) => item.code);
+  };
 
-  const itemCodesInSelectedGroup = getItemCodesInGroup(groupFilter)
+  const itemCodesInSelectedGroup = getItemCodesInGroup(groupFilter);
 
   const filteredItems = inventoryItems.filter((item) => {
     const matchesSearch =
       item.stockCode.toLowerCase().includes(search.toLowerCase()) ||
-      item.description.toLowerCase().includes(search.toLowerCase())
+      item.description.toLowerCase().includes(search.toLowerCase());
 
     const matchesGroup =
-      groupFilter === "all" || (itemCodesInSelectedGroup && itemCodesInSelectedGroup.includes(item.stockCode))
+      groupFilter === 'all' || (itemCodesInSelectedGroup && itemCodesInSelectedGroup.includes(item.stockCode));
 
-    return matchesSearch && matchesGroup
-  })
+    return matchesSearch && matchesGroup;
+  });
 
   // Get groups that contain this item
   const getGroupsForItem = (itemCode: string) => {
-    return mockItemGroups.filter((group) => group.items.some((item) => item.code === itemCode))
-  }
+    return mockItemGroups.filter((group) => group.items.some((item) => item.code === itemCode));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-8">
@@ -167,7 +167,7 @@ export function InventoryList() {
           </TableHeader>
           <TableBody>
             {filteredItems.map((item) => {
-              const itemGroups = getGroupsForItem(item.stockCode)
+              const itemGroups = getGroupsForItem(item.stockCode);
 
               return (
                 <TableRow key={item.stockCode}>
@@ -197,8 +197,8 @@ export function InventoryList() {
                       size="sm"
                       className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                       onClick={() => {
-                        setSelectedItem(item)
-                        setPriceHistoryOpen(true)
+                        setSelectedItem(item);
+                        setPriceHistoryOpen(true);
                       }}
                     >
                       <Clock className="h-4 w-4 mr-2" />
@@ -206,7 +206,7 @@ export function InventoryList() {
                     </Button>
                   </TableCell>
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
         </Table>
@@ -222,6 +222,6 @@ export function InventoryList() {
         />
       )}
     </div>
-  )
+  );
 }
 

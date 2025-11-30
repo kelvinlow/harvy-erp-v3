@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import { forwardRef } from "react"
-import { format } from "date-fns"
-import type { PurchaseRequisition } from "@/types"
+import { forwardRef } from 'react';
+import { format } from 'date-fns';
+import type { PurchaseRequisition } from '@/types';
 
 export const PurchaseRequisitionPrint = forwardRef<HTMLDivElement, { data: PurchaseRequisition }>(
   function PurchaseRequisitionPrint({ data }, ref) {
@@ -18,7 +18,7 @@ export const PurchaseRequisitionPrint = forwardRef<HTMLDivElement, { data: Purch
             <h3 className="mb-2 font-semibold">From:</h3>
             <p>{data.employeeName}</p>
             <p>Employee No: {data.employeeNo}</p>
-            <p>Date: {format(new Date(data.date), "PPP")}</p>
+            <p>Date: {format(new Date(data.date), 'PPP')}</p>
           </div>
           <div>
             <h3 className="mb-2 font-semibold">To:</h3>
@@ -80,23 +80,23 @@ export const PurchaseRequisitionPrint = forwardRef<HTMLDivElement, { data: Purch
             <div className="mb-8 h-px bg-border" />
             <p className="font-semibold">{data.orderedBy.name}</p>
             <p className="text-sm text-muted-foreground">Ordered By</p>
-            <p className="text-sm text-muted-foreground">{format(new Date(data.orderedBy.date), "PPP")}</p>
+            <p className="text-sm text-muted-foreground">{format(new Date(data.orderedBy.date), 'PPP')}</p>
           </div>
           <div className="text-center">
             <div className="mb-8 h-px bg-border" />
-            <p className="font-semibold">{data.seenBy.map((person) => person.initial).join(", ")}</p>
+            <p className="font-semibold">{data.seenBy.map((person) => person.initial).join(', ')}</p>
             <p className="text-sm text-muted-foreground">Seen By</p>
-            <p className="text-sm text-muted-foreground">{format(new Date(data.seenBy[0].date), "PPP")}</p>
+            <p className="text-sm text-muted-foreground">{format(new Date(data.seenBy[0].date), 'PPP')}</p>
           </div>
           <div className="text-center">
             <div className="mb-8 h-px bg-border" />
             <p className="font-semibold">{data.authorizedBy.name}</p>
             <p className="text-sm text-muted-foreground">Authorized By</p>
-            <p className="text-sm text-muted-foreground">{format(new Date(data.authorizedBy.date), "PPP")}</p>
+            <p className="text-sm text-muted-foreground">{format(new Date(data.authorizedBy.date), 'PPP')}</p>
           </div>
         </div>
       </div>
-    )
+    );
   },
-)
+);
 

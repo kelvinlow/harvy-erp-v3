@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   AlertDialog,
@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from '@/components/ui/alert-dialog';
 
 interface DeleteConfirmationProps {
   open: boolean
@@ -25,10 +25,10 @@ export function DeleteConfirmation({
   open,
   onOpenChange,
   onConfirm,
-  title = "Delete Confirmation",
-  description = "Are you sure you want to delete this item? This action cannot be undone.",
-  confirmText = "Delete",
-  cancelText = "Cancel",
+  title = 'Delete Confirmation',
+  description = 'Are you sure you want to delete this item? This action cannot be undone.',
+  confirmText = 'Delete',
+  cancelText = 'Cancel',
 }: DeleteConfirmationProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -45,6 +45,6 @@ export function DeleteConfirmation({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }
 

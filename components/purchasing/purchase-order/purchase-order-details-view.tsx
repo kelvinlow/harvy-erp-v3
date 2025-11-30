@@ -1,19 +1,19 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { format } from "date-fns"
-import { CalendarIcon, ChevronDown, Download } from "lucide-react"
+import * as React from 'react';
+import { format } from 'date-fns';
+import { CalendarIcon, ChevronDown, Download } from 'lucide-react';
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { EditableTable } from "@/components/editable-table"
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { EditableTable } from '@/components/editable-table';
 
 interface PurchaseOrderItem {
   no: number
@@ -37,28 +37,28 @@ interface PurchaseOrderDetails {
 
 // Mock data
 const purchaseOrder: PurchaseOrderDetails = {
-  id: "PUR-ORD-2024-00005",
-  supplier: "Dale Moorhouse",
-  date: "2024-07-22",
-  company: "Nova Gadget House",
-  orderConfirmationNo: "",
-  requiredBy: "2024-08-01",
+  id: 'PUR-ORD-2024-00005',
+  supplier: 'Dale Moorhouse',
+  date: '2024-07-22',
+  company: 'Nova Gadget House',
+  orderConfirmationNo: '',
+  requiredBy: '2024-08-01',
   items: [
     {
       no: 1,
-      itemCode: "12345-RED-256GB",
-      requiredBy: "2024-08-01",
+      itemCode: '12345-RED-256GB',
+      requiredBy: '2024-08-01',
       quantity: 10,
-      uom: "Unit",
+      uom: 'Unit',
       rate: 47000.0,
       amount: 470000.0,
     },
   ],
-}
+};
 
 export function PurchaseOrderDetailsView() {
-  const [date, setDate] = React.useState<Date>(new Date(purchaseOrder.date))
-  const [requiredBy, setRequiredBy] = React.useState<Date>(new Date(purchaseOrder.requiredBy))
+  const [date, setDate] = React.useState<Date>(new Date(purchaseOrder.date));
+  const [requiredBy, setRequiredBy] = React.useState<Date>(new Date(purchaseOrder.requiredBy));
 
   return (
     <div className="container mx-auto py-6">
@@ -118,12 +118,12 @@ export function PurchaseOrderDetailsView() {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal bg-muted",
-                      !date && "text-muted-foreground",
+                      'w-full justify-start text-left font-normal bg-muted',
+                      !date && 'text-muted-foreground',
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "dd-MM-yyyy") : <span>Pick a date</span>}
+                    {date ? format(date, 'dd-MM-yyyy') : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -158,10 +158,10 @@ export function PurchaseOrderDetailsView() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className={cn("w-full justify-start text-left font-normal", !requiredBy && "text-muted-foreground")}
+                    className={cn('w-full justify-start text-left font-normal', !requiredBy && 'text-muted-foreground')}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {requiredBy ? format(requiredBy, "dd-MM-yyyy") : <span>Pick a date</span>}
+                    {requiredBy ? format(requiredBy, 'dd-MM-yyyy') : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -232,6 +232,6 @@ export function PurchaseOrderDetailsView() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 

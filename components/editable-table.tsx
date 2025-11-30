@@ -1,9 +1,9 @@
-"use client"
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { Trash2 } from "lucide-react"
+'use client';
+import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { Trash2 } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface EditableTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -16,7 +16,7 @@ export function EditableTable<TData, TValue>({ columns, data, onRowDelete }: Edi
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  });
 
   return (
     <div className="w-full overflow-auto">
@@ -29,7 +29,7 @@ export function EditableTable<TData, TValue>({ columns, data, onRowDelete }: Edi
                   <TableHead key={header.id} style={{ width: (header.column.columnDef as any).width }}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
-                )
+                );
               })}
               {onRowDelete && <TableHead style={{ width: 50 }}>Actions</TableHead>}
             </TableRow>
@@ -38,7 +38,7 @@ export function EditableTable<TData, TValue>({ columns, data, onRowDelete }: Edi
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                 ))}
@@ -67,6 +67,6 @@ export function EditableTable<TData, TValue>({ columns, data, onRowDelete }: Edi
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
 

@@ -1,112 +1,155 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { format } from "date-fns"
-import { CalendarIcon, Loader2, Plus, Search, Trash2 } from "lucide-react"
-import { useForm, useFieldArray } from "react-hook-form"
-import { useEnterNavigation } from "@/hooks/use-enter-navigation"
+import * as React from 'react';
+import { format } from 'date-fns';
+import { CalendarIcon, Loader2, Plus, Search, Trash2 } from 'lucide-react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { useEnterNavigation } from '@/hooks/use-enter-navigation';
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { useToast } from "@/components/ui/use-toast"
-import { Textarea } from "@/components/ui/textarea"
-import type { PurchaseRequisition } from "@/types"
-import { CompanySelector } from "@/components/company-selector"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { Textarea } from '@/components/ui/textarea';
+import type { PurchaseRequisition } from '@/types';
+import { CompanySelector } from '@/components/company-selector';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '@/components/ui/command';
 
 interface PurchaseRequisitionItem {
-  id: string
-  stockCode: string
-  description: string
-  quantity: number
-  uom: string
-  unitPrice: number
-  discount: number
-  subAmount: number
-  taxCode: string
-  taxRate: number
-  station: string
-  totalAmount: number
+  id: string;
+  stockCode: string;
+  description: string;
+  quantity: number;
+  uom: string;
+  unitPrice: number;
+  discount: number;
+  subAmount: number;
+  taxCode: string;
+  taxRate: number;
+  station: string;
+  totalAmount: number;
 }
 
 interface InventoryItem {
-  stockCode: string
-  description: string
-  uomCode: string
-  lastPrice: number
+  stockCode: string;
+  description: string;
+  uomCode: string;
+  lastPrice: number;
 }
 
 export function PurchaseRequisitionForm() {
-  const { toast } = useToast()
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const formRef = React.useRef<HTMLFormElement>(null)
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const formRef = React.useRef<HTMLFormElement>(null);
   const inventoryItems: InventoryItem[] = [
-    { stockCode: "A123", description: "Widget A", uomCode: "EA", lastPrice: 10.0 },
-    { stockCode: "B456", description: "Gadget B", uomCode: "EA", lastPrice: 25.5 },
-    { stockCode: "C789", description: "Thingamajig C", uomCode: "EA", lastPrice: 5.75 },
-  ]
+    {
+      stockCode: 'A123',
+      description: 'Widget A',
+      uomCode: 'EA',
+      lastPrice: 10.0
+    },
+    {
+      stockCode: 'B456',
+      description: 'Gadget B',
+      uomCode: 'EA',
+      lastPrice: 25.5
+    },
+    {
+      stockCode: 'C789',
+      description: 'Thingamajig C',
+      uomCode: 'EA',
+      lastPrice: 5.75
+    }
+  ];
 
   // Initialize the Enter key navigation
-  useEnterNavigation(formRef)
+  useEnterNavigation(formRef);
 
   const form = useForm<PurchaseRequisition>({
     defaultValues: {
-      company: "",
-      date: format(new Date(), "yyyy-MM-dd"),
+      company: '',
+      date: format(new Date(), 'yyyy-MM-dd'),
       items: [
         {
-          id: "1",
-          stockCode: "",
-          description: "",
+          id: '1',
+          stockCode: '',
+          description: '',
           quantity: 0,
-          uom: "",
+          uom: '',
           unitPrice: 0,
           discount: 0,
           subAmount: 0,
-          taxCode: "",
+          taxCode: '',
           taxRate: 0,
-          station: "",
-          totalAmount: 0,
-        },
-      ],
-    },
-  })
+          station: '',
+          totalAmount: 0
+        }
+      ]
+    }
+  });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "items",
-  })
+    name: 'items'
+  });
 
   async function onSubmit(data: PurchaseRequisition) {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log(data)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log(data);
       toast({
-        title: "Success",
-        description: "Purchase requisition has been submitted.",
-      })
-      form.reset()
+        title: 'Success',
+        description: 'Purchase requisition has been submitted.'
+      });
+      form.reset();
     } catch (error) {
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to submit purchase requisition.",
-      })
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to submit purchase requisition.'
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
   return (
     <Form {...form}>
-      <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        ref={formRef}
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <Card>
           <CardHeader>
             <CardTitle>Requisition Details</CardTitle>
@@ -119,7 +162,10 @@ export function PurchaseRequisitionForm() {
                 <FormItem>
                   <FormLabel>Select Company</FormLabel>
                   <FormControl>
-                    <CompanySelector value={field.value} onChange={field.onChange} />
+                    <CompanySelector
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -136,10 +182,17 @@ export function PurchaseRequisitionForm() {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
-                            className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                            variant={'outline'}
+                            className={cn(
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
                           >
-                            {field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
+                            {field.value ? (
+                              format(new Date(field.value), 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -148,7 +201,9 @@ export function PurchaseRequisitionForm() {
                         <Calendar
                           mode="single"
                           selected={new Date(field.value)}
-                          onSelect={(date) => field.onChange(format(date!, "yyyy-MM-dd"))}
+                          onSelect={(date) =>
+                            field.onChange(format(date!, 'yyyy-MM-dd'))
+                          }
                           initialFocus
                         />
                       </PopoverContent>
@@ -238,7 +293,10 @@ export function PurchaseRequisitionForm() {
             <div className="rounded-lg border bg-card p-6">
               <div className="grid gap-6">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="grid grid-cols-[2fr,3fr,1fr,1fr,1fr,auto] items-end gap-4">
+                  <div
+                    key={field.id}
+                    className="grid grid-cols-[2fr,3fr,1fr,1fr,1fr,auto] items-end gap-4"
+                  >
                     <FormField
                       control={form.control}
                       name={`items.${index}.stockCode`}
@@ -251,9 +309,12 @@ export function PurchaseRequisitionForm() {
                                 <Button
                                   variant="outline"
                                   role="combobox"
-                                  className={cn("w-full justify-between", !field.stockCode && "text-muted-foreground")}
+                                  className={cn(
+                                    'w-full justify-between',
+                                    !field.stockCode && 'text-muted-foreground'
+                                  )}
                                 >
-                                  {field.stockCode || "Select stock"}
+                                  {field.stockCode || 'Select stock'}
                                   <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                               </FormControl>
@@ -269,10 +330,19 @@ export function PurchaseRequisitionForm() {
                                         key={item.stockCode}
                                         value={item.stockCode}
                                         onSelect={() => {
-                                          itemField.onChange(item.stockCode)
-                                          form.setValue(`items.${index}.description`, item.description)
-                                          form.setValue(`items.${index}.uom`, item.uomCode)
-                                          form.setValue(`items.${index}.unitPrice`, item.lastPrice)
+                                          itemField.onChange(item.stockCode);
+                                          form.setValue(
+                                            `items.${index}.description`,
+                                            item.description
+                                          );
+                                          form.setValue(
+                                            `items.${index}.uom`,
+                                            item.uomCode
+                                          );
+                                          form.setValue(
+                                            `items.${index}.unitPrice`,
+                                            item.lastPrice
+                                          );
                                         }}
                                       >
                                         {item.stockCode} - {item.description}
@@ -313,12 +383,20 @@ export function PurchaseRequisitionForm() {
                               type="number"
                               {...field}
                               onChange={(e) => {
-                                field.onChange(Number(e.target.value))
-                                const quantity = Number(e.target.value)
-                                const unitPrice = form.getValues(`items.${index}.unitPrice`)
-                                const subAmount = quantity * unitPrice
-                                form.setValue(`items.${index}.subAmount`, subAmount)
-                                form.setValue(`items.${index}.totalAmount`, subAmount)
+                                field.onChange(Number(e.target.value));
+                                const quantity = Number(e.target.value);
+                                const unitPrice = form.getValues(
+                                  `items.${index}.unitPrice`
+                                );
+                                const subAmount = quantity * unitPrice;
+                                form.setValue(
+                                  `items.${index}.subAmount`,
+                                  subAmount
+                                );
+                                form.setValue(
+                                  `items.${index}.totalAmount`,
+                                  subAmount
+                                );
                               }}
                             />
                           </FormControl>
@@ -352,12 +430,20 @@ export function PurchaseRequisitionForm() {
                               type="number"
                               {...field}
                               onChange={(e) => {
-                                field.onChange(Number(e.target.value))
-                                const unitPrice = Number(e.target.value)
-                                const quantity = form.getValues(`items.${index}.quantity`)
-                                const subAmount = quantity * unitPrice
-                                form.setValue(`items.${index}.subAmount`, subAmount)
-                                form.setValue(`items.${index}.totalAmount`, subAmount)
+                                field.onChange(Number(e.target.value));
+                                const unitPrice = Number(e.target.value);
+                                const quantity = form.getValues(
+                                  `items.${index}.quantity`
+                                );
+                                const subAmount = quantity * unitPrice;
+                                form.setValue(
+                                  `items.${index}.subAmount`,
+                                  subAmount
+                                );
+                                form.setValue(
+                                  `items.${index}.totalAmount`,
+                                  subAmount
+                                );
                               }}
                             />
                           </FormControl>
@@ -388,17 +474,17 @@ export function PurchaseRequisitionForm() {
                 onClick={() =>
                   append({
                     id: String(fields.length + 1),
-                    stockCode: "",
-                    description: "",
+                    stockCode: '',
+                    description: '',
                     quantity: 0,
-                    uom: "",
+                    uom: '',
                     unitPrice: 0,
                     discount: 0,
                     subAmount: 0,
-                    taxCode: "",
+                    taxCode: '',
                     taxRate: 0,
-                    station: "",
-                    totalAmount: 0,
+                    station: '',
+                    totalAmount: 0
                   })
                 }
               >
@@ -429,15 +515,21 @@ export function PurchaseRequisitionForm() {
             />
           </CardContent>
           <CardFooter className="flex justify-between">
-            <div className="text-sm">Total: ₹ {fields.reduce((sum, item) => sum + item.totalAmount, 0).toFixed(2)}</div>
+            <div className="text-sm">
+              Total: MYR{' '}
+              {fields
+                .reduce((sum, item) => sum + item.totalAmount, 0)
+                .toFixed(2)}
+            </div>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Submit
             </Button>
           </CardFooter>
         </Card>
       </form>
     </Form>
-  )
+  );
 }
-

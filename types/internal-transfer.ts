@@ -1,13 +1,13 @@
-export type CompanyId = "HAVYS_OIL" | "GREEN_PLANT" | "PARAMOUNT" | "PLACEHOLDER"
+export type CompanyId = 'HAVYS_OIL' | 'GREEN_PLANT' | 'PARAMOUNT' | 'PLACEHOLDER'
 
 export interface Company {
   id: CompanyId
   name: string
   description: string
-  icon: "building" | "leaf" | "cog" | "settings"
+  icon: 'building' | 'leaf' | 'cog' | 'settings'
 }
 
-export type TransferStatus = "draft" | "pending" | "approved" | "rejected" | "shipped" | "received" | "cancelled"
+export type TransferStatus = 'draft' | 'pending' | 'approved' | 'rejected' | 'shipped' | 'received' | 'cancelled'
 
 export interface TransferItem {
   itemCode: string

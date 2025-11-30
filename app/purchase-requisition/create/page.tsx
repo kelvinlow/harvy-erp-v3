@@ -1,15 +1,13 @@
-import { PurchaseRequisitionForm } from "@/components/purchasing/purchase-requisition/purchase-requisition-form"
+import { PurchaseRequisitionForm } from '@/components/purchasing/purchase-requisition/purchase-requisition-form';
 
 export default function PurchaseRequisitionPage() {
   return (
-    <div className="bg-gradient-to-br bg-sky-50 p-8">
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Create Purchase Requisition</h1>
+    <div className="@container/main flex flex-1 flex-col gap-2">
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className="px-4 lg:px-6">
+          <PurchaseRequisitionForm />
         </div>
-        <PurchaseRequisitionForm />
       </div>
     </div>
-  )
+  );
 }
-

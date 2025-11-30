@@ -1,4 +1,4 @@
-import type { Stock } from "./stock"
+import type { Stock } from './stock';
 
 export interface ItemGroup {
   id: string

@@ -1,17 +1,17 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { format } from "date-fns"
-import { CalendarIcon, Download, Printer, Search } from "lucide-react"
-import { useReactToPrint } from "react-to-print"
+import * as React from 'react';
+import { format } from 'date-fns';
+import { CalendarIcon, Download, Printer, Search } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { cn } from "@/lib/utils"
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 interface StockTransaction {
   no: number
@@ -36,8 +36,8 @@ interface StockItem {
 // Sample data
 const stockItems: StockItem[] = [
   {
-    code: "AW0011",
-    description: "LIFT CYLINDER PUMP SEAL KIT",
+    code: 'AW0011',
+    description: 'LIFT CYLINDER PUMP SEAL KIT',
     openingBalance: {
       quantity: 0,
       amount: 0,
@@ -45,7 +45,7 @@ const stockItems: StockItem[] = [
     transactions: [
       {
         no: 1,
-        transactionNo: "DL2412203",
+        transactionNo: 'DL2412203',
         date: new Date(2024, 11, 14),
         quantityIn: 2,
         quantityOut: 0,
@@ -55,8 +55,8 @@ const stockItems: StockItem[] = [
     ],
   },
   {
-    code: "AW0076",
-    description: "SWING ARM",
+    code: 'AW0076',
+    description: 'SWING ARM',
     openingBalance: {
       quantity: 2,
       amount: 164.59,
@@ -64,7 +64,7 @@ const stockItems: StockItem[] = [
     transactions: [
       {
         no: 1,
-        transactionNo: "DL2412224",
+        transactionNo: 'DL2412224',
         date: new Date(2024, 11, 18),
         quantityIn: 1,
         quantityOut: 0,
@@ -74,8 +74,8 @@ const stockItems: StockItem[] = [
     ],
   },
   {
-    code: "AW0145",
-    description: "SEAT COVER",
+    code: 'AW0145',
+    description: 'SEAT COVER',
     openingBalance: {
       quantity: 13,
       amount: 139.37,
@@ -83,7 +83,7 @@ const stockItems: StockItem[] = [
     transactions: [
       {
         no: 1,
-        transactionNo: "DL2412224",
+        transactionNo: 'DL2412224',
         date: new Date(2024, 11, 18),
         quantityIn: 1,
         quantityOut: 0,
@@ -92,22 +92,22 @@ const stockItems: StockItem[] = [
       },
     ],
   },
-]
+];
 
 export function StockLedgerCard() {
-  const [date, setDate] = React.useState<Date>(new Date())
-  const [search, setSearch] = React.useState("")
-  const componentRef = React.useRef(null)
+  const [date, setDate] = React.useState<Date>(new Date());
+  const [search, setSearch] = React.useState('');
+  const componentRef = React.useRef(null);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-  })
+  });
 
   const filteredItems = stockItems.filter(
     (item) =>
       item.code.toLowerCase().includes(search.toLowerCase()) ||
       item.description.toLowerCase().includes(search.toLowerCase()),
-  )
+  );
 
   return (
     <div className="mx-auto max-w-[2000px] space-y-4 p-4 xl:p-8">
@@ -118,11 +118,11 @@ export function StockLedgerCard() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  variant={"outline"}
-                  className={cn("w-[240px] justify-start text-left font-normal", !date && "text-muted-foreground")}
+                  variant={'outline'}
+                  className={cn('w-[240px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "MMMM yyyy") : "Select month"}
+                  {date ? format(date, 'MMMM yyyy') : 'Select month'}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -157,7 +157,7 @@ export function StockLedgerCard() {
         <CardHeader className="flex flex-row items-center justify-between print:hidden">
           <div>
             <h2 className="text-lg font-semibold">Stock Ledger Card</h2>
-            <p className="text-sm text-muted-foreground">For the month of {format(date, "MMMM yyyy")}</p>
+            <p className="text-sm text-muted-foreground">For the month of {format(date, 'MMMM yyyy')}</p>
           </div>
         </CardHeader>
         <CardContent ref={componentRef}>
@@ -168,15 +168,15 @@ export function StockLedgerCard() {
             <p className="text-sm">KARUNG BERKUNCI NO.4, POS MALAYSIA, BAHAU, 72100 NEGERI SEMBILAN</p>
             <p className="text-sm">TEL: 012-6367717 FAX: 06-4665357</p>
             <h2 className="mt-4 text-lg font-semibold">
-              STOCK LEDGER CARD FOR THE MONTH OF {format(date, "MMMM yyyy").toUpperCase()}
+              STOCK LEDGER CARD FOR THE MONTH OF {format(date, 'MMMM yyyy').toUpperCase()}
             </h2>
           </div>
 
           {/* Responsive Grid for Stock Items */}
           <div className="grid gap-6 lg:grid-cols-2">
             {filteredItems.map((item) => {
-              let runningQuantity = item.openingBalance.quantity
-              let runningAmount = item.openingBalance.amount
+              let runningQuantity = item.openingBalance.quantity;
+              let runningAmount = item.openingBalance.amount;
 
               return (
                 <div key={item.code} className="space-y-2 rounded-lg border p-4">
@@ -205,31 +205,31 @@ export function StockLedgerCard() {
                           </TableCell>
                         </TableRow>
                         {item.transactions.map((transaction) => {
-                          runningQuantity += transaction.quantityIn - transaction.quantityOut
-                          runningAmount += transaction.amountIn - transaction.amountOut
+                          runningQuantity += transaction.quantityIn - transaction.quantityOut;
+                          runningAmount += transaction.amountIn - transaction.amountOut;
 
                           return (
                             <TableRow key={transaction.transactionNo}>
                               <TableCell>{transaction.no}</TableCell>
                               <TableCell>{transaction.transactionNo}</TableCell>
-                              <TableCell>{format(transaction.date, "dd MMM yyyy")}</TableCell>
+                              <TableCell>{format(transaction.date, 'dd MMM yyyy')}</TableCell>
                               <TableCell className="text-right">{transaction.quantityIn.toFixed(2)}</TableCell>
                               <TableCell className="text-right">{transaction.quantityOut.toFixed(2)}</TableCell>
                               <TableCell className="text-right">{runningQuantity.toFixed(2)}</TableCell>
                               <TableCell className="text-right">{runningAmount.toFixed(2)}</TableCell>
                             </TableRow>
-                          )
+                          );
                         })}
                       </TableBody>
                     </Table>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 

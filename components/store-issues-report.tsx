@@ -1,12 +1,12 @@
-"use client"
+'use client';
 
-import { format } from "date-fns"
-import { Download, Printer } from "lucide-react"
-import { useReactToPrint } from "react-to-print"
-import { useRef } from "react"
+import { format } from 'date-fns';
+import { Download, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
+import { useRef } from 'react';
 
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface StoreIssue {
   machineNo: string
@@ -28,75 +28,75 @@ interface StationData {
 
 const mockData: StationData[] = [
   {
-    name: "CAGES",
+    name: 'CAGES',
     items: [
       {
-        machineNo: "AC",
-        description: "CAGES - GENERAL",
+        machineNo: 'AC',
+        description: 'CAGES - GENERAL',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 3745.39 },
       },
     ],
   },
   {
-    name: "DIESEL TANK",
+    name: 'DIESEL TANK',
     items: [
       {
-        machineNo: "G-DT1",
-        description: "DIESEL TANK (HAVYS OIL MILL)",
+        machineNo: 'G-DT1',
+        description: 'DIESEL TANK (HAVYS OIL MILL)',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 23.24 },
       },
     ],
   },
   {
-    name: "EFFLUENT POND",
+    name: 'EFFLUENT POND',
     items: [
       {
-        machineNo: "EF-EPL",
-        description: "EFFLUENT PIPE LINE EF-OUTSIDE",
+        machineNo: 'EF-EPL',
+        description: 'EFFLUENT PIPE LINE EF-OUTSIDE',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 410.8 },
       },
       {
-        machineNo: "AEF",
-        description: "EFFLUENT - GENERAL",
+        machineNo: 'AEF',
+        description: 'EFFLUENT - GENERAL',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 57385.93 },
       },
       {
-        machineNo: "EFF-FLO",
-        description: "EFFLUENT FLOWMETER",
+        machineNo: 'EFF-FLO',
+        description: 'EFFLUENT FLOWMETER',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 3537.6 },
       },
       {
-        machineNo: "EF-MDS",
-        description: "MDS EFFLUENT",
+        machineNo: 'EF-MDS',
+        description: 'MDS EFFLUENT',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 211.02 },
       },
       {
-        machineNo: "EF-RP",
-        description: "ROBIN PUMP",
+        machineNo: 'EF-RP',
+        description: 'ROBIN PUMP',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 674.42 },
       },
       {
-        machineNo: "EF-ARE",
-        description: "WATER PUMP HOUSE",
+        machineNo: 'EF-ARE',
+        description: 'WATER PUMP HOUSE',
         mtd: { direct: 0.0, normal: 0.0 },
         ytd: { direct: 0.0, normal: 1699.54 },
       },
     ],
   },
-]
+];
 
 export function StoreIssuesReport() {
-  const componentRef = useRef<HTMLDivElement>(null)
+  const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-  })
+  });
 
   const calculateStationTotal = (items: StoreIssue[]) => {
     return items.reduce(
@@ -114,8 +114,8 @@ export function StoreIssuesReport() {
         mtd: { direct: 0, normal: 0 },
         ytd: { direct: 0, normal: 0 },
       },
-    )
-  }
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -138,8 +138,8 @@ export function StoreIssuesReport() {
         <div className="hidden print:block text-center space-y-1 mb-6">
           <h1 className="text-2xl font-bold">HAVYS OIL MILL SDN. BHD.</h1>
           <h2 className="text-xl">Store Issues Report By Machines</h2>
-          <p className="text-sm">FOR THE MONTH OF {format(new Date(), "MMMM yyyy").toUpperCase()}</p>
-          <div className="text-sm text-right">Printing Date: {format(new Date(), "dd MMM yyyy HH:mm:ss")}</div>
+          <p className="text-sm">FOR THE MONTH OF {format(new Date(), 'MMMM yyyy').toUpperCase()}</p>
+          <div className="text-sm text-right">Printing Date: {format(new Date(), 'dd MMM yyyy HH:mm:ss')}</div>
         </div>
 
         <Table>
@@ -156,7 +156,7 @@ export function StoreIssuesReport() {
           </TableHeader>
           <TableBody>
             {mockData.map((station) => {
-              const stationTotal = calculateStationTotal(station.items)
+              const stationTotal = calculateStationTotal(station.items);
 
               return (
                 <>
@@ -194,12 +194,12 @@ export function StoreIssuesReport() {
                     <TableCell className="text-right font-medium">{stationTotal.ytd.normal.toFixed(2)}</TableCell>
                   </TableRow>
                 </>
-              )
+              );
             })}
           </TableBody>
         </Table>
       </div>
     </div>
-  )
+  );
 }
 

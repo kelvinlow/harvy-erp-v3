@@ -1,0 +1,238 @@
+import type { DeliveryOrder } from '@/types/delivery-order';
+
+export const mockDeliveryOrders: DeliveryOrder[] = [
+  {
+    id: 'DO-2025-0001',
+    poReference: 'PO-2025-0001',
+    supplier: {
+      id: 'SUP-001',
+      name: 'ABC Manufacturing',
+      contact: 'John Smith, +1 (555) 123-4567',
+    },
+    expectedArrival: '2025-03-15T00:00:00Z',
+    actualArrival: '2025-03-14T14:30:00Z',
+    status: 'delivered',
+    items: [
+      {
+        code: 'WW0001',
+        name: 'MOX MS6013 WELDING ROD 3.25MM',
+        quantity: 100,
+        uom: 'PCS',
+      },
+      {
+        code: 'WW0002',
+        name: 'MOX MS6013 WELDING ROD 2.5MM',
+        quantity: 150,
+        uom: 'PCS',
+      },
+      {
+        code: 'WW0003',
+        name: 'WELDING GLOVES HEAVY DUTY',
+        quantity: 10,
+        uom: 'PAIRS',
+      },
+    ],
+    notes: 'Delivery completed ahead of schedule. All items in good condition.',
+    createdAt: '2025-03-01T09:00:00Z',
+    updatedAt: '2025-03-14T15:00:00Z',
+  },
+  {
+    id: 'DO-2025-0002',
+    poReference: 'PO-2025-0002',
+    supplier: {
+      id: 'SUP-002',
+      name: 'XYZ Industrial Supplies',
+      contact: 'Jane Doe, +1 (555) 987-6543',
+    },
+    expectedArrival: '2025-03-20T00:00:00Z',
+    status: 'in-transit',
+    items: [
+      {
+        code: 'HT0001',
+        name: 'HYDRAULIC OIL ISO 68',
+        quantity: 20,
+        uom: 'LITERS',
+      },
+      {
+        code: 'HT0002',
+        name: 'HYDRAULIC FILTER ELEMENT',
+        quantity: 5,
+        uom: 'PCS',
+      },
+    ],
+    notes: 'Shipment confirmed. Tracking number: TRK123456789',
+    createdAt: '2025-03-05T11:30:00Z',
+    updatedAt: '2025-03-12T16:45:00Z',
+  },
+  {
+    id: 'DO-2025-0003',
+    poReference: 'PO-2025-0003',
+    supplier: {
+      id: 'SUP-003',
+      name: 'Global Electronics',
+      contact: 'Robert Johnson, +1 (555) 456-7890',
+    },
+    expectedArrival: '2025-03-25T00:00:00Z',
+    status: 'pending',
+    items: [
+      {
+        code: 'EL0001',
+        name: 'CIRCUIT BREAKER 30A',
+        quantity: 15,
+        uom: 'PCS',
+      },
+      {
+        code: 'EL0002',
+        name: 'POWER SUPPLY 24V DC',
+        quantity: 3,
+        uom: 'PCS',
+      },
+      {
+        code: 'EL0003',
+        name: 'CONTROL RELAY 24V DC',
+        quantity: 10,
+        uom: 'PCS',
+      },
+      {
+        code: 'EL0004',
+        name: 'TERMINAL BLOCK 2.5MM',
+        quantity: 50,
+        uom: 'PCS',
+      },
+    ],
+    notes: 'Awaiting confirmation from supplier',
+    createdAt: '2025-03-10T14:15:00Z',
+    updatedAt: '2025-03-10T14:15:00Z',
+  },
+  {
+    id: 'DO-2025-0004',
+    poReference: 'PO-2025-0004',
+    supplier: {
+      id: 'SUP-004',
+      name: 'Safety Equipment Co.',
+      contact: 'Sarah Williams, +1 (555) 234-5678',
+    },
+    expectedArrival: '2025-03-18T00:00:00Z',
+    status: 'cancelled',
+    items: [
+      {
+        code: 'SF0001',
+        name: 'SAFETY HELMET TYPE 1',
+        quantity: 25,
+        uom: 'PCS',
+      },
+      {
+        code: 'SF0002',
+        name: 'SAFETY GOGGLES CLEAR',
+        quantity: 25,
+        uom: 'PCS',
+      },
+      {
+        code: 'SF0003',
+        name: 'SAFETY VEST HIGH VIS',
+        quantity: 25,
+        uom: 'PCS',
+      },
+    ],
+    notes: 'Order cancelled due to supplier stock unavailability',
+    createdAt: '2025-03-02T10:20:00Z',
+    updatedAt: '2025-03-11T09:30:00Z',
+  },
+  {
+    id: 'DO-2025-0005',
+    poReference: 'PO-2025-0005',
+    supplier: {
+      id: 'SUP-001',
+      name: 'ABC Manufacturing',
+      contact: 'John Smith, +1 (555) 123-4567',
+    },
+    expectedArrival: '2025-04-05T00:00:00Z',
+    status: 'pending',
+    items: [
+      {
+        code: 'WW0004',
+        name: 'CUTTING DISC 4 INCH',
+        quantity: 50,
+        uom: 'PCS',
+      },
+      {
+        code: 'WW0005',
+        name: 'GRINDING DISC 4 INCH',
+        quantity: 50,
+        uom: 'PCS',
+      },
+    ],
+    notes: 'Standard delivery timeframe',
+    createdAt: '2025-03-15T13:40:00Z',
+    updatedAt: '2025-03-15T13:40:00Z',
+  },
+  {
+    id: 'DO-2025-0006',
+    poReference: 'PO-2025-0006',
+    supplier: {
+      id: 'SUP-005',
+      name: 'Precision Tools Inc.',
+      contact: 'Michael Brown, +1 (555) 345-6789',
+    },
+    expectedArrival: '2025-03-22T00:00:00Z',
+    status: 'in-transit',
+    items: [
+      {
+        code: 'TL0001',
+        name: 'DIGITAL CALIPER 0-150MM',
+        quantity: 2,
+        uom: 'PCS',
+      },
+      {
+        code: 'TL0002',
+        name: 'MICROMETER 0-25MM',
+        quantity: 2,
+        uom: 'PCS',
+      },
+      {
+        code: 'TL0003',
+        name: 'DIAL INDICATOR 0-10MM',
+        quantity: 3,
+        uom: 'PCS',
+      },
+    ],
+    notes: 'Express shipping, expected to arrive on time',
+    createdAt: '2025-03-12T09:15:00Z',
+    updatedAt: '2025-03-18T11:20:00Z',
+  },
+  {
+    id: 'DO-2025-0007',
+    poReference: 'PO-2025-0007',
+    supplier: {
+      id: 'SUP-006',
+      name: 'Fasteners & Hardware Ltd.',
+      contact: 'David Wilson, +1 (555) 876-5432',
+    },
+    expectedArrival: '2025-03-28T00:00:00Z',
+    status: 'pending',
+    items: [
+      {
+        code: 'FH0001',
+        name: 'HEX BOLT M10X50 SS304',
+        quantity: 200,
+        uom: 'PCS',
+      },
+      {
+        code: 'FH0002',
+        name: 'HEX NUT M10 SS304',
+        quantity: 200,
+        uom: 'PCS',
+      },
+      {
+        code: 'FH0003',
+        name: 'FLAT WASHER M10 SS304',
+        quantity: 400,
+        uom: 'PCS',
+      },
+    ],
+    notes: 'Standard order for maintenance department',
+    createdAt: '2025-03-14T16:30:00Z',
+    updatedAt: '2025-03-14T16:30:00Z',
+  },
+];
+

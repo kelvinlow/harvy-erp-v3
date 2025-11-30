@@ -1,14 +1,14 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { ChevronDown } from "lucide-react"
+import * as React from 'react';
+import { ChevronDown } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ItemEditDialogProps {
   open: boolean
@@ -29,19 +29,19 @@ interface ItemEditDialogProps {
 }
 
 export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: ItemEditDialogProps) {
-  const [formData, setFormData] = React.useState(data)
+  const [formData, setFormData] = React.useState(data);
 
   const handleChange = (field: string, value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSave = () => {
-    onSave(formData)
-    onOpenChange(false)
-  }
+    onSave(formData);
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -57,7 +57,7 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
               </Label>
               <div className="flex items-center gap-2">
                 <span className="flex h-2 w-2 rounded-full bg-red-500" />
-                <Input value={formData.itemCode} onChange={(e) => handleChange("itemCode", e.target.value)} />
+                <Input value={formData.itemCode} onChange={(e) => handleChange('itemCode', e.target.value)} />
               </div>
             </div>
             <div className="space-y-2">
@@ -67,7 +67,7 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
               <Input
                 type="date"
                 value={formData.requiredBy}
-                onChange={(e) => handleChange("requiredBy", e.target.value)}
+                onChange={(e) => handleChange('requiredBy', e.target.value)}
               />
             </div>
           </div>
@@ -76,7 +76,7 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
             <Label>Item Name</Label>
             <Input
               value={formData.itemName}
-              onChange={(e) => handleChange("itemName", e.target.value)}
+              onChange={(e) => handleChange('itemName', e.target.value)}
               className="bg-muted"
               readOnly
             />
@@ -102,7 +102,7 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
                 <Input
                   type="number"
                   value={formData.quantity}
-                  onChange={(e) => handleChange("quantity", Number.parseFloat(e.target.value))}
+                  onChange={(e) => handleChange('quantity', Number.parseFloat(e.target.value))}
                   step="0.001"
                 />
               </div>
@@ -110,13 +110,13 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
                 <Label>
                   UOM <span className="text-red-500">*</span>
                 </Label>
-                <Input value={formData.uom} onChange={(e) => handleChange("uom", e.target.value)} />
+                <Input value={formData.uom} onChange={(e) => handleChange('uom', e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label>
                   Stock UOM <span className="text-red-500">*</span>
                 </Label>
-                <Input value={formData.stockUom} onChange={(e) => handleChange("stockUom", e.target.value)} />
+                <Input value={formData.stockUom} onChange={(e) => handleChange('stockUom', e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label>
@@ -125,7 +125,7 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
                 <Input
                   type="number"
                   value={formData.uomConversionFactor}
-                  onChange={(e) => handleChange("uomConversionFactor", Number.parseFloat(e.target.value))}
+                  onChange={(e) => handleChange('uomConversionFactor', Number.parseFloat(e.target.value))}
                   step="0.001"
                 />
               </div>
@@ -133,7 +133,7 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
                 <Label>Target Warehouse</Label>
                 <Select
                   value={formData.targetWarehouse}
-                  onValueChange={(value) => handleChange("targetWarehouse", value)}
+                  onValueChange={(value) => handleChange('targetWarehouse', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select warehouse" />
@@ -161,6 +161,6 @@ export function ItemEditDialog({ open, onOpenChange, rowNumber, data, onSave }: 
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
