@@ -2,9 +2,12 @@ import { InventoryList } from '@/components/inventory-list';
 
 export default function InventoryPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-indigo-50 to-emerald-50 p-8">
-      <InventoryList />
+    <div className="@container/main flex flex-1 flex-col gap-2">
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className="px-4 lg:px-6">
+          <InventoryList />
+        </div>
+      </div>
     </div>
   );
 }
-

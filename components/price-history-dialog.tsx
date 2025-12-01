@@ -1,24 +1,45 @@
 'use client';
 
 import { format } from 'date-fns';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Area
+} from 'recharts';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 
 interface PriceHistory {
-  date: string
-  documentNo: string
-  supplier: string
-  price: number
+  date: string;
+  documentNo: string;
+  supplier: string;
+  price: number;
 }
 
 interface PriceHistoryDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  stockCode: string
-  description: string
-  priceHistory: PriceHistory[]
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  stockCode: string;
+  description: string;
+  priceHistory: PriceHistory[];
 }
 
 export function PriceHistoryDialog({
@@ -26,20 +47,24 @@ export function PriceHistoryDialog({
   onOpenChange,
   stockCode,
   description,
-  priceHistory,
+  priceHistory
 }: PriceHistoryDialogProps) {
   // Sort price history by date
-  const sortedHistory = [...priceHistory].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedHistory = [...priceHistory].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
 
   // Calculate statistics
   const currentPrice = sortedHistory[sortedHistory.length - 1]?.price || 0;
-  const averagePrice = sortedHistory.reduce((acc, curr) => acc + curr.price, 0) / sortedHistory.length;
+  const averagePrice =
+    sortedHistory.reduce((acc, curr) => acc + curr.price, 0) /
+    sortedHistory.length;
   const priceGoal = averagePrice * 1.1; // Example: Goal is 10% above average
 
   // Prepare data for chart
   const chartData = sortedHistory.map((item) => ({
     date: format(new Date(item.date), 'MMM dd'),
-    price: item.price,
+    price: item.price
   }));
 
   // Custom tooltip
@@ -48,7 +73,9 @@ export function PriceHistoryDialog({
       return (
         <div className="rounded-lg border bg-background p-2 shadow-sm">
           <p className="text-sm font-medium">{label}</p>
-          <p className="text-sm text-muted-foreground">RM {payload[0].value.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground">
+            RM {payload[0].value.toFixed(2)}
+          </p>
         </div>
       );
     }
@@ -57,7 +84,7 @@ export function PriceHistoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Price History - {stockCode}</DialogTitle>
           <p className="text-sm text-muted-foreground">{description}</p>
@@ -66,7 +93,9 @@ export function PriceHistoryDialog({
         <div className="space-y-8">
           {/* Current Price Display */}
           <div>
-            <div className="text-4xl font-bold">RM {currentPrice.toFixed(2)}</div>
+            <div className="text-4xl font-bold">
+              RM {currentPrice.toFixed(2)}
+            </div>
             <div className="text-sm text-muted-foreground">
               Another RM {(priceGoal - currentPrice).toFixed(2)} to Goal
             </div>
@@ -81,7 +110,7 @@ export function PriceHistoryDialog({
                   top: 5,
                   right: 5,
                   left: 5,
-                  bottom: 5,
+                  bottom: 5
                 }}
               >
                 <defs>
@@ -90,8 +119,18 @@ export function PriceHistoryDialog({
                     <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  horizontal={true}
+                  vertical={false}
+                  stroke="#e5e7eb"
+                />
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#6b7280' }}
+                />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
@@ -107,7 +146,13 @@ export function PriceHistoryDialog({
                   fill="url(#colorPrice)"
                   dot={false}
                 />
-                <Line type="monotone" dataKey="price" stroke="#22c55e" strokeWidth={2} dot={false} />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#22c55e"
+                  strokeWidth={2}
+                  dot={false}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -134,7 +179,6 @@ export function PriceHistoryDialog({
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
-                  <TableHead>PR No </TableHead>
                   <TableHead>PO No </TableHead>
                   <TableHead>Supplier</TableHead>
                   <TableHead className="text-right">Price (RM)</TableHead>
@@ -143,10 +187,14 @@ export function PriceHistoryDialog({
               <TableBody>
                 {sortedHistory.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell>{format(new Date(item.date), 'dd MMM yyyy')}</TableCell>
+                    <TableCell>
+                      {format(new Date(item.date), 'dd MMM yyyy')}
+                    </TableCell>
                     <TableCell>{item.documentNo}</TableCell>
                     <TableCell>{item.supplier}</TableCell>
-                    <TableCell className="text-right">{item.price.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">
+                      {item.price.toFixed(2)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -157,4 +205,3 @@ export function PriceHistoryDialog({
     </Dialog>
   );
 }
-

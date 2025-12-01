@@ -65,54 +65,7 @@ export const navigationConfig = {
       icon: IconBuildingFactory2
     }
   ],
-  navClouds: [
-    {
-      title: 'Capture',
-      icon: IconCamera,
-      isActive: true,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#'
-        },
-        {
-          title: 'Archived',
-          url: '#'
-        }
-      ]
-    },
-    {
-      title: 'Proposal',
-      icon: IconFileDescription,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#'
-        },
-        {
-          title: 'Archived',
-          url: '#'
-        }
-      ]
-    },
-    {
-      title: 'Prompts',
-      icon: IconFileAi,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#'
-        },
-        {
-          title: 'Archived',
-          url: '#'
-        }
-      ]
-    }
-  ],
+  navClouds: [],
   navSecondary: [
     {
       title: 'Settings',
@@ -184,11 +137,11 @@ export function getPageTitle(pathname: string): string {
   );
   if (docItem) return docItem.name;
 
-  // 5. Handle dynamic/nested routes
-  if (pathname.startsWith('/purchase-requisition/')) {
-    // If it's not 'create' (checked in step 1), it must be details
-    return 'Purchase Requisition Details';
-  }
+  //   // 5. Handle dynamic/nested routes
+  //   if (pathname.startsWith('/purchase-requisition/')) {
+  //     // If it's not 'create' (checked in step 1), it must be details
+  //     return 'Purchase Requisition Details';
+  //   }
 
   return 'Harvy ERP System';
 }

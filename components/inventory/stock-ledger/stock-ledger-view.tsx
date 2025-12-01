@@ -92,12 +92,12 @@ export function StockLedgerView() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Header Section */}
-      <div className="border-b bg-background/95 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* <div className="border-b bg-background/95 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">Stock Ledger</h1>
           <p className="text-sm text-muted-foreground">View and manage your stock ledger entries</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="flex-1 space-y-4 p-4 md:p-6 lg:p-8">
