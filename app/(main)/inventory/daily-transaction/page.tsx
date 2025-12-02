@@ -15,12 +15,16 @@ export default function DailyTransactionPage() {
       <div className="min-h-screen to-emerald-50 p-8">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Daily Transaction</h1>
-          <Button onClick={() => setDialogOpen(true)}>View Transaction Report</Button>
+          <Button onClick={() => setDialogOpen(true)}>
+            View Transaction Report
+          </Button>
         </div>
 
-        <TransactionReportDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+        <TransactionReportDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
       </div>
     </QueryClientProvider>
   );
 }
-

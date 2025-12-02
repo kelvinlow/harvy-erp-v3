@@ -1,10 +1,7 @@
-import type { Metadata } from 'next';
 import StockBalanceView from '@/components/inventory/stock-balance/stock-balance-view';
 
-export const metadata: Metadata = {
-  title: 'Stock Balance',
-  description: 'View and manage current stock balances',
-};
+import type { Metadata } from 'next';
+export const metadata: Metadata = { title: 'Stock Balance - Harvy' };
 
 export default function StockBalancePage() {
   return (
@@ -17,4 +14,3 @@ export default function StockBalancePage() {
     </div>
   );
 }
-

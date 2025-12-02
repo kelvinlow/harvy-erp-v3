@@ -74,6 +74,16 @@ export const navigationConfig = {
       icon: IconAd2
     },
     {
+      name: 'Stock Issue',
+      url: '/inventory/stock-issue',
+      icon: IconAd2
+    },
+    {
+      name: 'Stock Adjustment',
+      url: '/inventory/stock-adjustment',
+      icon: IconAd2
+    },
+    {
       name: 'Stock Ledgers',
       url: '/inventory/stock-ledger',
       icon: IconAd2
@@ -126,29 +136,16 @@ export function getPageTitle(pathname: string): string {
     ];
   }
 
-  // 2. Check sidebar items (navMain)
-  const mainItem = navigationConfig.navMain.find(
-    (item) => item.url === pathname
-  );
-  if (mainItem) return mainItem.title;
-
-  // 3. Check secondary items
-  const secondaryItem = navigationConfig.navSecondary.find(
-    (item) => item.url === pathname
-  );
-  if (secondaryItem) return secondaryItem.title;
-
-  // 4. Check documents
-  const docItem = navigationConfig.navInventory.find(
-    (item) => item.url === pathname
-  );
-  if (docItem) return docItem.name;
-
-  //   // 5. Handle dynamic/nested routes
-  //   if (pathname.startsWith('/purchase-requisition/')) {
-  //     // If it's not 'create' (checked in step 1), it must be details
-  //     return 'Purchase Requisition Details';
-  //   }
+  // 2. Search all navigation arrays dynamically
+  for (const section of Object.values(navigationConfig)) {
+    if (Array.isArray(section)) {
+      const item = section.find((i) => i.url === pathname);
+      if (item) {
+        if ('title' in item) return item.title;
+        if ('name' in item) return item.name;
+      }
+    }
+  }
 
   return 'Harvy ERP System';
 }

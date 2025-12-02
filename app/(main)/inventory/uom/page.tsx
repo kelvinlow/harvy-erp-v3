@@ -1,5 +1,8 @@
 import { UOMMaster } from '@/components/inventory/uom/uom-master';
 
+import type { Metadata } from 'next';
+export const metadata: Metadata = { title: 'UOM Master - Harvy' };
+
 export default function UOMPage() {
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">

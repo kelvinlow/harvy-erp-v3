@@ -3,8 +3,20 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import type { TransferStatus } from '@/types/internal-transfer';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -16,7 +28,7 @@ const statusOptions: { label: string; value: TransferStatus }[] = [
   { label: 'Rejected', value: 'rejected' },
   { label: 'Shipped', value: 'shipped' },
   { label: 'Received', value: 'received' },
-  { label: 'Cancelled', value: 'cancelled' },
+  { label: 'Cancelled', value: 'cancelled' }
 ];
 
 export function InternalTransferList() {
@@ -27,7 +39,9 @@ export function InternalTransferList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Internal Transfer</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Internal Transfer
+        </h1>
         <Button onClick={() => router.push('/internal-transfer/create')}>
           <Plus className="w-4 h-4 mr-2" />
           New Transfer
@@ -41,7 +55,10 @@ export function InternalTransferList() {
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
         />
-        <Select value={statusFilter} onValueChange={(value: TransferStatus | '') => setStatusFilter(value)}>
+        <Select
+          value={statusFilter}
+          onValueChange={(value: TransferStatus | '') => setStatusFilter(value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
@@ -74,4 +91,3 @@ export function InternalTransferList() {
     </div>
   );
 }
-

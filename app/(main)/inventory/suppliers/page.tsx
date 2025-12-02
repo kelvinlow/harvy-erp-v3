@@ -1,5 +1,8 @@
 import { SupplierManagement } from '@/components/inventory/suppliers/supplier-management';
 
+import type { Metadata } from 'next';
+export const metadata: Metadata = { title: 'Suppliers - Harvy' };
+
 export default function SuppliersPage() {
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">

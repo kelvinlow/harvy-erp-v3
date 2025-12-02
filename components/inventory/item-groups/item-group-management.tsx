@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ItemGroupList } from './item-group-list';
 import { ItemGroupForm } from './item-group-form';
@@ -26,7 +32,11 @@ export function ItemGroupManagement() {
   };
 
   const handleUpdateGroup = (updatedGroup: ItemGroup) => {
-    setItemGroups(itemGroups.map((group) => (group.id === updatedGroup.id ? updatedGroup : group)));
+    setItemGroups(
+      itemGroups.map((group) =>
+        group.id === updatedGroup.id ? updatedGroup : group
+      )
+    );
     setSelectedGroup(null);
     setIsEditing(false);
     setActiveTab('list');
@@ -62,11 +72,11 @@ export function ItemGroupManagement() {
           }
           return {
             ...group,
-            items: [...group.items, item],
+            items: [...group.items, item]
           };
         }
         return group;
-      }),
+      })
     );
   };
 
@@ -76,93 +86,110 @@ export function ItemGroupManagement() {
         if (group.id === groupId) {
           return {
             ...group,
-            items: group.items.filter((item) => item.id !== itemId),
+            items: group.items.filter((item) => item.id !== itemId)
           };
         }
         return group;
-      }),
+      })
     );
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Item Group Management</h1>
-        <p className="text-muted-foreground">Create and manage item groups to organize your inventory</p>
-      </div>
+    <Card>
+      <CardContent className="space-y-4">
+        <div className="flex flex-col space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight">
+            Item Group Management
+          </h1>
+          <p className="text-muted-foreground">
+            Create and manage item groups to organize your inventory
+          </p>
+        </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="list">Item Groups</TabsTrigger>
-          <TabsTrigger value="add">{isEditing ? 'Edit Group' : 'Add New Group'}</TabsTrigger>
-          {selectedGroup && <TabsTrigger value="detail">Group Details</TabsTrigger>}
-        </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="list">Item Groups</TabsTrigger>
+            <TabsTrigger value="add">
+              {isEditing ? 'Edit Group' : 'Add New Group'}
+            </TabsTrigger>
+            {selectedGroup && (
+              <TabsTrigger value="detail">Group Details</TabsTrigger>
+            )}
+          </TabsList>
 
-        <TabsContent value="list" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Item Groups</CardTitle>
-              <CardDescription>Manage your inventory item groups</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ItemGroupList
-                itemGroups={itemGroups}
-                onEdit={handleEditGroup}
-                onDelete={handleDeleteGroup}
-                onView={handleViewGroup}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="add">
-          <Card>
-            <CardHeader>
-              <CardTitle>{isEditing ? 'Edit Item Group' : 'Create New Item Group'}</CardTitle>
-              <CardDescription>
-                {isEditing
-                  ? 'Update the details of an existing item group'
-                  : 'Add a new item group to organize your inventory'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ItemGroupForm
-                group={selectedGroup}
-                onSubmit={isEditing ? handleUpdateGroup : handleCreateGroup}
-                onCancel={() => {
-                  setSelectedGroup(null);
-                  setIsEditing(false);
-                  setActiveTab('list');
-                }}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {selectedGroup && (
-          <TabsContent value="detail">
+          <TabsContent value="list" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Group Details: {selectedGroup.name}</CardTitle>
-                <CardDescription>Manage items in this group</CardDescription>
+                <CardTitle>Item Groups</CardTitle>
+                <CardDescription>
+                  Manage your inventory item groups
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <ItemGroupDetail
+                <ItemGroupList
+                  itemGroups={itemGroups}
+                  onEdit={handleEditGroup}
+                  onDelete={handleDeleteGroup}
+                  onView={handleViewGroup}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="add">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {isEditing ? 'Edit Item Group' : 'Create New Item Group'}
+                </CardTitle>
+                <CardDescription>
+                  {isEditing
+                    ? 'Update the details of an existing item group'
+                    : 'Add a new item group to organize your inventory'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ItemGroupForm
                   group={selectedGroup}
-                  availableItems={availableItems}
-                  onAddItem={(itemId) => handleAddItemToGroup(selectedGroup.id, itemId)}
-                  onRemoveItem={(itemId) => handleRemoveItemFromGroup(selectedGroup.id, itemId)}
-                  onEdit={() => {
-                    setIsEditing(true);
-                    setActiveTab('add');
+                  onSubmit={isEditing ? handleUpdateGroup : handleCreateGroup}
+                  onCancel={() => {
+                    setSelectedGroup(null);
+                    setIsEditing(false);
+                    setActiveTab('list');
                   }}
                 />
               </CardContent>
             </Card>
           </TabsContent>
-        )}
-      </Tabs>
-    </div>
+
+          {selectedGroup && (
+            <TabsContent value="detail">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Group Details: {selectedGroup.name}</CardTitle>
+                  <CardDescription>Manage items in this group</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ItemGroupDetail
+                    group={selectedGroup}
+                    availableItems={availableItems}
+                    onAddItem={(itemId) =>
+                      handleAddItemToGroup(selectedGroup.id, itemId)
+                    }
+                    onRemoveItem={(itemId) =>
+                      handleRemoveItemFromGroup(selectedGroup.id, itemId)
+                    }
+                    onEdit={() => {
+                      setIsEditing(true);
+                      setActiveTab('add');
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }
-

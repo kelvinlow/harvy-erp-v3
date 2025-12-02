@@ -1,5 +1,8 @@
 import { InventoryList } from '@/components/inventory-list';
 
+import type { Metadata } from 'next';
+export const metadata: Metadata = { title: 'Inventory - Harvy' };
+
 export default function InventoryPage() {
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">
