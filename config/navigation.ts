@@ -30,16 +30,6 @@ export const navigationConfig = {
       icon: IconDashboard
     },
     {
-      title: 'Inventory',
-      url: '/inventory',
-      icon: IconBuildingWarehouse
-    },
-    {
-      title: 'Item Groups',
-      url: '/inventory/item-groups',
-      icon: IconPackages
-    },
-    {
       title: 'Suppliers',
       url: '/inventory/suppliers',
       icon: IconBuildingStore
@@ -53,11 +43,6 @@ export const navigationConfig = {
       title: 'Stock Ledgers',
       url: '/inventory/stock-ledger',
       icon: IconAd2
-    },
-    {
-      title: 'UOM',
-      url: '/inventory/uom',
-      icon: IconBuildingWarehouse
     },
     {
       title: 'Machine',
@@ -83,21 +68,21 @@ export const navigationConfig = {
       icon: IconSearch
     }
   ],
-  documents: [
+  navInventory: [
     {
-      name: 'Data Library',
-      url: '/data-library',
-      icon: IconDatabase
+      name: 'Inventory List',
+      url: '/inventory',
+      icon: IconBuildingWarehouse
     },
     {
-      name: 'Reports',
-      url: '/reports',
-      icon: IconReport
+      name: 'Item Groups',
+      url: '/inventory/item-groups',
+      icon: IconPackages
     },
     {
-      name: 'Word Assistant',
-      url: '/word-assistant',
-      icon: IconFileWord
+      name: 'Internal Transfer',
+      url: '/inventory/internal-transfer',
+      icon: IconBuildingWarehouse
     }
   ],
 
@@ -132,7 +117,7 @@ export function getPageTitle(pathname: string): string {
   if (secondaryItem) return secondaryItem.title;
 
   // 4. Check documents
-  const docItem = navigationConfig.documents.find(
+  const docItem = navigationConfig.navInventory.find(
     (item) => item.url === pathname
   );
   if (docItem) return docItem.name;

@@ -1,14 +1,17 @@
-import type { ReactNode } from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
-export default function InventoryLayout({ children }: { children: ReactNode }) {
+export default function MainLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <SidebarProvider
       style={
         {
-          '--sidebar-width': 'calc(var(--spacing) * 72)',
+          '--sidebar-width': 'calc(var(--spacing) * 60)',
           '--header-height': 'calc(var(--spacing) * 12)'
         } as React.CSSProperties
       }
