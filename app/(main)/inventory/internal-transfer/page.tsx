@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { InternalTransferList } from '@/components/internal-transfer/internal-transfer-list';
+import { InternalTransferList } from '@/components/inventory/internal-transfer/internal-transfer-list';
 
 export const metadata: Metadata = {
   title: 'Internal Transfer',
-  description: 'Manage internal transfer requests between companies',
+  description: 'Manage internal transfer requests between companies'
 };
 
 export default function InternalTransferPage() {
@@ -13,4 +13,3 @@ export default function InternalTransferPage() {
     </div>
   );
 }
-

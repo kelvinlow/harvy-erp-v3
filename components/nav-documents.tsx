@@ -26,19 +26,21 @@ import {
 } from '@/components/ui/sidebar';
 
 export function NavDocuments({
-  items
+  items,
+  label
 }: {
   items: {
     name: string;
     url: string;
     icon: Icon;
   }[];
+  label: string;
 }) {
   const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Inventory</SidebarGroupLabel>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>

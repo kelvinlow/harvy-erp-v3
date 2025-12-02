@@ -28,44 +28,28 @@ export const navigationConfig = {
       title: 'Dashboard',
       url: '/dashboard',
       icon: IconDashboard
-    },
-    {
-      title: 'Suppliers',
-      url: '/inventory/suppliers',
-      icon: IconBuildingStore
-    },
-    {
-      title: 'Stock Balance',
-      url: '/inventory/stock-balance',
-      icon: IconAd2
-    },
-    {
-      title: 'Stock Ledgers',
-      url: '/inventory/stock-ledger',
-      icon: IconAd2
-    },
-    {
-      title: 'Machine',
-      url: '/inventory/machine',
-      icon: IconBuildingFactory2
     }
   ],
-  navClouds: [],
-  navSecondary: [
+  navPurchasing: [
     {
-      title: 'Settings',
-      url: '/settings',
-      icon: IconSettings
+      name: 'Purchase Requisition',
+      url: '/purchasing/purchase-requisition',
+      icon: IconAd2
     },
     {
-      title: 'Get Help',
-      url: '/help',
-      icon: IconHelp
+      name: 'Purchase Order',
+      url: '/purchasing/purchase-order',
+      icon: IconAd2
     },
     {
-      title: 'Search',
-      url: '/search',
-      icon: IconSearch
+      name: 'Delivery Order',
+      url: '/purchasing/delivery-order',
+      icon: IconAd2
+    },
+    {
+      name: 'Purchase Analytics',
+      url: '/purchasing/purchase-analytics',
+      icon: IconAd2
     }
   ],
   navInventory: [
@@ -80,12 +64,50 @@ export const navigationConfig = {
       icon: IconPackages
     },
     {
+      name: 'UOM Master',
+      url: '/inventory/uom',
+      icon: IconPackages
+    },
+    {
+      name: 'Stock Balance',
+      url: '/inventory/stock-balance',
+      icon: IconAd2
+    },
+    {
+      name: 'Stock Ledgers',
+      url: '/inventory/stock-ledger',
+      icon: IconAd2
+    },
+    {
+      name: 'Suppliers',
+      url: '/inventory/suppliers',
+      icon: IconBuildingStore
+    },
+    {
+      name: 'Gatepass',
+      url: '/inventory/gatepass',
+      icon: IconAd2
+    },
+    {
       name: 'Internal Transfer',
       url: '/inventory/internal-transfer',
       icon: IconBuildingWarehouse
     }
   ],
-
+  navMachine: [
+    {
+      name: 'Machine',
+      url: '/inventory/machine',
+      icon: IconBuildingFactory2
+    }
+  ],
+  navSecondary: [
+    {
+      title: 'Settings',
+      url: '/settings',
+      icon: IconSettings
+    }
+  ],
   // Mapping for pages that are NOT in the sidebar
   // You can use regex patterns or exact paths
   pages: {

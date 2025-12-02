@@ -43,7 +43,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navigationConfig.navMain} />
-        <NavDocuments items={navigationConfig.navInventory} />
+        <NavDocuments
+          items={navigationConfig.navPurchasing}
+          label="Purchasing"
+        />
+        <NavDocuments items={navigationConfig.navInventory} label="Inventory" />
+        <NavDocuments items={navigationConfig.navMachine} label="Machine" />
         <NavSecondary
           items={navigationConfig.navSecondary}
           className="mt-auto"
