@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar';
-
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { navigationConfig } from '@/config/navigation';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -41,19 +41,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={navigationConfig.navMain} />
-        <NavDocuments
-          items={navigationConfig.navPurchasing}
-          label="Purchasing"
-        />
-        <NavDocuments items={navigationConfig.navInventory} label="Inventory" />
-        <NavDocuments items={navigationConfig.navMachine} label="Machine" />
-        <NavSecondary
-          items={navigationConfig.navSecondary}
-          className="mt-auto"
-        />
-      </SidebarContent>
+
+      <ScrollArea className="h-[calc(100vh-8rem)]">
+        <SidebarContent>
+          <NavMain items={navigationConfig.navMain} />
+          <NavDocuments
+            items={navigationConfig.navPurchasing}
+            label="Purchasing"
+          />
+          <NavDocuments
+            items={navigationConfig.navInventory}
+            label="Inventory"
+          />
+          <NavDocuments items={navigationConfig.navMachine} label="Machine" />
+          <NavSecondary
+            items={navigationConfig.navSecondary}
+            className="mt-auto"
+          />
+        </SidebarContent>
+      </ScrollArea>
       <SidebarFooter>
         <NavUser user={navigationConfig.user} />
       </SidebarFooter>
