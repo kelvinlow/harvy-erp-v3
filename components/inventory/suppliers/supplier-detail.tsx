@@ -3,9 +3,22 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Search, Edit, Plus, Trash2, ExternalLink } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
+  DialogDescription
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
@@ -23,11 +36,11 @@ import type { Supplier, SupplierProduct } from '@/types/supplier';
 import type { Stock } from '@/types/stock';
 
 interface SupplierDetailProps {
-  supplier: Supplier
-  availableItems: Stock[]
-  onAddProduct: (product: SupplierProduct) => void
-  onRemoveProduct: (productId: string) => void
-  onEdit: () => void
+  supplier: Supplier;
+  availableItems: Stock[];
+  onAddProduct: (product: SupplierProduct) => void;
+  onRemoveProduct: (productId: string) => void;
+  onEdit: () => void;
 }
 
 export function SupplierDetail({
@@ -35,23 +48,23 @@ export function SupplierDetail({
   availableItems,
   onAddProduct,
   onRemoveProduct,
-  onEdit,
+  onEdit
 }: SupplierDetailProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedItemId, setSelectedItemId] = useState('');
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [newProduct, setNewProduct] = useState<{
-    itemId: string
-    price: string
-    minOrderQty: string
-    leadTime: string
-    notes: string
+    itemId: string;
+    price: string;
+    minOrderQty: string;
+    leadTime: string;
+    notes: string;
   }>({
     itemId: '',
     price: '',
     minOrderQty: '',
     leadTime: '',
-    notes: '',
+    notes: ''
   });
 
   // Filter products based on search term
@@ -93,7 +106,7 @@ export function SupplierDetail({
       minOrderQty: Number.parseInt(newProduct.minOrderQty) || 1,
       leadTime: Number.parseInt(newProduct.leadTime) || 0,
       notes: newProduct.notes,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
 
     onAddProduct(product);
@@ -108,7 +121,7 @@ export function SupplierDetail({
       price: '',
       minOrderQty: '',
       leadTime: '',
-      notes: '',
+      notes: ''
     });
   };
 
@@ -123,11 +136,17 @@ export function SupplierDetail({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-semibold">{supplier.name}</h2>
-              <Badge variant={supplier.status === 'active' ? 'success' : 'secondary'}>
+              <Badge
+                variant={supplier.status === 'active' ? 'success' : 'secondary'}
+              >
                 {supplier.status === 'active' ? 'Active' : 'Inactive'}
               </Badge>
             </div>
-            {supplier.contactPerson && <p className="text-muted-foreground">Contact: {supplier.contactPerson}</p>}
+            {supplier.contactPerson && (
+              <p className="text-muted-foreground">
+                Contact: {supplier.contactPerson}
+              </p>
+            )}
             <div className="flex flex-wrap gap-x-4 mt-1">
               {supplier.email && <p className="text-sm">{supplier.email}</p>}
               {supplier.phone && <p className="text-sm">{supplier.phone}</p>}
@@ -154,14 +173,18 @@ export function SupplierDetail({
       {supplier.address && (
         <div>
           <h3 className="text-sm font-medium mb-1">Address</h3>
-          <p className="text-sm text-muted-foreground whitespace-pre-line">{supplier.address}</p>
+          <p className="text-sm text-muted-foreground whitespace-pre-line">
+            {supplier.address}
+          </p>
         </div>
       )}
 
       {supplier.notes && (
         <div>
           <h3 className="text-sm font-medium mb-1">Notes</h3>
-          <p className="text-sm text-muted-foreground whitespace-pre-line">{supplier.notes}</p>
+          <p className="text-sm text-muted-foreground whitespace-pre-line">
+            {supplier.notes}
+          </p>
         </div>
       )}
 
@@ -193,7 +216,7 @@ export function SupplierDetail({
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-gray-50">
                     <TableHead>Item Code</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead className="text-right">Price (RM)</TableHead>
@@ -219,13 +242,28 @@ export function SupplierDetail({
 
                       return (
                         <TableRow key={product.itemId}>
-                          <TableCell className="font-mono">{item.code}</TableCell>
+                          <TableCell className="font-mono">
+                            {item.code}
+                          </TableCell>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell className="text-right">{product.price.toFixed(2)}</TableCell>
-                          <TableCell className="text-right">{product.minOrderQty}</TableCell>
-                          <TableCell>{product.leadTime > 0 ? `${product.leadTime} days` : 'Immediate'}</TableCell>
+                          <TableCell className="text-right">
+                            {product.price.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {product.minOrderQty}
+                          </TableCell>
+                          <TableCell>
+                            {product.leadTime > 0
+                              ? `${product.leadTime} days`
+                              : 'Immediate'}
+                          </TableCell>
                           <TableCell className="text-right text-sm text-muted-foreground">
-                            {product.lastUpdated ? format(new Date(product.lastUpdated), 'dd MMM yyyy') : 'N/A'}
+                            {product.lastUpdated
+                              ? format(
+                                  new Date(product.lastUpdated),
+                                  'dd MMM yyyy'
+                                )
+                              : 'N/A'}
                           </TableCell>
                           <TableCell className="text-right">
                             <Button
@@ -260,7 +298,9 @@ export function SupplierDetail({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add Product</DialogTitle>
-            <DialogDescription>Add a product and its pricing information for this supplier</DialogDescription>
+            <DialogDescription>
+              Add a product and its pricing information for this supplier
+            </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
@@ -268,14 +308,19 @@ export function SupplierDetail({
               <Label htmlFor="item">Select Item</Label>
               <Select
                 value={newProduct.itemId}
-                onValueChange={(value) => setNewProduct({ ...newProduct, itemId: value })}
+                onValueChange={(value) =>
+                  setNewProduct({ ...newProduct, itemId: value })
+                }
               >
                 <SelectTrigger id="item">
                   <SelectValue placeholder="Select an item" />
                 </SelectTrigger>
                 <SelectContent>
                   {availableItems
-                    .filter((item) => !supplier.products.some((p) => p.itemId === item.id))
+                    .filter(
+                      (item) =>
+                        !supplier.products.some((p) => p.itemId === item.id)
+                    )
                     .map((item) => (
                       <SelectItem key={item.id} value={item.id}>
                         {item.code} - {item.name}
@@ -295,7 +340,9 @@ export function SupplierDetail({
                   min="0"
                   placeholder="0.00"
                   value={newProduct.price}
-                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, price: e.target.value })
+                  }
                 />
               </div>
 
@@ -307,7 +354,12 @@ export function SupplierDetail({
                   min="1"
                   placeholder="1"
                   value={newProduct.minOrderQty}
-                  onChange={(e) => setNewProduct({ ...newProduct, minOrderQty: e.target.value })}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      minOrderQty: e.target.value
+                    })
+                  }
                 />
               </div>
             </div>
@@ -320,9 +372,13 @@ export function SupplierDetail({
                 min="0"
                 placeholder="0"
                 value={newProduct.leadTime}
-                onChange={(e) => setNewProduct({ ...newProduct, leadTime: e.target.value })}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, leadTime: e.target.value })
+                }
               />
-              <p className="text-sm text-muted-foreground">Enter 0 for immediate availability</p>
+              <p className="text-sm text-muted-foreground">
+                Enter 0 for immediate availability
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -331,7 +387,9 @@ export function SupplierDetail({
                 id="notes"
                 placeholder="Additional information about this product"
                 value={newProduct.notes}
-                onChange={(e) => setNewProduct({ ...newProduct, notes: e.target.value })}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, notes: e.target.value })
+                }
               />
             </div>
           </div>
@@ -347,7 +405,11 @@ export function SupplierDetail({
             >
               Cancel
             </Button>
-            <Button type="button" onClick={handleAddProduct} disabled={!newProduct.itemId || !newProduct.price}>
+            <Button
+              type="button"
+              onClick={handleAddProduct}
+              disabled={!newProduct.itemId || !newProduct.price}
+            >
               Add Product
             </Button>
           </DialogFooter>
@@ -356,4 +418,3 @@ export function SupplierDetail({
     </div>
   );
 }
-

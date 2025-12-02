@@ -6,17 +6,26 @@ import { Plus, Edit2, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import type { ServiceRecord } from '@/types/machine';
 import { ServiceRecordDialog } from './service-record-dialog';
 import { DeleteConfirmation } from '@/components/delete-confirmation';
 
 interface ServiceHistoryProps {
-  machineId: string
-  records: ServiceRecord[]
-  onAddRecord: (record: Omit<ServiceRecord, 'id' | 'machineId' | 'createdAt'>) => void
-  onUpdateRecord: (id: string, record: Partial<ServiceRecord>) => void
-  onDeleteRecord: (id: string) => void
+  machineId: string;
+  records: ServiceRecord[];
+  onAddRecord: (
+    record: Omit<ServiceRecord, 'id' | 'machineId' | 'createdAt'>
+  ) => void;
+  onUpdateRecord: (id: string, record: Partial<ServiceRecord>) => void;
+  onDeleteRecord: (id: string) => void;
 }
 
 export function ServiceHistory({
@@ -24,12 +33,14 @@ export function ServiceHistory({
   records,
   onAddRecord,
   onUpdateRecord,
-  onDeleteRecord,
+  onDeleteRecord
 }: ServiceHistoryProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [selectedRecord, setSelectedRecord] = React.useState<ServiceRecord | null>(null);
-  const [recordToDelete, setRecordToDelete] = React.useState<ServiceRecord | null>(null);
+  const [selectedRecord, setSelectedRecord] =
+    React.useState<ServiceRecord | null>(null);
+  const [recordToDelete, setRecordToDelete] =
+    React.useState<ServiceRecord | null>(null);
 
   const handleAddClick = () => {
     setSelectedRecord(null);
@@ -50,7 +61,9 @@ export function ServiceHistory({
     if (selectedRecord) {
       await onUpdateRecord(selectedRecord.id, data);
     } else {
-      await onAddRecord(data as Omit<ServiceRecord, 'id' | 'machineId' | 'createdAt'>);
+      await onAddRecord(
+        data as Omit<ServiceRecord, 'id' | 'machineId' | 'createdAt'>
+      );
     }
     setDialogOpen(false);
   };
@@ -81,7 +94,7 @@ export function ServiceHistory({
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="bg-gray-50">
                   <TableHead>Date</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Performed By</TableHead>
@@ -92,16 +105,26 @@ export function ServiceHistory({
               <TableBody>
                 {records.map((record) => (
                   <TableRow key={record.id}>
-                    <TableCell>{format(new Date(record.serviceDate), 'dd MMM yyyy')}</TableCell>
+                    <TableCell>
+                      {format(new Date(record.serviceDate), 'dd MMM yyyy')}
+                    </TableCell>
                     <TableCell>{record.description}</TableCell>
                     <TableCell>{record.performedBy}</TableCell>
                     <TableCell>${record.cost.toFixed(2)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(record)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditClick(record)}
+                        >
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(record)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteClick(record)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -131,4 +154,3 @@ export function ServiceHistory({
     </Card>
   );
 }
-

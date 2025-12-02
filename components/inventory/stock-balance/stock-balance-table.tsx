@@ -1,18 +1,34 @@
 'use client';
 
 import { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronUp,
+  AlertTriangle,
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react';
 import type { StockBalanceItem } from '@/types/stock-balance';
 
 interface StockBalanceTableProps {
-  stockData: StockBalanceItem[]
+  stockData: StockBalanceItem[];
 }
 
-export default function StockBalanceTable({ stockData }: StockBalanceTableProps) {
-  const [sortField, setSortField] = useState<keyof StockBalanceItem>('itemName');
+export default function StockBalanceTable({
+  stockData
+}: StockBalanceTableProps) {
+  const [sortField, setSortField] =
+    useState<keyof StockBalanceItem>('itemName');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const handleSort = (field: keyof StockBalanceItem) => {
@@ -33,7 +49,9 @@ export default function StockBalanceTable({ stockData }: StockBalanceTableProps)
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      return sortDirection === 'asc'
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
     }
 
     return 0;
@@ -66,14 +84,18 @@ export default function StockBalanceTable({ stockData }: StockBalanceTableProps)
 
   const SortIcon = ({ field }: { field: keyof StockBalanceItem }) => {
     if (field !== sortField) return null;
-    return sortDirection === 'asc' ? <ChevronUp className="h-4 w-4 ml-1" /> : <ChevronDown className="h-4 w-4 ml-1" />;
+    return sortDirection === 'asc' ? (
+      <ChevronUp className="h-4 w-4 ml-1" />
+    ) : (
+      <ChevronDown className="h-4 w-4 ml-1" />
+    );
   };
 
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-gray-50">
             <TableHead className="w-[80px]">Item Code</TableHead>
             <TableHead>
               <Button
@@ -134,7 +156,10 @@ export default function StockBalanceTable({ stockData }: StockBalanceTableProps)
         <TableBody>
           {sortedData.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+              <TableCell
+                colSpan={10}
+                className="text-center py-8 text-muted-foreground"
+              >
                 No stock items found
               </TableCell>
             </TableRow>
@@ -146,11 +171,21 @@ export default function StockBalanceTable({ stockData }: StockBalanceTableProps)
                 <TableCell>{item.itemGroup}</TableCell>
                 <TableCell>{item.location}</TableCell>
                 <TableCell>{item.uom}</TableCell>
-                <TableCell className="text-right font-medium">{item.currentStock.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{item.reorderLevel.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{item.maxLevel.toLocaleString()}</TableCell>
+                <TableCell className="text-right font-medium">
+                  {item.currentStock.toLocaleString()}
+                </TableCell>
                 <TableCell className="text-right">
-                  ${item.valueInStock.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {item.reorderLevel.toLocaleString()}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.maxLevel.toLocaleString()}
+                </TableCell>
+                <TableCell className="text-right">
+                  $
+                  {item.valueInStock.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })}
                 </TableCell>
                 <TableCell>{getStockStatusBadge(item)}</TableCell>
               </TableRow>
@@ -161,4 +196,3 @@ export default function StockBalanceTable({ stockData }: StockBalanceTableProps)
     </div>
   );
 }
-

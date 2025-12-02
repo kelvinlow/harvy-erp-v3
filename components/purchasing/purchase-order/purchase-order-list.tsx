@@ -358,7 +358,7 @@ export function PurchaseOrderList() {
                     !date && 'text-muted-foreground'
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="h-4 w-4" />
                   {date ? format(date, 'PPP') : 'Pick a date'}
                 </Button>
               </PopoverTrigger>
@@ -386,11 +386,11 @@ export function PurchaseOrderList() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline">
-              <Printer className="mr-2 h-4 w-4" />
+              <Printer className="h-4 w-4" />
               Print
             </Button>
             <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
+              <Download className="h-4 w-4" />
               Export
             </Button>
           </div>

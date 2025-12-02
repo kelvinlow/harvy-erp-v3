@@ -1,15 +1,15 @@
 import {
-  IconCamera,
+  IconUserBitcoin,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
+  IconTransfer,
+  IconDoorExit,
+  IconRuler2,
+  IconChartHistogram,
   IconPackages,
-  IconHelp,
+  IconTruckFilled,
   IconAd2,
-  IconReport,
-  IconSearch,
+  IconFilePercentFilled,
+  IconFileLambdaFilled,
   IconSettings,
   IconBuildingStore,
   IconBuildingWarehouse,
@@ -34,22 +34,22 @@ export const navigationConfig = {
     {
       name: 'Purchase Requisition',
       url: '/purchasing/purchase-requisition',
-      icon: IconAd2
+      icon: IconFilePercentFilled
     },
     {
       name: 'Purchase Order',
       url: '/purchasing/purchase-order',
-      icon: IconAd2
+      icon: IconFileLambdaFilled
     },
     {
       name: 'Delivery Order',
       url: '/purchasing/delivery-order',
-      icon: IconAd2
+      icon: IconTruckFilled
     },
     {
       name: 'Purchase Analytics',
       url: '/purchasing/purchase-analytics',
-      icon: IconAd2
+      icon: IconChartHistogram
     }
   ],
   navInventory: [
@@ -66,7 +66,7 @@ export const navigationConfig = {
     {
       name: 'UOM Master',
       url: '/inventory/uom',
-      icon: IconPackages
+      icon: IconRuler2
     },
     {
       name: 'Stock Balance',
@@ -91,17 +91,17 @@ export const navigationConfig = {
     {
       name: 'Suppliers',
       url: '/inventory/suppliers',
-      icon: IconBuildingStore
+      icon: IconUserBitcoin
     },
     {
       name: 'Gatepass',
       url: '/inventory/gatepass',
-      icon: IconAd2
+      icon: IconDoorExit
     },
     {
       name: 'Internal Transfer',
       url: '/inventory/internal-transfer',
-      icon: IconBuildingWarehouse
+      icon: IconTransfer
     }
   ],
   navMachine: [

@@ -6,19 +6,32 @@ import { format, isAfter } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import type { Machine } from '@/types/machine';
 
 interface MachineTableProps {
-  data: Machine[]
-  onEdit: (machine: Machine) => void
-  onDelete: (machine: Machine) => void
-  onPrintBarcode: (machine: Machine) => void
-  onViewDetails: (machine: Machine) => void
+  data: Machine[];
+  onEdit: (machine: Machine) => void;
+  onDelete: (machine: Machine) => void;
+  onPrintBarcode: (machine: Machine) => void;
+  onViewDetails: (machine: Machine) => void;
 }
 
-export function MachineTable({ data, onEdit, onDelete, onPrintBarcode, onViewDetails }: MachineTableProps) {
+export function MachineTable({
+  data,
+  onEdit,
+  onDelete,
+  onPrintBarcode,
+  onViewDetails
+}: MachineTableProps) {
   const [search, setSearch] = useState('');
 
   const filteredData = data.filter(
@@ -27,7 +40,8 @@ export function MachineTable({ data, onEdit, onDelete, onPrintBarcode, onViewDet
       machine.machineName.toLowerCase().includes(search.toLowerCase()) ||
       machine.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
       machine.location.toLowerCase().includes(search.toLowerCase()) ||
-      (machine.primaryContactName && machine.primaryContactName.toLowerCase().includes(search.toLowerCase())),
+      (machine.primaryContactName &&
+        machine.primaryContactName.toLowerCase().includes(search.toLowerCase()))
   );
 
   const getWarrantyStatus = (machine: Machine) => {
@@ -52,7 +66,7 @@ export function MachineTable({ data, onEdit, onDelete, onPrintBarcode, onViewDet
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-gray-50">
               <TableHead>Machine Code</TableHead>
               <TableHead>Machine Name</TableHead>
               <TableHead>Serial No</TableHead>
@@ -66,18 +80,29 @@ export function MachineTable({ data, onEdit, onDelete, onPrintBarcode, onViewDet
           <TableBody>
             {filteredData.map((machine) => (
               <TableRow key={machine.id}>
-                <TableCell className="font-medium">{machine.machineCode}</TableCell>
+                <TableCell className="font-medium">
+                  {machine.machineCode}
+                </TableCell>
                 <TableCell>{machine.machineName}</TableCell>
                 <TableCell>{machine.serialNumber}</TableCell>
                 <TableCell>{machine.location}</TableCell>
                 <TableCell>
                   {machine.warrantyEndDate ? (
                     <div className="flex flex-col">
-                      <Badge variant={getWarrantyStatus(machine) ? 'default' : 'destructive'} className="w-fit">
+                      <Badge
+                        variant={
+                          getWarrantyStatus(machine) ? 'default' : 'destructive'
+                        }
+                        className="w-fit"
+                      >
                         {getWarrantyStatus(machine) ? 'In Warranty' : 'Expired'}
                       </Badge>
                       <span className="text-xs text-muted-foreground mt-1">
-                        Until {format(new Date(machine.warrantyEndDate), 'dd MMM yyyy')}
+                        Until{' '}
+                        {format(
+                          new Date(machine.warrantyEndDate),
+                          'dd MMM yyyy'
+                        )}
                       </span>
                     </div>
                   ) : (
@@ -92,20 +117,42 @@ export function MachineTable({ data, onEdit, onDelete, onPrintBarcode, onViewDet
                   )}
                 </TableCell>
                 <TableCell>
-                  {machine.primaryContactName || <span className="text-muted-foreground">None</span>}
+                  {machine.primaryContactName || (
+                    <span className="text-muted-foreground">None</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => onViewDetails(machine)} title="View Details">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onViewDetails(machine)}
+                      title="View Details"
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => onEdit(machine)} title="Edit">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onEdit(machine)}
+                      title="Edit"
+                    >
                       <Edit2 className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => onDelete(machine)} title="Delete">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(machine)}
+                      title="Delete"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => onPrintBarcode(machine)} title="Print Barcode">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onPrintBarcode(machine)}
+                      title="Print Barcode"
+                    >
                       <Printer className="h-4 w-4" />
                     </Button>
                   </div>
@@ -118,4 +165,3 @@ export function MachineTable({ data, onEdit, onDelete, onPrintBarcode, onViewDet
     </div>
   );
 }
-

@@ -20,6 +20,7 @@ import {
 import type { TransferStatus } from '@/types/internal-transfer';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const statusOptions: { label: string; value: TransferStatus }[] = [
   { label: 'Draft', value: 'draft' },
@@ -37,57 +38,62 @@ export function InternalTransferList() {
   const [statusFilter, setStatusFilter] = useState<TransferStatus | ''>('');
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Internal Transfer
-        </h1>
-        <Button onClick={() => router.push('/internal-transfer/create')}>
-          <Plus className="w-4 h-4 mr-2" />
-          New Transfer
-        </Button>
-      </div>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Internal Transfer</CardTitle>
+          <Button
+            onClick={() => router.push('/inventory/internal-transfer/create')}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Transfer
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center gap-4">
+          <Input
+            placeholder="Search transfers..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-sm"
+          />
+          <Select
+            value={statusFilter}
+            onValueChange={(value: TransferStatus | '') =>
+              setStatusFilter(value)
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              {statusOptions.map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <div className="flex items-center gap-4">
-        <Input
-          placeholder="Search transfers..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
-        />
-        <Select
-          value={statusFilter}
-          onValueChange={(value: TransferStatus | '') => setStatusFilter(value)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            {statusOptions.map((status) => (
-              <SelectItem key={status.value} value={status.value}>
-                {status.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Request No.</TableHead>
-              <TableHead>From Company</TableHead>
-              <TableHead>To Company</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>{/* Add table rows here */}</TableBody>
-        </Table>
-      </div>
-    </div>
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Request No.</TableHead>
+                <TableHead>From Company</TableHead>
+                <TableHead>To Company</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>{/* Add table rows here */}</TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

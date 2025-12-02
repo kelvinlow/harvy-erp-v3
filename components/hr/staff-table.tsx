@@ -1,13 +1,39 @@
 'use client';
 
 import { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import type { Staff } from '@/types/staff';
-import { MoreHorizontal, Search, UserCog, UserMinus, UserPlus, KeyRound, Filter } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Search,
+  UserCog,
+  UserMinus,
+  UserPlus,
+  KeyRound,
+  Filter
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -15,24 +41,29 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
 
 interface StaffTableProps {
-  staff: Staff[]
-  onEdit: (staff: Staff) => void
-  onSuspend: (staffId: string) => void
-  onResetPassword: (staffId: string) => void
+  staff: Staff[];
+  onEdit: (staff: Staff) => void;
+  onSuspend: (staffId: string) => void;
+  onResetPassword: (staffId: string) => void;
 }
 
-export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffTableProps) {
+export function StaffTable({
+  staff,
+  onEdit,
+  onSuspend,
+  onResetPassword
+}: StaffTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [confirmAction, setConfirmAction] = useState<{
-    type: 'suspend' | 'reset' | null
-    staff: Staff | null
+    type: 'suspend' | 'reset' | null;
+    staff: Staff | null;
   }>({ type: null, staff: null });
 
   // Filter staff based on search term and filters
@@ -43,7 +74,8 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
       s.position.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || s.status === statusFilter;
-    const matchesDepartment = departmentFilter === 'all' || s.department === departmentFilter;
+    const matchesDepartment =
+      departmentFilter === 'all' || s.department === departmentFilter;
 
     return matchesSearch && matchesStatus && matchesDepartment;
   });
@@ -65,7 +97,11 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+          >
             <Filter className="h-4 w-4 mr-2" />
             Filters
           </Button>
@@ -90,7 +126,10 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
 
           <div className="space-y-2 flex-1">
             <label className="text-sm font-medium">Department</label>
-            <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+            <Select
+              value={departmentFilter}
+              onValueChange={setDepartmentFilter}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Filter by department" />
               </SelectTrigger>
@@ -110,7 +149,7 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-gray-50">
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead className="hidden md:table-cell">Position</TableHead>
@@ -122,19 +161,34 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
           <TableBody>
             {filteredStaff.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell
+                  colSpan={6}
+                  className="text-center py-8 text-muted-foreground"
+                >
                   No staff members found matching your filters
                 </TableCell>
               </TableRow>
             ) : (
               filteredStaff.map((staffMember) => (
                 <TableRow key={staffMember.id}>
-                  <TableCell className="font-medium">{staffMember.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {staffMember.name}
+                  </TableCell>
                   <TableCell>{staffMember.email}</TableCell>
-                  <TableCell className="hidden md:table-cell">{staffMember.position}</TableCell>
-                  <TableCell className="hidden md:table-cell">{staffMember.department}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {staffMember.position}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {staffMember.department}
+                  </TableCell>
                   <TableCell>
-                    <Badge variant={staffMember.status === 'active' ? 'success' : 'destructive'}>
+                    <Badge
+                      variant={
+                        staffMember.status === 'active'
+                          ? 'success'
+                          : 'destructive'
+                      }
+                    >
                       {staffMember.status === 'active' ? 'Active' : 'Suspended'}
                     </Badge>
                   </TableCell>
@@ -155,7 +209,7 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
                           onClick={() =>
                             setConfirmAction({
                               type: 'suspend',
-                              staff: staffMember,
+                              staff: staffMember
                             })
                           }
                         >
@@ -175,7 +229,7 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
                           onClick={() =>
                             setConfirmAction({
                               type: 'reset',
-                              staff: staffMember,
+                              staff: staffMember
                             })
                           }
                         >
@@ -193,7 +247,10 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
       </div>
 
       {/* Confirmation Dialog */}
-      <Dialog open={confirmAction.type !== null} onOpenChange={() => setConfirmAction({ type: null, staff: null })}>
+      <Dialog
+        open={confirmAction.type !== null}
+        onOpenChange={() => setConfirmAction({ type: null, staff: null })}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -215,22 +272,33 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
           {confirmAction.staff && (
             <div className="py-4">
               <p className="font-medium">{confirmAction.staff.name}</p>
-              <p className="text-sm text-muted-foreground">{confirmAction.staff.email}</p>
+              <p className="text-sm text-muted-foreground">
+                {confirmAction.staff.email}
+              </p>
             </div>
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmAction({ type: null, staff: null })}>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmAction({ type: null, staff: null })}
+            >
               Cancel
             </Button>
             <Button
               variant={
-                confirmAction.type === 'suspend' && confirmAction.staff?.status === 'active' ? 'destructive' : 'default'
+                confirmAction.type === 'suspend' &&
+                confirmAction.staff?.status === 'active'
+                  ? 'destructive'
+                  : 'default'
               }
               onClick={() => {
                 if (confirmAction.type === 'suspend' && confirmAction.staff) {
                   onSuspend(confirmAction.staff.id);
-                } else if (confirmAction.type === 'reset' && confirmAction.staff) {
+                } else if (
+                  confirmAction.type === 'reset' &&
+                  confirmAction.staff
+                ) {
                   onResetPassword(confirmAction.staff.id);
                 }
                 setConfirmAction({ type: null, staff: null });
@@ -248,4 +316,3 @@ export function StaffTable({ staff, onEdit, onSuspend, onResetPassword }: StaffT
     </div>
   );
 }
-

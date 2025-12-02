@@ -1,20 +1,40 @@
 'use client';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, Eye, ArrowUpDown, Calendar, Package, User } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  ArrowUpDown,
+  Calendar,
+  Package,
+  User
+} from 'lucide-react';
 import type { Gatepass, GatepassSortOptions } from '@/types/gatepass';
 import { formatDate } from '@/lib/utils';
 import StatusBadge from './status-badge';
 
 interface GatepassTableProps {
-  gatepasses: Gatepass[]
-  sortOptions: GatepassSortOptions
-  onSortChange: (field: keyof Gatepass | '') => void
-  onViewDetail: (gatepass: Gatepass) => void
+  gatepasses: Gatepass[];
+  sortOptions: GatepassSortOptions;
+  onSortChange: (field: keyof Gatepass | '') => void;
+  onViewDetail: (gatepass: Gatepass) => void;
 }
 
-export default function GatepassTable({ gatepasses, sortOptions, onSortChange, onViewDetail }: GatepassTableProps) {
+export default function GatepassTable({
+  gatepasses,
+  sortOptions,
+  onSortChange,
+  onViewDetail
+}: GatepassTableProps) {
   const renderSortIcon = (field: keyof Gatepass | '') => {
     if (sortOptions.field !== field) {
       return <ArrowUpDown className="ml-2 h-4 w-4" />;
@@ -31,7 +51,7 @@ export default function GatepassTable({ gatepasses, sortOptions, onSortChange, o
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-gray-50">
               <TableHead className="w-[100px]">
                 <Button
                   variant="ghost"
@@ -99,7 +119,9 @@ export default function GatepassTable({ gatepasses, sortOptions, onSortChange, o
             ) : (
               gatepasses.map((gatepass) => (
                 <TableRow key={gatepass.id}>
-                  <TableCell className="font-medium">{gatepass.requestNumber}</TableCell>
+                  <TableCell className="font-medium">
+                    {gatepass.requestNumber}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center">
                       <Package className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -118,7 +140,9 @@ export default function GatepassTable({ gatepasses, sortOptions, onSortChange, o
                       <User className="mr-2 h-4 w-4 text-muted-foreground" />
                       <div>
                         <div>{gatepass.requestor.name}</div>
-                        <div className="text-xs text-muted-foreground">{gatepass.requestor.department}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {gatepass.requestor.department}
+                        </div>
                       </div>
                     </div>
                   </TableCell>
@@ -126,7 +150,11 @@ export default function GatepassTable({ gatepasses, sortOptions, onSortChange, o
                     <StatusBadge status={gatepass.status} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" onClick={() => onViewDetail(gatepass)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onViewDetail(gatepass)}
+                    >
                       <Eye className="h-4 w-4 mr-2" />
                       View
                     </Button>
@@ -140,4 +168,3 @@ export default function GatepassTable({ gatepasses, sortOptions, onSortChange, o
     </div>
   );
 }
-

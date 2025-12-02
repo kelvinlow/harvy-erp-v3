@@ -8,18 +8,35 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 interface PurchaseRequisition {
-  id: string
-  prNumber: string
-  company: string
-  date: string
-  status: string
-  poNumber: string | null
+  id: string;
+  prNumber: string;
+  company: string;
+  date: string;
+  status: string;
+  poNumber: string | null;
 }
 
 // Mock data
@@ -30,7 +47,7 @@ const purchaseRequisitions: PurchaseRequisition[] = [
     company: 'HAVYS OIL MILL',
     date: '2024-01-10',
     status: 'Pending',
-    poNumber: null,
+    poNumber: null
   },
   {
     id: 'PR002',
@@ -38,7 +55,7 @@ const purchaseRequisitions: PurchaseRequisition[] = [
     company: 'GREEN PLANT',
     date: '2024-01-12',
     status: 'Approved',
-    poNumber: 'PO-2024-001',
+    poNumber: 'PO-2024-001'
   },
   {
     id: 'PR003',
@@ -46,7 +63,7 @@ const purchaseRequisitions: PurchaseRequisition[] = [
     company: 'HAVYS OIL MILL',
     date: '2024-01-15',
     status: 'Rejected',
-    poNumber: null,
+    poNumber: null
   },
   {
     id: 'PR004',
@@ -54,7 +71,7 @@ const purchaseRequisitions: PurchaseRequisition[] = [
     company: 'PARAMOUNT',
     date: '2024-01-18',
     status: 'Completed',
-    poNumber: 'PO-2024-002',
+    poNumber: 'PO-2024-002'
   },
   {
     id: 'PR005',
@@ -62,8 +79,8 @@ const purchaseRequisitions: PurchaseRequisition[] = [
     company: 'HAVYS OIL MILL',
     date: '2024-01-20',
     status: 'Manager Approval',
-    poNumber: null,
-  },
+    poNumber: null
+  }
 ];
 
 export function PurchaseRequisitionList() {
@@ -79,7 +96,9 @@ export function PurchaseRequisitionList() {
       pr.company.toLowerCase().includes(search.toLowerCase()) ||
       (pr.poNumber && pr.poNumber.toLowerCase().includes(search.toLowerCase()));
 
-    const matchesDate = !date || format(new Date(pr.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+    const matchesDate =
+      !date ||
+      format(new Date(pr.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
 
     const matchesStatus = !status || pr.status === status;
 
@@ -114,16 +133,18 @@ export function PurchaseRequisitionList() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-end">
           <div className="flex gap-2">
             <Button variant="outline">
-              <Printer className="mr-2 h-4 w-4" />
+              <Printer className="h-4 w-4" />
               Print
             </Button>
             <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
+              <Download className="h-4 w-4" />
               Export
             </Button>
-            <Button variant="destructive">
-              <Plus className="mr-2 h-4 w-4" />
-              Create
+            <Button className="flex items-center gap-2" asChild>
+              <Link href="/purchasing/purchase-requisition/create">
+                <Plus className="h-4 w-4" />
+                Create
+              </Link>
             </Button>
           </div>
         </div>
@@ -141,14 +162,22 @@ export function PurchaseRequisitionList() {
             <PopoverTrigger asChild>
               <Button
                 variant={'outline'}
-                className={cn('w-[240px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
+                className={cn(
+                  'w-[240px] justify-start text-left font-normal',
+                  !date && 'text-muted-foreground'
+                )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, 'PPP') : 'Pick a date'}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
             </PopoverContent>
           </Popover>
           <Select value={status} onValueChange={setStatus}>
@@ -193,12 +222,14 @@ export function PurchaseRequisitionList() {
                 <TableRow key={pr.id}>
                   <TableCell>{pr.prNumber}</TableCell>
                   <TableCell>{pr.company}</TableCell>
-                  <TableCell>{format(new Date(pr.date), 'dd MMM yyyy')}</TableCell>
+                  <TableCell>
+                    {format(new Date(pr.date), 'dd MMM yyyy')}
+                  </TableCell>
                   <TableCell>
                     <span
                       className={cn(
                         'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                        getStatusColor(pr.status),
+                        getStatusColor(pr.status)
                       )}
                     >
                       {pr.status}
@@ -206,7 +237,10 @@ export function PurchaseRequisitionList() {
                   </TableCell>
                   <TableCell>
                     {pr.poNumber ? (
-                      <Link href={`/purchase-order/${pr.poNumber}`} className="text-primary hover:underline">
+                      <Link
+                        href={`/purchase-order/${pr.poNumber}`}
+                        className="text-primary hover:underline"
+                      >
                         {pr.poNumber}
                       </Link>
                     ) : (
@@ -215,7 +249,9 @@ export function PurchaseRequisitionList() {
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/purchase-requisition/${pr.id}`}>View Details</Link>
+                      <Link href={`/purchase-requisition/${pr.id}`}>
+                        View Details
+                      </Link>
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -234,4 +270,3 @@ export function PurchaseRequisitionList() {
     </Card>
   );
 }
-

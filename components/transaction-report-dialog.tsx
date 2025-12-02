@@ -8,30 +8,58 @@ import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { useToast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
 import type { TransactionData } from '@/app/api/daily-transaction/route';
 
 interface TransactionReportFormValues {
-  fromDate: Date
-  toDate: Date
-  stockCode: string
-  transactionNo: string
-  sorting: string
+  fromDate: Date;
+  toDate: Date;
+  stockCode: string;
+  transactionNo: string;
+  sorting: string;
 }
 
 export function TransactionReportDialog({
   open,
-  onOpenChange,
+  onOpenChange
 }: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   const { toast } = useToast();
   const form = useForm<TransactionReportFormValues>({
@@ -40,8 +68,8 @@ export function TransactionReportDialog({
       toDate: new Date(),
       stockCode: '',
       transactionNo: '',
-      sorting: 'SIC No',
-    },
+      sorting: 'SIC No'
+    }
   });
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -53,7 +81,7 @@ export function TransactionReportDialog({
         toDate: values.toDate.toISOString(),
         sorting: values.sorting,
         ...(values.stockCode && { stockCode: values.stockCode }),
-        ...(values.transactionNo && { transactionNo: values.transactionNo }),
+        ...(values.transactionNo && { transactionNo: values.transactionNo })
       });
 
       const response = await fetch(`/api/daily-transaction?${params}`);
@@ -63,7 +91,7 @@ export function TransactionReportDialog({
       const json = await response.json();
       return json.data as TransactionData[];
     },
-    enabled: open,
+    enabled: open
   });
 
   React.useEffect(() => {
@@ -71,7 +99,7 @@ export function TransactionReportDialog({
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to fetch transaction data',
+        description: 'Failed to fetch transaction data'
       });
     }
   }, [error, toast]);
@@ -83,7 +111,16 @@ export function TransactionReportDialog({
   const handleExport = () => {
     if (!data) return;
 
-    const headers = ['Date', 'Stock Code', 'Description', 'Quantity', 'SIC No', 'Receipt By', 'Machine', 'Station'];
+    const headers = [
+      'Date',
+      'Stock Code',
+      'Description',
+      'Quantity',
+      'SIC No',
+      'Receipt By',
+      'Machine',
+      'Station'
+    ];
 
     const csvData = [
       headers.join(','),
@@ -96,9 +133,9 @@ export function TransactionReportDialog({
           item.sicNo,
           item.receiptBy,
           `"${item.machine}"`,
-          item.station,
-        ].join(','),
-      ),
+          item.station
+        ].join(',')
+      )
     ].join('\n');
 
     const blob = new Blob([csvData], { type: 'text/csv' });
@@ -123,7 +160,9 @@ export function TransactionReportDialog({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <h4 className="mb-4 text-sm font-medium">Please Select Date</h4>
+                  <h4 className="mb-4 text-sm font-medium">
+                    Please Select Date
+                  </h4>
                   <div className="grid gap-4">
                     <FormField
                       control={form.control}
@@ -138,16 +177,28 @@ export function TransactionReportDialog({
                                   variant={'outline'}
                                   className={cn(
                                     'w-full pl-3 text-left font-normal',
-                                    !field.value && 'text-muted-foreground',
+                                    !field.value && 'text-muted-foreground'
                                   )}
                                 >
-                                  {field.value ? format(field.value, 'dd MMM yyyy') : <span>Pick a date</span>}
+                                  {field.value ? (
+                                    format(field.value, 'dd MMM yyyy')
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                initialFocus
+                              />
                             </PopoverContent>
                           </Popover>
                         </FormItem>
@@ -166,16 +217,28 @@ export function TransactionReportDialog({
                                   variant={'outline'}
                                   className={cn(
                                     'w-full pl-3 text-left font-normal',
-                                    !field.value && 'text-muted-foreground',
+                                    !field.value && 'text-muted-foreground'
                                   )}
                                 >
-                                  {field.value ? format(field.value, 'dd MMM yyyy') : <span>Pick a date</span>}
+                                  {field.value ? (
+                                    format(field.value, 'dd MMM yyyy')
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                initialFocus
+                              />
                             </PopoverContent>
                           </Popover>
                         </FormItem>
@@ -185,7 +248,9 @@ export function TransactionReportDialog({
                 </div>
 
                 <div>
-                  <h4 className="mb-4 text-sm font-medium">Please Select Stock Code</h4>
+                  <h4 className="mb-4 text-sm font-medium">
+                    Please Select Stock Code
+                  </h4>
                   <FormField
                     control={form.control}
                     name="stockCode"
@@ -206,7 +271,9 @@ export function TransactionReportDialog({
                 </div>
 
                 <div>
-                  <h4 className="mb-4 text-sm font-medium">Please Select Transaction</h4>
+                  <h4 className="mb-4 text-sm font-medium">
+                    Please Select Transaction
+                  </h4>
                   <FormField
                     control={form.control}
                     name="transactionNo"
@@ -227,7 +294,10 @@ export function TransactionReportDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sorting:</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select sorting" />
@@ -262,7 +332,7 @@ export function TransactionReportDialog({
                 <div className="rounded-md border">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="bg-gray-50">
                         <TableHead>Date</TableHead>
                         <TableHead>Stock Code</TableHead>
                         <TableHead>Description</TableHead>
@@ -283,10 +353,14 @@ export function TransactionReportDialog({
                       ) : data && data.length > 0 ? (
                         data.map((item, index) => (
                           <TableRow key={index}>
-                            <TableCell>{format(new Date(item.date), 'dd-MMM-yyyy')}</TableCell>
+                            <TableCell>
+                              {format(new Date(item.date), 'dd-MMM-yyyy')}
+                            </TableCell>
                             <TableCell>{item.stockCode}</TableCell>
                             <TableCell>{item.description}</TableCell>
-                            <TableCell className="text-right">{item.quantity}</TableCell>
+                            <TableCell className="text-right">
+                              {item.quantity}
+                            </TableCell>
                             <TableCell>{item.sicNo}</TableCell>
                             <TableCell>{item.receiptBy}</TableCell>
                             <TableCell>{item.machine}</TableCell>
@@ -318,4 +392,3 @@ export function TransactionReportDialog({
     </Dialog>
   );
 }
-

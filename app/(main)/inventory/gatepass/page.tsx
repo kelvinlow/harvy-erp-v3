@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import GatepassManagement from '@/components/gatepass/gatepass-management';
+import GatepassManagement from '@/components/inventory/gatepass/gatepass-management';
 import {
   Card,
   CardContent,

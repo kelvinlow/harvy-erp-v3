@@ -1,4 +1,4 @@
-import PurchaseAnalyticsView from '@/components/purchase-analytics/purchase-analytics-view';
+import PurchaseAnalyticsView from '@/components/purchasing/purchase-analytics/purchase-analytics-view';
 
 export default function PurchaseAnalyticsPage() {
   return (

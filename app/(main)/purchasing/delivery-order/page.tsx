@@ -1,4 +1,4 @@
-import { DeliveryOrdersPage } from '@/components/delivery-orders/delivery-orders-page';
+import { DeliveryOrdersPage } from '@/components/purchasing/delivery-orders/delivery-orders-page';
 
 import type { Metadata } from 'next';
 export const metadata: Metadata = { title: 'Delivery Order - Harvy' };

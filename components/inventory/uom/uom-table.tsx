@@ -5,33 +5,49 @@ import { Edit2, Search, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import type { UOM } from '@/types/uom';
 
 interface UOMTableProps {
-  data: UOM[]
-  onEdit: (uom: UOM) => void
-  onDelete: (uom: UOM) => void
-  onDeleteRelationship: (uomId: string, relationshipId: string) => void
+  data: UOM[];
+  onEdit: (uom: UOM) => void;
+  onDelete: (uom: UOM) => void;
+  onDeleteRelationship: (uomId: string, relationshipId: string) => void;
 }
 
-export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTableProps) {
+export function UOMTable({
+  data,
+  onEdit,
+  onDelete,
+  onDeleteRelationship
+}: UOMTableProps) {
   const [search, setSearch] = useState('');
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
   const toggleRow = (id: string) => {
     setExpandedRows((prev) => ({
       ...prev,
-      [id]: !prev[id],
+      [id]: !prev[id]
     }));
   };
 
   const filteredData = data.filter(
     (uom) =>
       uom.code.toLowerCase().includes(search.toLowerCase()) ||
-      uom.description.toLowerCase().includes(search.toLowerCase()),
+      uom.description.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -51,7 +67,7 @@ export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTa
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-gray-50">
               <TableHead className="w-[40px]"></TableHead>
               <TableHead>UOM Code</TableHead>
               <TableHead>Description</TableHead>
@@ -61,12 +77,21 @@ export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTa
           </TableHeader>
           <TableBody>
             {filteredData.map((uom) => (
-              <Collapsible key={uom.id} open={expandedRows[uom.id]} onOpenChange={() => toggleRow(uom.id)} asChild>
+              <Collapsible
+                key={uom.id}
+                open={expandedRows[uom.id]}
+                onOpenChange={() => toggleRow(uom.id)}
+                asChild
+              >
                 <>
                   <TableRow className="cursor-pointer hover:bg-muted/50">
                     <TableCell>
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                        >
                           {expandedRows[uom.id] ? (
                             <ChevronDown className="h-4 w-4" />
                           ) : (
@@ -82,21 +107,36 @@ export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTa
                       {uom.relationships && uom.relationships.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {uom.relationships.map((rel) => (
-                            <Badge key={rel.id} variant="outline" className="text-xs">
-                              1 {uom.code} = {rel.conversionRate} {rel.toUOMCode}
+                            <Badge
+                              key={rel.id}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              1 {uom.code} = {rel.conversionRate}{' '}
+                              {rel.toUOMCode}
                             </Badge>
                           ))}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground text-sm">No relationships</span>
+                        <span className="text-muted-foreground text-sm">
+                          No relationships
+                        </span>
                       )}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => onEdit(uom)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onEdit(uom)}
+                        >
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => onDelete(uom)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onDelete(uom)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -107,14 +147,18 @@ export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTa
                       <TableRow className="bg-muted/30">
                         <TableCell colSpan={5} className="p-0">
                           <div className="px-4 py-3">
-                            <h4 className="mb-2 text-sm font-medium">UOM Relationships</h4>
+                            <h4 className="mb-2 text-sm font-medium">
+                              UOM Relationships
+                            </h4>
                             <Table>
                               <TableHeader>
                                 <TableRow>
                                   <TableHead>From</TableHead>
                                   <TableHead>To</TableHead>
                                   <TableHead>Conversion Rate</TableHead>
-                                  <TableHead className="w-[80px]">Actions</TableHead>
+                                  <TableHead className="w-[80px]">
+                                    Actions
+                                  </TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
@@ -123,7 +167,8 @@ export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTa
                                     <TableCell>{rel.fromUOMCode}</TableCell>
                                     <TableCell>{rel.toUOMCode}</TableCell>
                                     <TableCell>
-                                      1 {rel.fromUOMCode} = {rel.conversionRate} {rel.toUOMCode}
+                                      1 {rel.fromUOMCode} = {rel.conversionRate}{' '}
+                                      {rel.toUOMCode}
                                     </TableCell>
                                     <TableCell>
                                       <Button
@@ -155,4 +200,3 @@ export function UOMTable({ data, onEdit, onDelete, onDeleteRelationship }: UOMTa
     </div>
   );
 }
-

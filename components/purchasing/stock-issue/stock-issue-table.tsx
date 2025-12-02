@@ -1,12 +1,19 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Trash2 } from 'lucide-react';
 
 interface StockIssueTableProps {
-  items: any[]
-  onRemove: (id: number) => void
+  items: any[];
+  onRemove: (id: number) => void;
 }
 
 export function StockIssueTable({ items, onRemove }: StockIssueTableProps) {
@@ -14,7 +21,7 @@ export function StockIssueTable({ items, onRemove }: StockIssueTableProps) {
     <div className="border rounded-md">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-gray-50">
             <TableHead>Stock Code</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Quantity</TableHead>
@@ -31,7 +38,11 @@ export function StockIssueTable({ items, onRemove }: StockIssueTableProps) {
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>{item.uom}</TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="icon" onClick={() => onRemove(item.id)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onRemove(item.id)}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>
@@ -39,7 +50,10 @@ export function StockIssueTable({ items, onRemove }: StockIssueTableProps) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
+              <TableCell
+                colSpan={5}
+                className="text-center py-4 text-muted-foreground"
+              >
                 No items added yet
               </TableCell>
             </TableRow>
@@ -49,4 +63,3 @@ export function StockIssueTable({ items, onRemove }: StockIssueTableProps) {
     </div>
   );
 }
-

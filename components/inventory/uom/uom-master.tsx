@@ -355,7 +355,7 @@ export function UOMMaster() {
 
   const handleDeleteRelationshipConfirm = async () => {
     if (relationshipToDelete) {
-      // In a real app, you would call an API here
+      // Todo: Call an API here
       setUoms(
         uoms.map((uom) => {
           if (uom.id === relationshipToDelete.uomId) {
