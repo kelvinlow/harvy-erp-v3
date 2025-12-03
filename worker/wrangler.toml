@@ -1,0 +1,30 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "harvy-erp-api"
+main = "src/index.ts"
+compatibility_date = "2025-12-03"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "harvy-erp-db"
+database_id = "a2805b91-3139-4d25-b5a1-3b47a565aab3"
+
+# R2 Bucket Binding
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "harvy-erp-bucket"
+
+# Environment Variables (optional)
+[vars]
+ENVIRONMENT = "development"
+
+# Local development settings
+[env.development]
+[env.development.vars]
+ENVIRONMENT = "development"
+
+# Production settings
+[env.production]
+[env.production.vars]
+ENVIRONMENT = "production"

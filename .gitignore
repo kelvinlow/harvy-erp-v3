@@ -67,3 +67,7 @@ Thumbs.db
 
 # Turborepo
 .turbo
+
+# Wrangler / Miniflare local state
+worker/.wrangler/state/
+worker/migrations/meta/*

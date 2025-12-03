@@ -11,15 +11,14 @@ import {
   IconFilePercentFilled,
   IconFileLambdaFilled,
   IconSettings,
-  IconBuildingStore,
   IconBuildingWarehouse,
   IconBuildingFactory2
 } from '@tabler/icons-react';
 
 export const navigationConfig = {
   user: {
-    name: 'Kelvin Low',
-    email: 'kelvin.low@harvy.com.my',
+    name: 'Jordan Lim',
+    email: 'jordan@harvy.com.my',
     avatar: '/avatars/shadcn.jpg'
   },
   // Main Sidebar Navigation
