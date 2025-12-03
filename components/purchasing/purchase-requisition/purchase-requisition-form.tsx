@@ -200,7 +200,9 @@ export function PurchaseRequisitionForm() {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={new Date(field.value)}
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
                           onSelect={(date) =>
                             field.onChange(format(date!, 'yyyy-MM-dd'))
                           }

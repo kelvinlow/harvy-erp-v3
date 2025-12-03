@@ -8,17 +8,18 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog';
+import { buttonVariants } from '@/components/ui/button';
 
 interface DeleteConfirmationProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onConfirm: () => void
-  title?: string
-  description?: string
-  confirmText?: string
-  cancelText?: string
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+  title?: string;
+  description?: string;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 export function DeleteConfirmation({
@@ -28,7 +29,7 @@ export function DeleteConfirmation({
   title = 'Delete Confirmation',
   description = 'Are you sure you want to delete this item? This action cannot be undone.',
   confirmText = 'Delete',
-  cancelText = 'Cancel',
+  cancelText = 'Cancel'
 }: DeleteConfirmationProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -39,7 +40,10 @@ export function DeleteConfirmation({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={onConfirm}>
+          <AlertDialogAction
+            className={buttonVariants({ variant: 'destructive' })}
+            onClick={onConfirm}
+          >
             {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -47,4 +51,3 @@ export function DeleteConfirmation({
     </AlertDialog>
   );
 }
-

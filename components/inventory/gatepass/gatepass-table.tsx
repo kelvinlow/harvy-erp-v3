@@ -27,13 +27,15 @@ interface GatepassTableProps {
   sortOptions: GatepassSortOptions;
   onSortChange: (field: keyof Gatepass | '') => void;
   onViewDetail: (gatepass: Gatepass) => void;
+  onUpdateStatus: (gatepass: Gatepass) => void;
 }
 
 export default function GatepassTable({
   gatepasses,
   sortOptions,
   onSortChange,
-  onViewDetail
+  onViewDetail,
+  onUpdateStatus
 }: GatepassTableProps) {
   const renderSortIcon = (field: keyof Gatepass | '') => {
     if (sortOptions.field !== field) {

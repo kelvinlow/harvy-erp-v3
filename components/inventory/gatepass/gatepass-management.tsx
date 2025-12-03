@@ -11,7 +11,7 @@ import type {
   GatepassSortOptions,
   GatepassStatus,
   GatepassType,
-  GatepassImage,
+  GatepassImage
 } from '@/types/gatepass';
 import GatepassTable from './gatepass-table';
 import GatepassCards from './gatepass-cards';
@@ -25,7 +25,9 @@ export default function GatepassManagement() {
   const [gatepasses, setGatepasses] = useState<Gatepass[]>([]);
   const [filteredGatepasses, setFilteredGatepasses] = useState<Gatepass[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedGatepass, setSelectedGatepass] = useState<Gatepass | null>(null);
+  const [selectedGatepass, setSelectedGatepass] = useState<Gatepass | null>(
+    null
+  );
   const [showDetail, setShowDetail] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showStatusUpdate, setShowStatusUpdate] = useState(false);
@@ -38,14 +40,14 @@ export default function GatepassManagement() {
     itemType: 'All',
     dateRange: {
       from: null,
-      to: null,
+      to: null
     },
-    requestor: '',
+    requestor: ''
   });
 
   const [sortOptions, setSortOptions] = useState<GatepassSortOptions>({
     field: 'requestDate',
-    direction: 'desc',
+    direction: 'desc'
   });
 
   // Load gatepass data
@@ -72,7 +74,7 @@ export default function GatepassManagement() {
           gp.requestNumber.toLowerCase().includes(searchTerm) ||
           gp.itemName.toLowerCase().includes(searchTerm) ||
           gp.requestor.name.toLowerCase().includes(searchTerm) ||
-          gp.destination.toLowerCase().includes(searchTerm),
+          gp.destination.toLowerCase().includes(searchTerm)
       );
     }
 
@@ -99,7 +101,11 @@ export default function GatepassManagement() {
 
     // Apply requestor filter
     if (filterOptions.requestor) {
-      result = result.filter((gp) => gp.requestor.name.toLowerCase().includes(filterOptions.requestor.toLowerCase()));
+      result = result.filter((gp) =>
+        gp.requestor.name
+          .toLowerCase()
+          .includes(filterOptions.requestor.toLowerCase())
+      );
     }
 
     // Apply sorting
@@ -136,7 +142,8 @@ export default function GatepassManagement() {
   const handleSortChange = (field: keyof Gatepass | '') => {
     setSortOptions((prev) => ({
       field,
-      direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc',
+      direction:
+        prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc'
     }));
   };
 
@@ -171,7 +178,11 @@ export default function GatepassManagement() {
     if (formMode === 'create') {
       // Generate a new ID and request number
       const newId = `gp-${gatepasses.length + 1}`;
-      const newRequestNumber = `GP-${new Date().getFullYear()}-${(gatepasses.length + 1).toString().padStart(4, '0')}`;
+      const newRequestNumber = `GP-${new Date().getFullYear()}-${(
+        gatepasses.length + 1
+      )
+        .toString()
+        .padStart(4, '0')}`;
 
       // Create a new gatepass
       const newGatepass: Gatepass = {
@@ -182,13 +193,13 @@ export default function GatepassManagement() {
         itemType: (data.itemType as GatepassType) || 'Item',
         quantity: data.quantity || 1,
         requestDate: data.requestDate || new Date().toISOString(),
-        expectedReturnDate: data.expectedReturnDate,
+        expectedReturnDate: data.expectedReturnDate ?? null,
         actualReturnDate: null,
         requestor: {
           id: 'req1',
           name: 'Current User',
           department: 'Current Department',
-          contactNumber: '555-1234',
+          contactNumber: '555-1234'
         },
         approver: null,
         status: 'Pending Approval',
@@ -200,31 +211,35 @@ export default function GatepassManagement() {
           {
             id: `img-initial-${Math.random().toString(36).substring(2, 11)}`,
             status: 'Pending Approval',
-            imageUrl: '/placeholder.svg?height=800&width=800&text=Initial+Status',
-            thumbnailUrl: '/placeholder.svg?height=200&width=200&text=Initial+Status',
+            imageUrl:
+              '/placeholder.svg?height=800&width=800&text=Initial+Status',
+            thumbnailUrl:
+              '/placeholder.svg?height=200&width=200&text=Initial+Status',
             uploadDate: new Date().toISOString(),
-            description: 'Initial condition of the item',
-          },
+            description: 'Initial condition of the item'
+          }
         ],
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       setGatepasses((prev) => [newGatepass, ...prev]);
       toast({
         title: 'Gatepass Created',
-        description: `Gatepass ${newRequestNumber} has been created successfully.`,
+        description: `Gatepass ${newRequestNumber} has been created successfully.`
       });
     } else if (formMode === 'update' && selectedGatepass) {
       // Update existing gatepass
       const updatedGatepasses = gatepasses.map((gp) =>
-        gp.id === selectedGatepass.id ? { ...gp, ...data, updatedAt: new Date().toISOString() } : gp,
+        gp.id === selectedGatepass.id
+          ? { ...gp, ...data, updatedAt: new Date().toISOString() }
+          : gp
       );
 
       setGatepasses(updatedGatepasses);
       toast({
         title: 'Gatepass Updated',
-        description: `Gatepass ${selectedGatepass.requestNumber} has been updated successfully.`,
+        description: `Gatepass ${selectedGatepass.requestNumber} has been updated successfully.`
       });
     }
 
@@ -232,10 +247,10 @@ export default function GatepassManagement() {
   };
 
   const handleStatusUpdateSubmit = (data: {
-    status: GatepassStatus
-    notes: string
-    returnDate?: string
-    images: File[]
+    status: GatepassStatus;
+    notes: string;
+    returnDate?: string;
+    images: File[];
   }) => {
     if (!selectedGatepass) return;
 
@@ -246,12 +261,15 @@ export default function GatepassManagement() {
       // In a real app, we would upload the image and get a URL
       // For this mock, we'll use a placeholder
       const newImage: GatepassImage = {
-        id: `img-${data.status.toLowerCase()}-${Math.random().toString(36).substring(2, 11)}`,
+        id: `img-${data.status.toLowerCase()}-${Math.random()
+          .toString(36)
+          .substring(2, 11)}`,
         status: data.status,
         imageUrl: `/placeholder.svg?height=800&width=800&text=${data.status}+Status`,
         thumbnailUrl: `/placeholder.svg?height=200&width=200&text=${data.status}+Status`,
         uploadDate: new Date().toISOString(),
-        description: data.notes || `Item condition when ${data.status.toLowerCase()}`,
+        description:
+          data.notes || `Item condition when ${data.status.toLowerCase()}`
       };
 
       newStatusImages.push(newImage);
@@ -265,19 +283,23 @@ export default function GatepassManagement() {
         data.status === 'Returned' || data.status === 'Replaced'
           ? data.returnDate || new Date().toISOString()
           : selectedGatepass.actualReturnDate,
-      notes: data.notes ? `${selectedGatepass.notes}\n\n${data.notes}` : selectedGatepass.notes,
+      notes: data.notes
+        ? `${selectedGatepass.notes}\n\n${data.notes}`
+        : selectedGatepass.notes,
       statusImages: newStatusImages,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
-    const updatedGatepasses = gatepasses.map((gp) => (gp.id === selectedGatepass.id ? updatedGatepass : gp));
+    const updatedGatepasses = gatepasses.map((gp) =>
+      gp.id === selectedGatepass.id ? updatedGatepass : gp
+    );
 
     setGatepasses(updatedGatepasses);
     setShowStatusUpdate(false);
 
     toast({
       title: 'Status Updated',
-      description: `Gatepass ${selectedGatepass.requestNumber} status changed to ${data.status}.`,
+      description: `Gatepass ${selectedGatepass.requestNumber} status changed to ${data.status}.`
     });
   };
 
@@ -288,7 +310,10 @@ export default function GatepassManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <GatepassFilters filterOptions={filterOptions} onFilterChange={handleFilterChange} />
+        <GatepassFilters
+          filterOptions={filterOptions}
+          onFilterChange={handleFilterChange}
+        />
 
         <Button onClick={handleCreateGatepass}>
           <Plus className="h-4 w-4 mr-2" />
@@ -321,7 +346,12 @@ export default function GatepassManagement() {
         </TabsContent>
       </Tabs>
 
-      {showDetail && selectedGatepass && <GatepassDetail gatepass={selectedGatepass} onClose={handleCloseDetail} />}
+      {showDetail && selectedGatepass && (
+        <GatepassDetail
+          gatepass={selectedGatepass}
+          onClose={handleCloseDetail}
+        />
+      )}
 
       {showForm && (
         <GatepassForm
@@ -344,4 +374,3 @@ export default function GatepassManagement() {
     </div>
   );
 }
-

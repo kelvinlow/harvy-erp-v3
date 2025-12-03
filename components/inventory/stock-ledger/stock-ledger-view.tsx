@@ -8,7 +8,11 @@ import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { StockLedgerCard } from './stock-ledger-card';
 import type { StockItem } from '@/types/stock-ledger';
@@ -20,7 +24,7 @@ const stockItems: StockItem[] = [
     description: 'LIFT CYLINDER PUMP SEAL KIT',
     openingBalance: {
       quantity: 0,
-      amount: 0,
+      amount: 0
     },
     transactions: [
       {
@@ -30,16 +34,16 @@ const stockItems: StockItem[] = [
         quantityIn: 2,
         quantityOut: 0,
         amountIn: 430,
-        amountOut: 0,
-      },
-    ],
+        amountOut: 0
+      }
+    ]
   },
   {
     code: 'AW0076',
     description: 'SWING ARM',
     openingBalance: {
       quantity: 2,
-      amount: 164.59,
+      amount: 164.59
     },
     transactions: [
       {
@@ -49,16 +53,16 @@ const stockItems: StockItem[] = [
         quantityIn: 1,
         quantityOut: 0,
         amountIn: 75,
-        amountOut: 0,
-      },
-    ],
+        amountOut: 0
+      }
+    ]
   },
   {
     code: 'AW0145',
     description: 'SEAT COVER',
     openingBalance: {
       quantity: 13,
-      amount: 139.37,
+      amount: 139.37
     },
     transactions: [
       {
@@ -68,10 +72,10 @@ const stockItems: StockItem[] = [
         quantityIn: 1,
         quantityOut: 0,
         amountIn: 9,
-        amountOut: 0,
-      },
-    ],
-  },
+        amountOut: 0
+      }
+    ]
+  }
 ];
 
 export function StockLedgerView() {
@@ -80,13 +84,13 @@ export function StockLedgerView() {
   const componentRef = React.useRef(null);
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef: componentRef
   });
 
   const filteredItems = stockItems.filter(
     (item) =>
       item.code.toLowerCase().includes(search.toLowerCase()) ||
-      item.description.toLowerCase().includes(search.toLowerCase()),
+      item.description.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -108,14 +112,22 @@ export function StockLedgerView() {
               <PopoverTrigger asChild>
                 <Button
                   variant={'outline'}
-                  className={cn('w-[240px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
+                  className={cn(
+                    'w-[240px] justify-start text-left font-normal',
+                    !date && 'text-muted-foreground'
+                  )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, 'MMMM yyyy') : 'Select month'}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar mode="single" selected={date} onSelect={(date) => date && setDate(date)} initialFocus />
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(date) => date && setDate(date)}
+                  initialFocus
+                />
               </PopoverContent>
             </Popover>
             <div className="relative flex-1">
@@ -129,7 +141,11 @@ export function StockLedgerView() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={handlePrint} className="w-[100px]">
+            <Button
+              variant="outline"
+              onClick={handlePrint}
+              className="w-[100px]"
+            >
               <Printer className="mr-2 h-4 w-4" />
               Print
             </Button>
@@ -145,11 +161,16 @@ export function StockLedgerView() {
           {/* Print Header */}
           <div className="hidden space-y-1 print:mb-6 print:block print:text-center">
             <h1 className="text-xl font-bold">HAVYS OIL MILL SDN. BHD.</h1>
-            <p className="text-sm">O PARAMOUNT ESTATE, KM 31 JALAN BAHAU-KERATONG,</p>
-            <p className="text-sm">KARUNG BERKUNCI NO.4, POS MALAYSIA, BAHAU, 72100 NEGERI SEMBILAN</p>
+            <p className="text-sm">
+              O PARAMOUNT ESTATE, KM 31 JALAN BAHAU-KERATONG,
+            </p>
+            <p className="text-sm">
+              KARUNG BERKUNCI NO.4, POS MALAYSIA, BAHAU, 72100 NEGERI SEMBILAN
+            </p>
             <p className="text-sm">TEL: 012-6367717 FAX: 06-4665357</p>
             <h2 className="mt-4 text-lg font-semibold">
-              STOCK LEDGER CARD FOR THE MONTH OF {format(date, 'MMMM yyyy').toUpperCase()}
+              STOCK LEDGER CARD FOR THE MONTH OF{' '}
+              {format(date, 'MMMM yyyy').toUpperCase()}
             </h2>
           </div>
 
@@ -164,4 +185,3 @@ export function StockLedgerView() {
     </div>
   );
 }
-

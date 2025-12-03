@@ -130,7 +130,10 @@ export function SupplierDetail({
       <div className="flex flex-col md:flex-row justify-between gap-4">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={supplier.logoUrl} alt={supplier.name} />
+            <AvatarImage
+              src={supplier.logoUrl ?? undefined}
+              alt={supplier.name}
+            />
             <AvatarFallback>{getInitials(supplier.name)}</AvatarFallback>
           </Avatar>
           <div>

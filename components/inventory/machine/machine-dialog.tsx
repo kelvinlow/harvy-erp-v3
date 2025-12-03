@@ -8,22 +8,44 @@ import { CalendarIcon, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ImageUpload } from './image-upload';
 import type { Machine } from '@/types/machine';
 
 interface MachineDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  machine?: Machine | null
-  onSubmit: (data: Partial<Machine>) => Promise<void>
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  machine?: Machine | null;
+  onSubmit: (data: Partial<Machine>) => Promise<void>;
 }
 
-export function MachineDialog({ open, onOpenChange, machine, onSubmit }: MachineDialogProps) {
+export function MachineDialog({
+  open,
+  onOpenChange,
+  machine,
+  onSubmit
+}: MachineDialogProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState('basic');
 
@@ -37,17 +59,25 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
       processCode: machine?.processCode || '',
 
       // New fields
-      warrantyStartDate: machine?.warrantyStartDate || format(new Date(), 'yyyy-MM-dd'),
+      warrantyStartDate:
+        machine?.warrantyStartDate || format(new Date(), 'yyyy-MM-dd'),
       warrantyEndDate:
         machine?.warrantyEndDate ||
-        format(new Date(new Date().setFullYear(new Date().getFullYear() + 1)), 'yyyy-MM-dd'),
+        format(
+          new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+          'yyyy-MM-dd'
+        ),
       imageUrl: machine?.imageUrl || '',
       primaryContactName: machine?.primaryContactName || '',
       primaryContactEmail: machine?.primaryContactEmail || '',
       primaryContactPhone: machine?.primaryContactPhone || '',
       nextServiceDate:
-        machine?.nextServiceDate || format(new Date(new Date().setMonth(new Date().getMonth() + 3)), 'yyyy-MM-dd'),
-    },
+        machine?.nextServiceDate ||
+        format(
+          new Date(new Date().setMonth(new Date().getMonth() + 3)),
+          'yyyy-MM-dd'
+        )
+    }
   });
 
   React.useEffect(() => {
@@ -61,16 +91,24 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
         processCode: machine?.processCode || '',
 
         // New fields
-        warrantyStartDate: machine?.warrantyStartDate || format(new Date(), 'yyyy-MM-dd'),
+        warrantyStartDate:
+          machine?.warrantyStartDate || format(new Date(), 'yyyy-MM-dd'),
         warrantyEndDate:
           machine?.warrantyEndDate ||
-          format(new Date(new Date().setFullYear(new Date().getFullYear() + 1)), 'yyyy-MM-dd'),
+          format(
+            new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+            'yyyy-MM-dd'
+          ),
         imageUrl: machine?.imageUrl || '',
         primaryContactName: machine?.primaryContactName || '',
         primaryContactEmail: machine?.primaryContactEmail || '',
         primaryContactPhone: machine?.primaryContactPhone || '',
         nextServiceDate:
-          machine?.nextServiceDate || format(new Date(new Date().setMonth(new Date().getMonth() + 3)), 'yyyy-MM-dd'),
+          machine?.nextServiceDate ||
+          format(
+            new Date(new Date().setMonth(new Date().getMonth() + 3)),
+            'yyyy-MM-dd'
+          )
       });
       setActiveTab('basic');
     }
@@ -92,7 +130,8 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
         <DialogHeader>
           <DialogTitle>{machine ? 'Edit Machine' : 'New Machine'}</DialogTitle>
           <DialogDescription>
-            Enter the machine details. Use the tabs to navigate between different sections.
+            Enter the machine details. Use the tabs to navigate between
+            different sections.
           </DialogDescription>
         </DialogHeader>
 
@@ -104,7 +143,10 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
           </TabsList>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
               <TabsContent value="basic" className="space-y-4">
                 <FormField
                   control={form.control}
@@ -158,10 +200,14 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                               variant={'outline'}
                               className={cn(
                                 'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground',
+                                !field.value && 'text-muted-foreground'
                               )}
                             >
-                              {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
+                              {field.value ? (
+                                format(new Date(field.value), 'PPP')
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
@@ -169,8 +215,12 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
-                            selected={new Date(field.value)}
-                            onSelect={(date) => field.onChange(format(date!, 'yyyy-MM-dd'))}
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) =>
+                              field.onChange(format(date!, 'yyyy-MM-dd'))
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -222,10 +272,14 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                                 variant={'outline'}
                                 className={cn(
                                   'w-full pl-3 text-left font-normal',
-                                  !field.value && 'text-muted-foreground',
+                                  !field.value && 'text-muted-foreground'
                                 )}
                               >
-                                {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
+                                {field.value ? (
+                                  format(new Date(field.value), 'PPP')
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -233,8 +287,12 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
-                              selected={new Date(field.value)}
-                              onSelect={(date) => field.onChange(format(date!, 'yyyy-MM-dd'))}
+                              selected={
+                                field.value ? new Date(field.value) : undefined
+                              }
+                              onSelect={(date) =>
+                                field.onChange(format(date!, 'yyyy-MM-dd'))
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -256,10 +314,14 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                                 variant={'outline'}
                                 className={cn(
                                   'w-full pl-3 text-left font-normal',
-                                  !field.value && 'text-muted-foreground',
+                                  !field.value && 'text-muted-foreground'
                                 )}
                               >
-                                {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
+                                {field.value ? (
+                                  format(new Date(field.value), 'PPP')
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -267,8 +329,12 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
-                              selected={new Date(field.value)}
-                              onSelect={(date) => field.onChange(format(date!, 'yyyy-MM-dd'))}
+                              selected={
+                                field.value ? new Date(field.value) : undefined
+                              }
+                              onSelect={(date) =>
+                                field.onChange(format(date!, 'yyyy-MM-dd'))
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -291,10 +357,14 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                               variant={'outline'}
                               className={cn(
                                 'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground',
+                                !field.value && 'text-muted-foreground'
                               )}
                             >
-                              {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
+                              {field.value ? (
+                                format(new Date(field.value), 'PPP')
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
@@ -302,8 +372,12 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
-                            selected={new Date(field.value)}
-                            onSelect={(date) => field.onChange(format(date!, 'yyyy-MM-dd'))}
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) =>
+                              field.onChange(format(date!, 'yyyy-MM-dd'))
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -322,7 +396,10 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                     <FormItem>
                       <FormLabel>Primary Contact Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter primary contact name" />
+                        <Input
+                          {...field}
+                          placeholder="Enter primary contact name"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -336,7 +413,11 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                       <FormItem>
                         <FormLabel>Contact Email</FormLabel>
                         <FormControl>
-                          <Input {...field} type="email" placeholder="Enter contact email" />
+                          <Input
+                            {...field}
+                            type="email"
+                            placeholder="Enter contact email"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -363,7 +444,11 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
                     <FormItem>
                       <FormLabel>Machine Image</FormLabel>
                       <FormControl>
-                        <ImageUpload value={field.value} onChange={field.onChange} className="mt-2" />
+                        <ImageUpload
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="mt-2"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -372,11 +457,17 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
               </TabsContent>
 
               <div className="flex justify-end gap-4 pt-4">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                >
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   {machine ? 'Update' : 'Create'}
                 </Button>
               </div>
@@ -387,4 +478,3 @@ export function MachineDialog({ open, onOpenChange, machine, onSubmit }: Machine
     </Dialog>
   );
 }
-

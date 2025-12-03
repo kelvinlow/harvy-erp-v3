@@ -1,45 +1,76 @@
 'use client';
 
 import { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog';
-import { MoreHorizontal, Search, Edit, Trash2, Eye, Power, PowerOff } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Search,
+  Edit,
+  Trash2,
+  Eye,
+  Power,
+  PowerOff
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Supplier } from '@/types/supplier';
 
 interface SupplierListProps {
-  suppliers: Supplier[]
-  onEdit: (supplier: Supplier) => void
-  onDelete: (supplierId: string) => void
-  onView: (supplier: Supplier) => void
-  onToggleStatus: (supplierId: string) => void
+  suppliers: Supplier[];
+  onEdit: (supplier: Supplier) => void;
+  onDelete: (supplierId: string) => void;
+  onView: (supplier: Supplier) => void;
+  onToggleStatus: (supplierId: string) => void;
 }
 
-export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStatus }: SupplierListProps) {
+export function SupplierList({
+  suppliers,
+  onEdit,
+  onDelete,
+  onView,
+  onToggleStatus
+}: SupplierListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<Supplier | null>(null);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'active' | 'inactive'
+  >('all');
 
   // Filter suppliers based on search term and status
   const filteredSuppliers = suppliers.filter((supplier) => {
     const matchesSearch =
       supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.contactPerson?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.contactPerson
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       supplier.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       supplier.phone?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' || supplier.status === statusFilter;
+    const matchesStatus =
+      statusFilter === 'all' || supplier.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
@@ -90,7 +121,13 @@ export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStat
               Inactive
             </Button>
           </div>
-          <Button onClick={() => onEdit({ id: '', name: '', status: 'active', products: [] })}>Add Supplier</Button>
+          <Button
+            onClick={() =>
+              onEdit({ id: '', name: '', status: 'active', products: [] })
+            }
+          >
+            Add Supplier
+          </Button>
         </div>
       </div>
 
@@ -118,31 +155,50 @@ export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStat
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={supplier.logoUrl} alt={supplier.name} />
-                        <AvatarFallback>{getInitials(supplier.name)}</AvatarFallback>
+                        <AvatarImage
+                          src={supplier.logoUrl ?? undefined}
+                          alt={supplier.name}
+                        />
+                        <AvatarFallback>
+                          {getInitials(supplier.name)}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{supplier.name}</div>
                         {supplier.contactPerson && (
-                          <div className="text-sm text-muted-foreground">{supplier.contactPerson}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {supplier.contactPerson}
+                          </div>
                         )}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    {supplier.email && <div className="text-sm">{supplier.email}</div>}
-                    {supplier.phone && <div className="text-sm">{supplier.phone}</div>}
+                    {supplier.email && (
+                      <div className="text-sm">{supplier.email}</div>
+                    )}
+                    {supplier.phone && (
+                      <div className="text-sm">{supplier.phone}</div>
+                    )}
                   </TableCell>
                   <TableCell>{supplier.products.length} products</TableCell>
                   <TableCell>
-                    <Badge variant={supplier.status === 'active' ? 'success' : 'secondary'}>
+                    <Badge
+                      variant={
+                        supplier.status === 'active' ? 'success' : 'secondary'
+                      }
+                    >
                       {supplier.status === 'active' ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                        >
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -156,7 +212,9 @@ export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStat
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onToggleStatus(supplier.id)}>
+                        <DropdownMenuItem
+                          onClick={() => onToggleStatus(supplier.id)}
+                        >
                           {supplier.status === 'active' ? (
                             <>
                               <PowerOff className="mr-2 h-4 w-4" />
@@ -187,12 +245,16 @@ export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStat
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={confirmDelete !== null} onOpenChange={(open) => !open && setConfirmDelete(null)}>
+      <Dialog
+        open={confirmDelete !== null}
+        onOpenChange={(open) => !open && setConfirmDelete(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Supplier</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this supplier? This action cannot be undone.
+              Are you sure you want to delete this supplier? This action cannot
+              be undone.
             </DialogDescription>
           </DialogHeader>
 
@@ -200,21 +262,29 @@ export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStat
             <div className="py-4">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={confirmDelete.logoUrl} alt={confirmDelete.name} />
-                  <AvatarFallback>{getInitials(confirmDelete.name)}</AvatarFallback>
+                  <AvatarImage
+                    src={confirmDelete.logoUrl ?? undefined}
+                    alt={confirmDelete.name}
+                  />
+                  <AvatarFallback>
+                    {getInitials(confirmDelete.name)}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
                   <h3 className="font-medium">{confirmDelete.name}</h3>
                   {confirmDelete.contactPerson && (
-                    <p className="text-sm text-muted-foreground">{confirmDelete.contactPerson}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {confirmDelete.contactPerson}
+                    </p>
                   )}
                 </div>
               </div>
 
               {confirmDelete.products.length > 0 && (
                 <p className="text-sm text-amber-600 mt-4">
-                  Warning: This supplier has {confirmDelete.products.length} associated products. Deleting this supplier
-                  will remove all product associations.
+                  Warning: This supplier has {confirmDelete.products.length}{' '}
+                  associated products. Deleting this supplier will remove all
+                  product associations.
                 </p>
               )}
             </div>
@@ -241,4 +311,3 @@ export function SupplierList({ suppliers, onEdit, onDelete, onView, onToggleStat
     </div>
   );
 }
-

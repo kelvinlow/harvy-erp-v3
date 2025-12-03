@@ -8,21 +8,42 @@ import { CalendarIcon, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
 import type { ServiceRecord } from '@/types/machine';
 
 interface ServiceRecordDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  record?: ServiceRecord | null
-  onSubmit: (data: Partial<ServiceRecord>) => Promise<void>
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  record?: ServiceRecord | null;
+  onSubmit: (data: Partial<ServiceRecord>) => Promise<void>;
 }
 
-export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: ServiceRecordDialogProps) {
+export function ServiceRecordDialog({
+  open,
+  onOpenChange,
+  record,
+  onSubmit
+}: ServiceRecordDialogProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm({
@@ -31,8 +52,8 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
       description: record?.description || '',
       performedBy: record?.performedBy || '',
       cost: record?.cost?.toString() || '0',
-      notes: record?.notes || '',
-    },
+      notes: record?.notes || ''
+    }
   });
 
   React.useEffect(() => {
@@ -42,7 +63,7 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
         description: record?.description || '',
         performedBy: record?.performedBy || '',
         cost: record?.cost?.toString() || '0',
-        notes: record?.notes || '',
+        notes: record?.notes || ''
       });
     }
   }, [open, record, form]);
@@ -52,7 +73,7 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
     try {
       await onSubmit({
         ...data,
-        cost: Number.parseFloat(data.cost),
+        cost: Number.parseFloat(data.cost)
       });
       form.reset();
     } finally {
@@ -64,10 +85,15 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{record ? 'Edit Service Record' : 'Add Service Record'}</DialogTitle>
+          <DialogTitle>
+            {record ? 'Edit Service Record' : 'Add Service Record'}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="serviceDate"
@@ -79,9 +105,16 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
                       <FormControl>
                         <Button
                           variant={'outline'}
-                          className={cn('w-full pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                          className={cn(
+                            'w-full pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
                         >
-                          {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
+                          {field.value ? (
+                            format(new Date(field.value), 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -89,8 +122,12 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={new Date(field.value)}
-                        onSelect={(date) => field.onChange(format(date!, 'yyyy-MM-dd'))}
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
+                        onSelect={(date) =>
+                          field.onChange(format(date!, 'yyyy-MM-dd'))
+                        }
                         initialFocus
                       />
                     </PopoverContent>
@@ -119,7 +156,10 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
                 <FormItem>
                   <FormLabel>Performed By</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter technician or company name" />
+                    <Input
+                      {...field}
+                      placeholder="Enter technician or company name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -132,7 +172,13 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
                 <FormItem>
                   <FormLabel>Cost</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" step="0.01" min="0" placeholder="0.00" />
+                    <Input
+                      {...field}
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -145,18 +191,28 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="Additional notes (optional)" rows={3} />
+                    <Textarea
+                      {...field}
+                      placeholder="Additional notes (optional)"
+                      rows={3}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex justify-end gap-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 {record ? 'Update' : 'Add'}
               </Button>
             </div>
@@ -166,4 +222,3 @@ export function ServiceRecordDialog({ open, onOpenChange, record, onSubmit }: Se
     </Dialog>
   );
 }
-
