@@ -305,9 +305,9 @@ export function PurchaseOrderList() {
   // Filter purchase orders based on search, date and status
   const filteredOrders = purchaseOrders.filter((order) => {
     const matchesSearch =
-      order.poNumber.toLowerCase().includes(search.toLowerCase()) ||
-      order.supplierName.toLowerCase().includes(search.toLowerCase()) ||
-      order.prNumber.toLowerCase().includes(search.toLowerCase());
+      order?.poNumber?.toLowerCase().includes(search.toLowerCase()) ||
+      order?.supplierName?.toLowerCase().includes(search.toLowerCase()) ||
+      order?.prNumber?.toLowerCase().includes(search.toLowerCase());
 
     const matchesDate =
       !date ||

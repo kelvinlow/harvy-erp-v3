@@ -19,6 +19,7 @@ import { DeliveryOrdersGrid } from './delivery-orders-grid';
 import { DateRangePicker } from './date-range-picker';
 import { mockDeliveryOrders } from '@/data/mock-delivery-orders';
 import type { DeliveryOrderStatus } from '@/types/delivery-order';
+import { DateRange } from 'react-day-picker';
 
 export function DeliveryOrdersPage() {
   const [view, setView] = useState<'table' | 'grid'>('table');
@@ -28,10 +29,7 @@ export function DeliveryOrdersPage() {
   );
   const [sortField, setSortField] = useState<'date' | 'id'>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined
   });

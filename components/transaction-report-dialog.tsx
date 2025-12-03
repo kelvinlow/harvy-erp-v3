@@ -44,7 +44,16 @@ import {
 } from '@/components/ui/table';
 import { useToast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
-import type { TransactionData } from '@/app/api/daily-transaction/route';
+interface TransactionData {
+  date: string;
+  stockCode: string;
+  description: string;
+  quantity: number;
+  sicNo: string;
+  receiptBy: string;
+  machine: string;
+  station: string;
+}
 
 interface TransactionReportFormValues {
   fromDate: Date;

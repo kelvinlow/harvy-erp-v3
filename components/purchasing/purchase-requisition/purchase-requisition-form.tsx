@@ -91,7 +91,7 @@ export function PurchaseRequisitionForm() {
   ];
 
   // Initialize the Enter key navigation
-  useEnterNavigation(formRef);
+  useEnterNavigation(formRef as React.RefObject<HTMLFormElement>);
 
   const form = useForm<PurchaseRequisition>({
     defaultValues: {
@@ -163,7 +163,7 @@ export function PurchaseRequisitionForm() {
                   <FormLabel>Select Company</FormLabel>
                   <FormControl>
                     <CompanySelector
-                      value={field.value}
+                      value={field.value ?? ''}
                       onChange={field.onChange}
                     />
                   </FormControl>

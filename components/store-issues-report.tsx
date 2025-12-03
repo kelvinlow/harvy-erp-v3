@@ -102,7 +102,7 @@ const mockData: StationData[] = [
 export function StoreIssuesReport() {
   const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current
+    contentRef: componentRef
   });
 
   const calculateStationTotal = (items: StoreIssue[]) => {

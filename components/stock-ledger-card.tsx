@@ -111,7 +111,7 @@ export function StockLedgerCard() {
   const componentRef = React.useRef(null);
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current
+    contentRef: componentRef
   });
 
   const filteredItems = stockItems.filter(
