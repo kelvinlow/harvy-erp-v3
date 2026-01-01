@@ -1,0 +1,24 @@
+{
+    "name": "harvy-erp-api",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy",
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "wrangler d1 execute harvy-erp-db --local --file=./migrations/0001_init.sql",
+        "db:migrate:remote": "wrangler d1 execute harvy-erp-db --remote --file=./migrations/0001_init.sql",
+        "db:studio": "drizzle-kit studio",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.44.7",
+        "hono": "^4.10.7"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20251202.0",
+        "drizzle-kit": "^0.31.7",
+        "typescript": "^5.0.0",
+        "wrangler": "^4.51.0"
+    }
+}

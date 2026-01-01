@@ -1,71 +1,93 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { trpcServer } from '@hono/trpc-server';
-import { drizzle } from 'drizzle-orm/d1';
-import { appRouter } from './router';
-import { createContext } from './trpc';
-import * as schema from './db/schema';
+import { logger } from 'hono/logger';
+import { prettyJSON } from 'hono/pretty-json';
+import { secureHeaders } from 'hono/secure-headers';
+import { timing } from 'hono/timing';
 
-// Define Cloudflare Worker bindings
-export interface Env {
-  DB: D1Database; // D1 database binding
-  R2_BUCKET: R2Bucket; // R2 bucket binding
-}
+import { Env } from './types/env';
+import { createDb } from './db';
+import { authMiddleware } from './middleware/auth';
 
+// Import routes
+import { authRoute } from './routes/auth';
+import { usersRoute } from './routes/users';
+import { stockItemsRoute } from './routes/stock-items';
+import { suppliersRoute } from './routes/suppliers';
+import { purchaseRequisitionsRoute } from './routes/purchase-requisitions';
+import { purchaseOrdersRoute } from './routes/purchase-orders';
+import { stockMovementsRoute } from './routes/stock-movements';
+import { attachmentsRoute } from './routes/attachments';
+import { goodsReceivedNotesRoute } from './routes/grn';
+import { internalTransfersRoute } from './routes/internal-transfers';
+
+// Create Hono app
 const app = new Hono<{ Bindings: Env }>();
 
-// CORS middleware
+// Global middleware
+app.use('*', logger());
+app.use('*', timing());
+app.use('*', prettyJSON());
+app.use('*', secureHeaders());
 app.use(
   '*',
   cors({
-    origin: ['http://localhost:3000', 'https://your-production-domain.com'],
+    origin: ['http://localhost:3000', 'https://harvy-erp.pages.dev'],
+    allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 86400,
     credentials: true
   })
 );
 
+// Database middleware - inject Drizzle instance into context
+app.use('*', async (c, next) => {
+  const db = createDb(c.env.DB);
+  c.set('db', db);
+  await next();
+});
+
+// Authentication middleware - loads user from JWT token if present
+app.use('*', authMiddleware);
+
 // Health check endpoint
-app.get('/health', (c) => {
-  return c.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// tRPC endpoint
-app.use(
-  '/trpc/*',
-  trpcServer({
-    router: appRouter,
-    createContext: (opts, c) => {
-      const db = drizzle(c.env.DB, { schema });
-      return createContext(opts, c.env, db);
-    }
-  })
-);
-
-// Sample REST endpoint (Hono without tRPC)
-app.get('/api/hello', (c) => {
-  return c.json({ message: 'Hello from Cloudflare Worker!' });
-});
-
-// R2 file download endpoint (public access)
-app.get('/files/:key', async (c) => {
-  const key = c.req.param('key');
-  const object = await c.env.R2_BUCKET.get(key);
-
-  if (!object) {
-    return c.json({ error: 'File not found' }, 404);
-  }
-
-  const headers = new Headers();
-  object.writeHttpMetadata(headers);
-  headers.set('etag', object.httpEtag);
-
-  return new Response(object.body, {
-    headers
+app.get('/', (c) => {
+  return c.json({
+    name: 'Harvy ERP API',
+    version: '1.0.0',
+    status: 'healthy',
+    environment: c.env.ENVIRONMENT,
+    timestamp: new Date().toISOString()
   });
 });
 
+// API routes
+const api = app.basePath('/api/v1');
+
+// Public auth routes (no auth required)
+api.route('/auth', authRoute);
+
+// Protected routes
+api.route('/users', usersRoute);
+api.route('/stock-items', stockItemsRoute);
+api.route('/suppliers', suppliersRoute);
+api.route('/purchase-requisitions', purchaseRequisitionsRoute);
+api.route('/purchase-orders', purchaseOrdersRoute);
+api.route('/stock-movements', stockMovementsRoute);
+api.route('/attachments', attachmentsRoute);
+api.route('/grn', goodsReceivedNotesRoute);
+api.route('/internal-transfers', internalTransfersRoute);
+
 // 404 handler
 app.notFound((c) => {
-  return c.json({ error: 'Not Found' }, 404);
+  return c.json(
+    {
+      error: 'Not Found',
+      message: `Route ${c.req.method} ${c.req.path} not found`
+    },
+    404
+  );
 });
 
 // Error handler
@@ -73,7 +95,11 @@ app.onError((err, c) => {
   console.error('Error:', err);
   return c.json(
     {
-      error: err.message || 'Internal Server Error'
+      error: 'Internal Server Error',
+      message:
+        c.env.ENVIRONMENT === 'development'
+          ? err.message
+          : 'Something went wrong'
     },
     500
   );

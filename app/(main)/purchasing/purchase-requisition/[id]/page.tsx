@@ -22,8 +22,6 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 
-export const runtime = 'edge';
-
 // This would normally come from your database
 const mockPurchaseRequisition = {
   id: 'PR001',

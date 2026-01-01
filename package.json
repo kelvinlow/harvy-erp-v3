@@ -6,12 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "worker:dev": "wrangler dev worker/src/index.ts",
-    "worker:deploy": "wrangler deploy worker/src/index.ts",
-    "db:generate": "cd worker && drizzle-kit generate",
-    "db:migrate": "cd worker && wrangler d1 migrations apply harvy-erp-db",
-    "db:studio": "cd worker && drizzle-kit studio"
+    "lint": "eslint"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
