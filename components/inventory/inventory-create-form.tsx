@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Check, ChevronsUpDown, Loader2, Save } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,23 +47,34 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
-  stockCode: z.string({
-    required_error: 'Please select a stock item.'
-  }),
+  stockCode: z.string().min(1, 'Please select a stock item.'),
   description: z.string(),
-  uom: z.string({
-    required_error: 'Please select a unit of measure.'
-  }),
-  quantity: z.coerce.number().min(0.01, 'Quantity must be greater than 0'),
+  uom: z.string().min(1, 'Please select a unit of measure.'),
+  quantity: z.number().min(0.01, 'Quantity must be greater than 0'),
   remarks: z.string().optional()
 });
 
 type FormData = z.infer<typeof formSchema>;
 
+interface StockItem {
+  id: number;
+  stockCode: string;
+  description: string;
+  uom: string;
+  currentStock: number;
+  unitPrice: number;
+}
+
+interface UOMItem {
+  id: number;
+  code: string;
+  description: string;
+}
+
 export function InventoryCreateForm() {
   const { toast } = useToast();
-  const [stockItems, setStockItems] = React.useState<any[]>([]);
-  const [uoms, setUoms] = React.useState<any[]>([]);
+  const [stockItems, setStockItems] = React.useState<StockItem[]>([]);
+  const [uoms, setUoms] = React.useState<UOMItem[]>([]);
   const [isLoadingItems, setIsLoadingItems] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [openCombobox, setOpenCombobox] = React.useState(false);
