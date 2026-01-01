@@ -12,6 +12,7 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
+        "crypto": "^1.0.1",
         "drizzle-orm": "^0.44.7",
         "hono": "^4.10.7"
     },

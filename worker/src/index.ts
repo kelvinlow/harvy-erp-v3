@@ -32,7 +32,11 @@ app.use('*', secureHeaders());
 app.use(
   '*',
   cors({
-    origin: ['http://localhost:3000', 'https://harvy-erp.pages.dev'],
+    origin: [
+      'http://localhost:3000',
+      'https://harvy-erp.pages.dev',
+      'https://main.harvy-erp-v3.pages.dev'
+    ],
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
     exposeHeaders: ['Content-Length'],

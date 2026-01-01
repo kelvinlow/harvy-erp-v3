@@ -27,3 +27,14 @@ local_protocol = "http"
 # Production environment overrides
 [env.production]
 vars = { ENVIRONMENT = "production", JWT_SECRET = "K3LV1N2_sXQMP8ZL0V3#TH14NH39A7FR" }
+
+# D1 Database Binding for Production
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "harvy-erp-db"
+database_id = "a2805b91-3139-4d25-b5a1-3b47a565aab3"
+
+# R2 Bucket Binding for Production
+[[env.production.r2_buckets]]
+binding = "BUCKET"
+bucket_name = "harvy-erp-bucket"

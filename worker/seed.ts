@@ -14,8 +14,8 @@ async function seed() {
   // This would need to be run with actual D1 binding
   // For now, this is a template - actual seeding should be done via wrangler
 
-  const adminEmail = 'admin@harvy.com';
-  const adminPassword = 'Admin123!'; // Change this!
+  const adminEmail = 'lowshinsheng@gmail.com';
+  const adminPassword = 'Admin123!';
 
   console.log(`Creating admin user: ${adminEmail}`);
   console.log(`Password: ${adminPassword}`);
