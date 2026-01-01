@@ -112,7 +112,9 @@ export const purchaseRequisitions = sqliteTable(
       enum: [
         'DRAFT',
         'PENDING',
+        'MANAGER_APPROVAL',
         'APPROVED',
+        'PARTIAL',
         'REJECTED',
         'CANCELLED',
         'COMPLETED'
@@ -128,6 +130,10 @@ export const purchaseRequisitions = sqliteTable(
     urgency: text('urgency', { enum: ['Low', 'Medium', 'High', 'Critical'] })
       .notNull()
       .default('Medium'),
+    employeeNo: text('employee_no'),
+    employeeName: text('employee_name'),
+    referenceNo: text('reference_no'),
+    departmentCode: text('department_code'),
     totalAmount: real('total_amount').notNull().default(0),
     currency: text('currency').notNull().default('MYR'),
     notes: text('notes'),
@@ -163,6 +169,7 @@ export const prItems = sqliteTable('pr_items', {
   taxCode: text('tax_code'),
   taxRate: real('tax_rate').default(0),
   totalPrice: real('total_price').notNull(),
+  station: text('station'),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(
     sql`(unixepoch())`
   )
@@ -414,3 +421,19 @@ export type NewTransferItem = typeof transferItems.$inferInsert;
 
 export type Session = typeof sessions.$inferSelect;
 export type NewSession = typeof sessions.$inferInsert;
+
+// Units of Measure Table
+export const unitsOfMeasure = sqliteTable('units_of_measure', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  code: text('code').notNull().unique(),
+  description: text('description').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(
+    sql`(unixepoch())`
+  ),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(
+    sql`(unixepoch())`
+  )
+});
+
+export type UOM = typeof unitsOfMeasure.$inferSelect;
+export type NewUOM = typeof unitsOfMeasure.$inferInsert;

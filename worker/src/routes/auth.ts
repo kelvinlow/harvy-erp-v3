@@ -57,8 +57,8 @@ authRoute.post('/login', async (c) => {
     c.env.JWT_SECRET
   );
 
-  // Calculate expiry (7 days)
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  // Calculate expiry (8 hours)
+  const expiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000);
 
   // Store session in database
   await db.insert(sessions).values({

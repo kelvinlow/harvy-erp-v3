@@ -1,18 +1,19 @@
 import { Hono } from 'hono';
-import { eq, desc, asc, sql, and, gte, lte } from 'drizzle-orm';
+import { eq, desc, sql, and, gte, lte } from 'drizzle-orm';
 import { Env } from '../types/env';
 import {
   purchaseRequisitions,
   prItems,
   users,
-  NewPurchaseRequisition,
+  purchaseOrders,
   NewPRItem
 } from '../db/schema';
+import { Database } from '../db';
 
 export const purchaseRequisitionsRoute = new Hono<{ Bindings: Env }>();
 
 // Generate PR number
-async function generatePRNumber(db: any): Promise<string> {
+async function generatePRNumber(db: Database): Promise<string> {
   const year = new Date().getFullYear();
   const prefix = `PR-${year}-`;
 
@@ -59,17 +60,21 @@ purchaseRequisitionsRoute.get('/', async (c) => {
     conditions.push(lte(purchaseRequisitions.createdAt, new Date(endDate)));
   }
 
-  let query = db
+  const baseQuery = db
     .select({
       pr: purchaseRequisitions,
       requestedBy: {
         id: users.id,
         name: users.name,
         email: users.email
-      }
+      },
+      poNumber: purchaseOrders.poNumber
     })
     .from(purchaseRequisitions)
-    .leftJoin(users, eq(purchaseRequisitions.requestedById, users.id));
+    .leftJoin(users, eq(purchaseRequisitions.requestedById, users.id))
+    .leftJoin(purchaseOrders, eq(purchaseRequisitions.id, purchaseOrders.prId));
+
+  let query: any = baseQuery;
 
   if (conditions.length > 0) {
     query = query.where(and(...conditions)) as typeof query;
@@ -89,9 +94,10 @@ purchaseRequisitionsRoute.get('/', async (c) => {
   const total = countResult[0]?.count || 0;
 
   return c.json({
-    data: result.map((r: any) => ({
+    data: (result as any[]).map((r: any) => ({
       ...r.pr,
-      requestedBy: r.requestedBy
+      requestedBy: r.requestedBy,
+      poNumber: r.poNumber
     })),
     pagination: {
       page,
@@ -139,14 +145,20 @@ purchaseRequisitionsRoute.get('/:id', async (c) => {
 purchaseRequisitionsRoute.post('/', async (c) => {
   const db = c.get('db');
   const body = await c.req.json<{
-    title: string;
+    title?: string;
     requestedById: number;
     department: string;
+    departmentCode?: string;
     company: string;
-    urgency?: string;
+    urgency?: 'Low' | 'Medium' | 'High' | 'Critical';
     currency?: string;
     notes?: string;
-    items: Omit<NewPRItem, 'id' | 'prId' | 'createdAt'>[];
+    employeeNo?: string;
+    employeeName?: string;
+    referenceNo?: string;
+    items: (Omit<NewPRItem, 'id' | 'prId' | 'createdAt'> & {
+      station?: string;
+    })[];
   }>();
 
   const prNumber = await generatePRNumber(db);
@@ -162,12 +174,16 @@ purchaseRequisitionsRoute.post('/', async (c) => {
     .insert(purchaseRequisitions)
     .values({
       prNumber,
-      title: body.title,
-      status: 'DRAFT',
+      title: body.title || `Requisition for ${body.department}`,
+      status: 'PENDING',
       requestedById: body.requestedById,
       department: body.department,
+      departmentCode: body.departmentCode,
       company: body.company,
       urgency: body.urgency || 'Medium',
+      employeeNo: body.employeeNo,
+      employeeName: body.employeeName,
+      referenceNo: body.referenceNo,
       totalAmount,
       currency: body.currency || 'MYR',
       notes: body.notes
@@ -189,7 +205,8 @@ purchaseRequisitionsRoute.post('/', async (c) => {
         discount: item.discount || 0,
         taxCode: item.taxCode,
         taxRate: item.taxRate || 0,
-        totalPrice: item.totalPrice
+        totalPrice: item.totalPrice,
+        station: item.station
       }))
     );
   }
@@ -215,7 +232,7 @@ purchaseRequisitionsRoute.put('/:id', async (c) => {
     title?: string;
     department?: string;
     company?: string;
-    urgency?: string;
+    urgency?: 'Low' | 'Medium' | 'High' | 'Critical';
     currency?: string;
     notes?: string;
     items?: Omit<NewPRItem, 'id' | 'prId' | 'createdAt'>[];

@@ -30,6 +30,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
+import { useUser } from '@/hooks/use-user';
 import { useToast } from '@/components/ui/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import type { PurchaseRequisition } from '@/types';
@@ -43,21 +44,6 @@ import {
   CommandList
 } from '@/components/ui/command';
 
-interface PurchaseRequisitionItem {
-  id: string;
-  stockCode: string;
-  description: string;
-  quantity: number;
-  uom: string;
-  unitPrice: number;
-  discount: number;
-  subAmount: number;
-  taxCode: string;
-  taxRate: number;
-  station: string;
-  totalAmount: number;
-}
-
 interface InventoryItem {
   stockCode: string;
   description: string;
@@ -67,28 +53,64 @@ interface InventoryItem {
 
 export function PurchaseRequisitionForm() {
   const { toast } = useToast();
+  const user = useUser();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const formRef = React.useRef<HTMLFormElement>(null);
-  const inventoryItems: InventoryItem[] = [
-    {
-      stockCode: 'A123',
-      description: 'Widget A',
-      uomCode: 'EA',
-      lastPrice: 10.0
-    },
-    {
-      stockCode: 'B456',
-      description: 'Gadget B',
-      uomCode: 'EA',
-      lastPrice: 25.5
-    },
-    {
-      stockCode: 'C789',
-      description: 'Thingamajig C',
-      uomCode: 'EA',
-      lastPrice: 5.75
+  const [inventoryItems, setInventoryItems] = React.useState<InventoryItem[]>(
+    []
+  );
+  const [isInventoryLoading, setIsInventoryLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function fetchInventory() {
+      try {
+        setIsInventoryLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+          }/stock-items`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch inventory');
+        }
+
+        const result = await response.json();
+        // Map database fields to inventory item interface
+        const items = (result.data || []).map(
+          (item: {
+            stockCode: string;
+            description: string;
+            uom: string;
+            unitPrice: number;
+          }) => ({
+            stockCode: item.stockCode,
+            description: item.description,
+            uomCode: item.uom,
+            lastPrice: item.unitPrice
+          })
+        );
+        setInventoryItems(items);
+      } catch (err) {
+        console.error('Error loading inventory:', err);
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to load inventory items'
+        });
+      } finally {
+        setIsInventoryLoading(false);
+      }
     }
-  ];
+
+    fetchInventory();
+  }, [toast]);
 
   // Initialize the Enter key navigation
   useEnterNavigation(formRef as React.RefObject<HTMLFormElement>);
@@ -96,6 +118,8 @@ export function PurchaseRequisitionForm() {
   const form = useForm<PurchaseRequisition>({
     defaultValues: {
       company: '',
+      department: '',
+      departmentCode: '',
       date: format(new Date(), 'yyyy-MM-dd'),
       items: [
         {
@@ -121,18 +145,66 @@ export function PurchaseRequisitionForm() {
     name: 'items'
   });
 
-  async function onSubmit(data: PurchaseRequisition) {
+  async function onSubmit(data: any) {
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'You must be logged in to submit a requisition.'
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log(data);
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+        }/purchase-requisitions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            company: data.company,
+            department: data.department,
+            departmentCode: data.departmentCode,
+            employeeNo: data.employeeNo,
+            employeeName: data.employeeName,
+            referenceNo: data.referenceNo,
+            notes: data.remarks,
+            requestedById: user.id,
+            urgency: 'Medium',
+            items: data.items.map((item: any) => ({
+              stockCode: item.stockCode,
+              description: item.description,
+              quantity: item.quantity,
+              uom: item.uom,
+              unitPrice: item.unitPrice,
+              totalPrice: item.totalAmount,
+              discount: item.discount || 0,
+              taxCode: item.taxCode,
+              taxRate: item.taxRate || 0,
+              station: item.station
+            }))
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to submit purchase requisition');
+      }
+
       toast({
         title: 'Success',
         description: 'Purchase requisition has been submitted.'
       });
       form.reset();
     } catch (error) {
+      console.error('Submit error:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -258,7 +330,7 @@ export function PurchaseRequisitionForm() {
 
               <FormField
                 control={form.control}
-                name="referenceNo"
+                name="departmentCode"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Department/Station Code</FormLabel>
@@ -272,7 +344,7 @@ export function PurchaseRequisitionForm() {
 
               <FormField
                 control={form.control}
-                name="referenceNo"
+                name="department"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Department/Station</FormLabel>
@@ -327,29 +399,38 @@ export function PurchaseRequisitionForm() {
                                 <CommandList>
                                   <CommandEmpty>No stock found.</CommandEmpty>
                                   <CommandGroup>
-                                    {inventoryItems.map((item) => (
-                                      <CommandItem
-                                        key={item.stockCode}
-                                        value={item.stockCode}
-                                        onSelect={() => {
-                                          itemField.onChange(item.stockCode);
-                                          form.setValue(
-                                            `items.${index}.description`,
-                                            item.description
-                                          );
-                                          form.setValue(
-                                            `items.${index}.uom`,
-                                            item.uomCode
-                                          );
-                                          form.setValue(
-                                            `items.${index}.unitPrice`,
-                                            item.lastPrice
-                                          );
-                                        }}
-                                      >
-                                        {item.stockCode} - {item.description}
-                                      </CommandItem>
-                                    ))}
+                                    {isInventoryLoading ? (
+                                      <div className="flex items-center justify-center p-4">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <span className="ml-2 text-sm">
+                                          Loading stock...
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      inventoryItems.map((item) => (
+                                        <CommandItem
+                                          key={item.stockCode}
+                                          value={item.stockCode}
+                                          onSelect={() => {
+                                            itemField.onChange(item.stockCode);
+                                            form.setValue(
+                                              `items.${index}.description`,
+                                              item.description
+                                            );
+                                            form.setValue(
+                                              `items.${index}.uom`,
+                                              item.uomCode
+                                            );
+                                            form.setValue(
+                                              `items.${index}.unitPrice`,
+                                              item.lastPrice
+                                            );
+                                          }}
+                                        >
+                                          {item.stockCode} - {item.description}
+                                        </CommandItem>
+                                      ))
+                                    )}
                                   </CommandGroup>
                                 </CommandList>
                               </Command>

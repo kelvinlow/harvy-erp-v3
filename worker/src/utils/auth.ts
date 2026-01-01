@@ -91,10 +91,10 @@ export async function generateToken(
 ): Promise<string> {
   const encoder = new TextEncoder();
 
-  // Add expiration (7 days)
+  // Add expiration (8 hours)
   const tokenPayload = {
     ...payload,
-    exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+    exp: Math.floor(Date.now() / 1000) + 8 * 60 * 60,
     iat: Math.floor(Date.now() / 1000)
   };
 

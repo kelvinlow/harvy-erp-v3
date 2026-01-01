@@ -1,9 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Download, Printer, Search } from 'lucide-react';
+import {
+  CalendarIcon,
+  Download,
+  Printer,
+  Search,
+  Loader2,
+  AlertCircle
+} from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -31,306 +39,131 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import type { PurchaseOrder } from '@/types';
 
-// Mock data
-const purchaseOrders: PurchaseOrder[] = [
-  {
-    id: 'PO001',
-    poNumber: 'PO-2024-001',
-    date: '2024-01-15',
-    prNumber: 'PR-2024-001',
-    supplierName: 'ABC Hardware Supplies',
-    status: 'Pending',
-    items: [
-      {
-        id: '1',
-        stockCode: 'HW001',
-        description: 'Power Tools Set',
-        quantity: 2,
-        uom: 'SET',
-        unitPrice: 1500,
-        amount: 3000
-      }
-    ],
-    total: 3000
-  },
-  {
-    id: 'PO003',
-    poNumber: 'PO-2024-003',
-    date: '2024-01-17',
-    prNumber: 'PR-2024-003',
-    supplierName: 'Global Parts Inc',
-    status: 'Delivered',
-    items: [
-      {
-        id: '1',
-        stockCode: 'SP001',
-        description: 'Spare Parts Kit',
-        quantity: 5,
-        uom: 'KIT',
-        unitPrice: 800,
-        amount: 4000
-      }
-    ],
-    total: 4000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO002',
-    poNumber: 'PO-2024-002',
-    date: '2024-01-16',
-    prNumber: 'PR-2024-002',
-    supplierName: 'XYZ Industrial Solutions',
-    status: 'Approved',
-    items: [
-      {
-        id: '1',
-        stockCode: 'MT001',
-        description: 'Industrial Motor',
-        quantity: 1,
-        uom: 'UNIT',
-        unitPrice: 5000,
-        amount: 5000
-      }
-    ],
-    total: 5000
-  },
-  {
-    id: 'PO003',
-    poNumber: 'PO-2024-003',
-    date: '2024-01-17',
-    prNumber: 'PR-2024-003',
-    supplierName: 'Global Parts Inc',
-    status: 'Delivered',
-    items: [
-      {
-        id: '1',
-        stockCode: 'SP001',
-        description: 'Spare Parts Kit',
-        quantity: 5,
-        uom: 'KIT',
-        unitPrice: 800,
-        amount: 4000
-      }
-    ],
-    total: 4000
-  }
-];
+interface PurchaseOrder {
+  id: number;
+  poNumber: string;
+  orderDate: string;
+  prNumber: string | null;
+  supplier: {
+    id: number;
+    name: string;
+  };
+  status: string;
+  totalAmount: number;
+}
 
 export function PurchaseOrderList() {
+  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [date, setDate] = useState<Date>();
   const [status, setStatus] = useState<string>('');
+
+  useEffect(() => {
+    async function fetchPOs() {
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+          }/purchase-orders`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch purchase orders');
+        }
+
+        const result = await response.json();
+        setPurchaseOrders(result.data || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        toast.error('Failed to load purchase orders');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchPOs();
+  }, []);
 
   // Filter purchase orders based on search, date and status
   const filteredOrders = purchaseOrders.filter((order) => {
     const matchesSearch =
       order?.poNumber?.toLowerCase().includes(search.toLowerCase()) ||
-      order?.supplierName?.toLowerCase().includes(search.toLowerCase()) ||
+      order?.supplier?.name?.toLowerCase().includes(search.toLowerCase()) ||
       order?.prNumber?.toLowerCase().includes(search.toLowerCase());
 
     const matchesDate =
       !date ||
-      format(new Date(order.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
-    const matchesStatus = !status || order.status === status;
+      (order.orderDate &&
+        format(new Date(order.orderDate), 'yyyy-MM-dd') ===
+          format(date, 'yyyy-MM-dd'));
+
+    const matchesStatus =
+      !status || status === 'all' || order.status === status;
 
     return matchesSearch && matchesDate && matchesStatus;
   });
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Pending':
+    switch (status.toUpperCase()) {
+      case 'PENDING':
         return 'text-yellow-600 bg-yellow-50';
-      case 'Approved':
+      case 'APPROVED':
         return 'text-green-600 bg-green-50';
-      case 'Delivered':
+      case 'SENT':
         return 'text-blue-600 bg-blue-50';
-      case 'Completed':
+      case 'PARTIAL':
+        return 'text-orange-600 bg-orange-50';
+      case 'COMPLETED':
+        return 'text-blue-600 bg-blue-50';
+      case 'DRAFT':
         return 'text-gray-600 bg-gray-50';
+      case 'CANCELLED':
+        return 'text-red-600 bg-red-50';
       default:
         return 'text-gray-600 bg-gray-50';
     }
   };
+
+  const formatStatus = (status: string) => {
+    return status
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex h-64 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex h-64 flex-col items-center justify-center gap-4 text-destructive">
+          <AlertCircle className="h-10 w-10" />
+          <p>{error}</p>
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -358,7 +191,7 @@ export function PurchaseOrderList() {
                     !date && 'text-muted-foreground'
                   )}
                 >
-                  <CalendarIcon className="h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, 'PPP') : 'Pick a date'}
                 </Button>
               </PopoverTrigger>
@@ -377,10 +210,13 @@ export function PurchaseOrderList() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-                <SelectItem value="Approved">Approved</SelectItem>
-                <SelectItem value="Delivered">Delivered</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
+                <SelectItem value="DRAFT">Draft</SelectItem>
+                <SelectItem value="PENDING">Pending</SelectItem>
+                <SelectItem value="APPROVED">Approved</SelectItem>
+                <SelectItem value="SENT">Sent</SelectItem>
+                <SelectItem value="PARTIAL">Partial</SelectItem>
+                <SelectItem value="COMPLETED">Completed</SelectItem>
+                <SelectItem value="CANCELLED">Cancelled</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -412,12 +248,16 @@ export function PurchaseOrderList() {
             <TableBody>
               {filteredOrders.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell>{order.poNumber}</TableCell>
-                  <TableCell>
-                    {format(new Date(order.date), 'dd MMM yyyy')}
+                  <TableCell className="font-medium">
+                    {order.poNumber}
                   </TableCell>
-                  <TableCell>{order.prNumber}</TableCell>
-                  <TableCell>{order.supplierName}</TableCell>
+                  <TableCell>
+                    {order.orderDate
+                      ? format(new Date(order.orderDate), 'dd MMM yyyy')
+                      : '-'}
+                  </TableCell>
+                  <TableCell>{order.prNumber || '-'}</TableCell>
+                  <TableCell>{order.supplier?.name}</TableCell>
                   <TableCell>
                     <span
                       className={cn(
@@ -425,11 +265,14 @@ export function PurchaseOrderList() {
                         getStatusColor(order.status)
                       )}
                     >
-                      {order.status}
+                      {formatStatus(order.status)}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    {order.total.toFixed(2)}
+                    {order.totalAmount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })}
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" asChild>
@@ -440,6 +283,13 @@ export function PurchaseOrderList() {
                   </TableCell>
                 </TableRow>
               ))}
+              {filteredOrders.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center">
+                    No purchase orders found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>

@@ -56,10 +56,15 @@ export function LoginForm({
       localStorage.setItem('token', result.data.token);
       localStorage.setItem('user', JSON.stringify(result.data.user));
 
+      // Set cookie for middleware (8 hours expiry)
+      document.cookie = `auth-token=${result.data.token}; path=/; max-age=${
+        8 * 60 * 60
+      }; SameSite=Lax`;
+
       toast.success('Login successful!');
 
-      // Redirect to dashboard or home
-      router.push('/');
+      // Redirect to dashboard
+      router.push('/dashboard');
       router.refresh();
     } catch (error) {
       toast.error(

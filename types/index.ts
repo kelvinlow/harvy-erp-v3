@@ -1,6 +1,8 @@
 export interface PurchaseRequisition {
   id?: string;
   company: string;
+  department: string;
+  departmentCode?: string;
   date: string;
   employeeNo?: string;
   employeeName?: string;

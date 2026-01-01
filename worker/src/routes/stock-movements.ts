@@ -1,273 +1,77 @@
 import { Hono } from 'hono';
-import { eq, desc, and, gte, lte, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { Env } from '../types/env';
-import {
-  stockMovements,
-  stockItems,
-  users,
-  NewStockMovement
-} from '../db/schema';
+import { stockItems, stockMovements, NewStockMovement } from '../db/schema';
+import { z } from 'zod';
+import { zValidator } from '@hono/zod-validator';
 
 export const stockMovementsRoute = new Hono<{ Bindings: Env }>();
 
-// Get all stock movements with filters
-stockMovementsRoute.get('/', async (c) => {
-  const db = c.get('db');
-  const stockItemId = c.req.query('stockItemId');
-  const movementType = c.req.query('movementType');
-  const startDate = c.req.query('startDate');
-  const endDate = c.req.query('endDate');
-  const page = parseInt(c.req.query('page') || '1');
-  const limit = parseInt(c.req.query('limit') || '50');
+const stockInSchema = z.object({
+  stockCode: z.string(),
+  quantity: z.number().min(0.01),
+  uom: z.string(),
+  remarks: z.string().optional()
+});
 
-  const offset = (page - 1) * limit;
+// Create Stock Movement (IN)
+stockMovementsRoute.post(
+  '/in',
+  zValidator('json', stockInSchema),
+  async (c) => {
+    const db = c.get('db');
+    const user = c.get('user');
+    const body = c.req.valid('json');
 
-  // Build conditions
-  const conditions = [];
-  if (stockItemId) {
-    conditions.push(eq(stockMovements.stockItemId, parseInt(stockItemId)));
-  }
-  if (movementType) {
-    conditions.push(eq(stockMovements.movementType, movementType as any));
-  }
-  if (startDate) {
-    conditions.push(gte(stockMovements.createdAt, new Date(startDate)));
-  }
-  if (endDate) {
-    conditions.push(lte(stockMovements.createdAt, new Date(endDate)));
-  }
+    // 1. Get Stock Item
+    const stockItem = await db.query.stockItems.findFirst({
+      where: eq(stockItems.stockCode, body.stockCode)
+    });
 
-  let query = db
-    .select({
-      movement: stockMovements,
-      stockItem: {
-        id: stockItems.id,
-        stockCode: stockItems.stockCode,
-        description: stockItems.description
+    if (!stockItem) {
+      return c.json({ error: 'Stock item not found' }, 404);
+    }
+
+    // 2. Validate UOM (optional, ensuring it exists)
+    // For now we just check if it's not empty, but if strict mode we should check DB.
+    // The frontend dropdown ensures it's likely valid.
+
+    // 3. Update Current Stock
+    const balanceBefore = stockItem.currentStock;
+    const quantity = body.quantity;
+    const balanceAfter = balanceBefore + quantity;
+
+    await db
+      .update(stockItems)
+      .set({
+        currentStock: balanceAfter,
+        updatedAt: new Date()
+      })
+      .where(eq(stockItems.id, stockItem.id));
+
+    // 4. Create Movement Record
+    const movement: NewStockMovement = {
+      stockItemId: stockItem.id,
+      movementType: 'IN',
+      quantity: quantity,
+      balanceBefore: balanceBefore,
+      balanceAfter: balanceAfter,
+      createdById: user.id || 1, // Fallback for dev if user.id is missing or mock
+      remarks: body.remarks || 'Stock In via Inventory Create',
+      referenceType: 'MANUAL' // Manual stock in
+    };
+
+    await db.insert(stockMovements).values(movement);
+
+    return c.json(
+      {
+        message: 'Stock updated successfully',
+        data: {
+          stockCode: stockItem.stockCode,
+          newBalance: balanceAfter
+        }
       },
-      createdBy: {
-        id: users.id,
-        name: users.name
-      }
-    })
-    .from(stockMovements)
-    .leftJoin(stockItems, eq(stockMovements.stockItemId, stockItems.id))
-    .leftJoin(users, eq(stockMovements.createdById, users.id));
-
-  if (conditions.length > 0) {
-    query = query.where(and(...conditions)) as typeof query;
+      201
+    );
   }
-
-  query = query
-    .orderBy(desc(stockMovements.createdAt))
-    .limit(limit)
-    .offset(offset) as typeof query;
-
-  const result = await query;
-
-  // Get total count
-  let countQuery = db
-    .select({ count: sql<number>`count(*)` })
-    .from(stockMovements);
-  if (conditions.length > 0) {
-    countQuery = countQuery.where(and(...conditions)) as typeof countQuery;
-  }
-  const countResult = await countQuery;
-  const total = countResult[0]?.count || 0;
-
-  return c.json({
-    data: result.map((r: any) => ({
-      ...r.movement,
-      stockItem: r.stockItem,
-      createdBy: r.createdBy
-    })),
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit)
-    }
-  });
-});
-
-// Get stock movement by ID
-stockMovementsRoute.get('/:id', async (c) => {
-  const db = c.get('db');
-  const id = parseInt(c.req.param('id'));
-
-  const result = await db
-    .select({
-      movement: stockMovements,
-      stockItem: stockItems,
-      createdBy: {
-        id: users.id,
-        name: users.name,
-        email: users.email
-      }
-    })
-    .from(stockMovements)
-    .leftJoin(stockItems, eq(stockMovements.stockItemId, stockItems.id))
-    .leftJoin(users, eq(stockMovements.createdById, users.id))
-    .where(eq(stockMovements.id, id));
-
-  if (result.length === 0) {
-    return c.json({ error: 'Stock movement not found' }, 404);
-  }
-
-  return c.json({
-    data: {
-      ...result[0].movement,
-      stockItem: result[0].stockItem,
-      createdBy: result[0].createdBy
-    }
-  });
-});
-
-// Create stock movement (and update stock level)
-stockMovementsRoute.post('/', async (c) => {
-  const db = c.get('db');
-  const body = await c.req.json<{
-    stockItemId: number;
-    movementType: string;
-    quantity: number;
-    referenceType?: string;
-    referenceId?: number;
-    remarks?: string;
-    createdById: number;
-  }>();
-
-  // Get current stock level
-  const stockItem = await db
-    .select()
-    .from(stockItems)
-    .where(eq(stockItems.id, body.stockItemId));
-  if (stockItem.length === 0) {
-    return c.json({ error: 'Stock item not found' }, 404);
-  }
-
-  const currentStock = stockItem[0].currentStock;
-  let newStock: number;
-
-  // Calculate new stock based on movement type
-  switch (body.movementType) {
-    case 'IN':
-    case 'RETURN':
-      newStock = currentStock + body.quantity;
-      break;
-    case 'OUT':
-    case 'TRANSFER':
-      newStock = currentStock - body.quantity;
-      if (newStock < 0) {
-        return c.json({ error: 'Insufficient stock' }, 400);
-      }
-      break;
-    case 'ADJUSTMENT':
-      // For adjustments, quantity can be positive or negative
-      newStock = currentStock + body.quantity;
-      if (newStock < 0) {
-        return c.json(
-          { error: 'Adjustment would result in negative stock' },
-          400
-        );
-      }
-      break;
-    default:
-      return c.json({ error: 'Invalid movement type' }, 400);
-  }
-
-  // Create movement record
-  const movementResult = await db
-    .insert(stockMovements)
-    .values({
-      stockItemId: body.stockItemId,
-      movementType: body.movementType as any,
-      quantity: body.quantity,
-      balanceBefore: currentStock,
-      balanceAfter: newStock,
-      referenceType: body.referenceType,
-      referenceId: body.referenceId,
-      remarks: body.remarks,
-      createdById: body.createdById
-    })
-    .returning();
-
-  // Update stock level
-  await db
-    .update(stockItems)
-    .set({
-      currentStock: newStock,
-      updatedAt: new Date()
-    })
-    .where(eq(stockItems.id, body.stockItemId));
-
-  return c.json({ data: movementResult[0] }, 201);
-});
-
-// Get stock ledger for a specific item
-stockMovementsRoute.get('/ledger/:stockItemId', async (c) => {
-  const db = c.get('db');
-  const stockItemId = parseInt(c.req.param('stockItemId'));
-  const startDate = c.req.query('startDate');
-  const endDate = c.req.query('endDate');
-  const page = parseInt(c.req.query('page') || '1');
-  const limit = parseInt(c.req.query('limit') || '100');
-
-  const offset = (page - 1) * limit;
-
-  // Build conditions
-  const conditions = [eq(stockMovements.stockItemId, stockItemId)];
-  if (startDate) {
-    conditions.push(gte(stockMovements.createdAt, new Date(startDate)));
-  }
-  if (endDate) {
-    conditions.push(lte(stockMovements.createdAt, new Date(endDate)));
-  }
-
-  // Get stock item info
-  const stockItem = await db
-    .select()
-    .from(stockItems)
-    .where(eq(stockItems.id, stockItemId));
-  if (stockItem.length === 0) {
-    return c.json({ error: 'Stock item not found' }, 404);
-  }
-
-  // Get movements
-  const movements = await db
-    .select({
-      movement: stockMovements,
-      createdBy: {
-        id: users.id,
-        name: users.name
-      }
-    })
-    .from(stockMovements)
-    .leftJoin(users, eq(stockMovements.createdById, users.id))
-    .where(and(...conditions))
-    .orderBy(desc(stockMovements.createdAt))
-    .limit(limit)
-    .offset(offset);
-
-  // Get total count
-  const countResult = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(stockMovements)
-    .where(and(...conditions));
-  const total = countResult[0]?.count || 0;
-
-  return c.json({
-    data: {
-      stockItem: stockItem[0],
-      movements: movements.map((m: any) => ({
-        ...m.movement,
-        createdBy: m.createdBy
-      }))
-    },
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit)
-    }
-  });
-});
+);

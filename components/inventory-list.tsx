@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Clock, Download, Search, Tag } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -41,82 +41,86 @@ interface InventoryItem {
 }
 
 // Sample data
-const inventoryItems: InventoryItem[] = [
-  {
-    stockCode: 'EP0001',
-    description: 'PVC INSULATION TAPE (ELECTRICAL)',
-    uom: 'PCS',
-    quantity: 100,
-    unitCost: 23.99,
-    totalValue: 2399.0,
-    priceHistory: [
-      {
-        date: '2024-01-01',
-        documentNo: 'PO-240101',
-        supplier: 'Electrical Supplies Co',
-        price: 23.99
-      },
-      {
-        date: '2023-12-01',
-        documentNo: 'PO-231201',
-        supplier: 'Electrical Supplies Co',
-        price: 22.5
-      },
-      {
-        date: '2023-12-01',
-        documentNo: 'PO-231201',
-        supplier: 'Electrical Supplies Co',
-        price: 22.5
-      },
-      {
-        date: '2023-12-01',
-        documentNo: 'PO-231201',
-        supplier: 'Electrical Supplies Co',
-        price: 22.5
-      },
-      {
-        date: '2023-12-01',
-        documentNo: 'PO-231201',
-        supplier: 'Electrical Supplies Co',
-        price: 22.5
-      },
-      {
-        date: '2023-11-01',
-        documentNo: 'PO-231101',
-        supplier: 'Best Electronics',
-        price: 21.99
-      }
-    ]
-  },
-  {
-    stockCode: 'BN0013',
-    description: '1"X 5" M/S BOLT & NUT',
-    uom: 'PCS',
-    quantity: 44,
-    unitCost: 5.76,
-    totalValue: 253.44,
-    priceHistory: [
-      {
-        date: '2024-01-01',
-        documentNo: 'PO-240101',
-        supplier: 'Hardware Solutions',
-        price: 5.76
-      },
-      {
-        date: '2023-12-15',
-        documentNo: 'PO-231215',
-        supplier: 'Hardware Solutions',
-        price: 5.5
-      }
-    ]
-  }
-];
-
 export function InventoryList() {
+  const [items, setItems] = useState<InventoryItem[]>([]);
   const [search, setSearch] = useState('');
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [groupFilter, setGroupFilter] = useState('all');
+
+  // Fetch inventory items
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+          }/stock-items`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        const data = await response.json();
+
+        if (data.data) {
+          const mappedItems = data.data.map((item: any) => ({
+            stockCode: item.stockCode,
+            description: item.description,
+            uom: item.uom,
+            quantity: item.currentStock,
+            unitCost: item.unitPrice,
+            totalValue: item.currentStock * item.unitPrice,
+            priceHistory: [] // Initial empty history
+          }));
+          setItems(mappedItems);
+        }
+      } catch (error) {
+        console.error('Failed to fetch inventory:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchItems();
+  }, []);
+
+  // Fetch price history for an item
+  const handlePriceHistoryClick = async (item: InventoryItem) => {
+    setSelectedItem(item);
+    setPriceHistoryOpen(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+        }/stock-items/${item.stockCode}/price-history`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      const data = await response.json();
+
+      if (data.data) {
+        setSelectedItem((prev) =>
+          prev
+            ? {
+                ...prev,
+                priceHistory: data.data
+              }
+            : null
+        );
+      }
+    } catch (error) {
+      console.error('Failed to fetch price history:', error);
+    }
+  };
 
   // Get item codes that belong to the selected group
   const getItemCodesInGroup = (groupId: string) => {
@@ -130,7 +134,7 @@ export function InventoryList() {
 
   const itemCodesInSelectedGroup = getItemCodesInGroup(groupFilter);
 
-  const filteredItems = inventoryItems.filter((item) => {
+  const filteredItems = items.filter((item) => {
     const matchesSearch =
       item.stockCode.toLowerCase().includes(search.toLowerCase()) ||
       item.description.toLowerCase().includes(search.toLowerCase());
@@ -149,6 +153,16 @@ export function InventoryList() {
       group.items.some((item) => item.code === itemCode)
     );
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6 text-center">
+          Loading inventory...
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -257,10 +271,7 @@ export function InventoryList() {
                         variant="ghost"
                         size="sm"
                         className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                        onClick={() => {
-                          setSelectedItem(item);
-                          setPriceHistoryOpen(true);
-                        }}
+                        onClick={() => handlePriceHistoryClick(item)}
                       >
                         <Clock className="h-4 w-4 mr-2" />
                         Price History

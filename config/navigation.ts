@@ -17,8 +17,8 @@ import {
 
 export const navigationConfig = {
   user: {
-    name: 'Jordan Lim',
-    email: 'jordan@harvy.com.my',
+    name: 'Loading...',
+    email: 'Please wait...',
     avatar: '/avatars/shadcn.jpg'
   },
   // Main Sidebar Navigation

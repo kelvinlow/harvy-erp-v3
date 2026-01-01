@@ -18,8 +18,17 @@ import {
 } from '@/components/ui/sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { navigationConfig } from '@/config/navigation';
+import { useUser } from '@/hooks/use-user';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useUser();
+
+  const userData = {
+    name: user?.name || navigationConfig.user.name || 'Guest User',
+    email: user?.email || navigationConfig.user.email || 'guest@example.com',
+    avatar: user?.avatar || navigationConfig.user.avatar
+  };
+
   return (
     <Sidebar
       collapsible="offcanvas"
@@ -61,7 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarContent>
       </ScrollArea>
       <SidebarFooter>
-        <NavUser user={navigationConfig.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );

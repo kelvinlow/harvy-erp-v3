@@ -1,9 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Download, Printer, Search, Plus } from 'lucide-react';
+import {
+  CalendarIcon,
+  Download,
+  Printer,
+  Search,
+  Plus,
+  Loader2,
+  AlertCircle
+} from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -30,64 +39,59 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 interface PurchaseRequisition {
-  id: string;
+  id: string | number;
   prNumber: string;
   company: string;
-  date: string;
+  createdAt: string;
   status: string;
   poNumber: string | null;
 }
 
-// Mock data
-const purchaseRequisitions: PurchaseRequisition[] = [
-  {
-    id: 'PR001',
-    prNumber: 'PR-2024-001',
-    company: 'HAVYS OIL MILL',
-    date: '2024-01-10',
-    status: 'Pending',
-    poNumber: null
-  },
-  {
-    id: 'PR002',
-    prNumber: 'PR-2024-002',
-    company: 'GREEN PLANT',
-    date: '2024-01-12',
-    status: 'Approved',
-    poNumber: 'PO-2024-001'
-  },
-  {
-    id: 'PR003',
-    prNumber: 'PR-2024-003',
-    company: 'HAVYS OIL MILL',
-    date: '2024-01-15',
-    status: 'Rejected',
-    poNumber: null
-  },
-  {
-    id: 'PR004',
-    prNumber: 'PR-2024-004',
-    company: 'PARAMOUNT',
-    date: '2024-01-18',
-    status: 'Completed',
-    poNumber: 'PO-2024-002'
-  },
-  {
-    id: 'PR005',
-    prNumber: 'PR-2024-005',
-    company: 'HAVYS OIL MILL',
-    date: '2024-01-20',
-    status: 'Manager Approval',
-    poNumber: null
-  }
-];
-
 export function PurchaseRequisitionList() {
+  const [purchaseRequisitions, setPurchaseRequisitions] = useState<
+    PurchaseRequisition[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [date, setDate] = useState<Date>();
   const [status, setStatus] = useState<string>('');
   const [company, setCompany] = useState<string>('');
+
+  useEffect(() => {
+    async function fetchPRs() {
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+          }/purchase-requisitions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch purchase requisitions');
+        }
+
+        const result = await response.json();
+        setPurchaseRequisitions(result.data || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        toast.error('Failed to load purchase requisitions');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchPRs();
+  }, []);
 
   // Filter purchase requisitions based on search, date, status, and company
   const filteredRequisitions = purchaseRequisitions.filter((pr) => {
@@ -98,31 +102,69 @@ export function PurchaseRequisitionList() {
 
     const matchesDate =
       !date ||
-      format(new Date(pr.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+      format(new Date(pr.createdAt), 'yyyy-MM-dd') ===
+        format(date, 'yyyy-MM-dd');
 
-    const matchesStatus = !status || pr.status === status;
+    const matchesStatus =
+      !status || pr.status === status || (status === 'all' && true);
 
-    const matchesCompany = !company || pr.company === company;
+    const matchesCompany =
+      !company || pr.company === company || (company === 'all' && true);
 
     return matchesSearch && matchesDate && matchesStatus && matchesCompany;
   });
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Pending':
+    switch (status.toUpperCase()) {
+      case 'PENDING':
         return 'text-yellow-600 bg-yellow-50';
-      case 'Approved':
+      case 'APPROVED':
         return 'text-green-600 bg-green-50';
-      case 'Rejected':
+      case 'REJECTED':
         return 'text-red-600 bg-red-50';
-      case 'Completed':
+      case 'COMPLETED':
         return 'text-blue-600 bg-blue-50';
-      case 'Manager Approval':
+      case 'MANAGER_APPROVAL':
         return 'text-purple-600 bg-purple-50';
+      case 'PARTIAL':
+        return 'text-orange-600 bg-orange-50';
+      case 'DRAFT':
+        return 'text-gray-600 bg-gray-50';
       default:
         return 'text-gray-600 bg-gray-50';
     }
   };
+
+  const formatStatus = (status: string) => {
+    return status
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex h-64 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex h-64 flex-col items-center justify-center gap-4 text-destructive">
+          <AlertCircle className="h-10 w-10" />
+          <p>{error}</p>
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -186,11 +228,11 @@ export function PurchaseRequisitionList() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="Pending">Pending</SelectItem>
-              <SelectItem value="Approved">Approved</SelectItem>
-              <SelectItem value="Rejected">Rejected</SelectItem>
-              <SelectItem value="Completed">Completed</SelectItem>
-              <SelectItem value="Manager Approval">Manager Approval</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="APPROVED">Approved</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
+              <SelectItem value="COMPLETED">Completed</SelectItem>
+              <SelectItem value="MANAGER_APPROVAL">Manager Approval</SelectItem>
             </SelectContent>
           </Select>
           <Select value={company} onValueChange={setCompany}>
@@ -223,7 +265,7 @@ export function PurchaseRequisitionList() {
                   <TableCell>{pr.prNumber}</TableCell>
                   <TableCell>{pr.company}</TableCell>
                   <TableCell>
-                    {format(new Date(pr.date), 'dd MMM yyyy')}
+                    {format(new Date(pr.createdAt), 'dd MMM yyyy')}
                   </TableCell>
                   <TableCell>
                     <span
@@ -232,7 +274,7 @@ export function PurchaseRequisitionList() {
                         getStatusColor(pr.status)
                       )}
                     >
-                      {pr.status}
+                      {formatStatus(pr.status)}
                     </span>
                   </TableCell>
                   <TableCell>

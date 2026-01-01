@@ -6,14 +6,15 @@ import {
   poItems,
   suppliers,
   users,
-  NewPurchaseOrder,
+  purchaseRequisitions,
   NewPOItem
 } from '../db/schema';
+import { Database } from '../db';
 
 export const purchaseOrdersRoute = new Hono<{ Bindings: Env }>();
 
 // Generate PO number
-async function generatePONumber(db: any): Promise<string> {
+async function generatePONumber(db: Database): Promise<string> {
   const year = new Date().getFullYear();
   const prefix = `PO-${year}-`;
 
@@ -48,7 +49,19 @@ purchaseOrdersRoute.get('/', async (c) => {
   // Build conditions
   const conditions = [];
   if (status) {
-    conditions.push(eq(purchaseOrders.status, status as any));
+    conditions.push(
+      eq(
+        purchaseOrders.status,
+        status as
+          | 'DRAFT'
+          | 'PENDING'
+          | 'APPROVED'
+          | 'SENT'
+          | 'PARTIAL'
+          | 'COMPLETED'
+          | 'CANCELLED'
+      )
+    );
   }
   if (supplierId) {
     conditions.push(eq(purchaseOrders.supplierId, parseInt(supplierId)));
@@ -60,7 +73,7 @@ purchaseOrdersRoute.get('/', async (c) => {
     conditions.push(lte(purchaseOrders.createdAt, new Date(endDate)));
   }
 
-  let query = db
+  const baseQuery = db
     .select({
       po: purchaseOrders,
       supplier: {
@@ -71,11 +84,18 @@ purchaseOrdersRoute.get('/', async (c) => {
       createdBy: {
         id: users.id,
         name: users.name
-      }
+      },
+      prNumber: purchaseRequisitions.prNumber
     })
     .from(purchaseOrders)
     .leftJoin(suppliers, eq(purchaseOrders.supplierId, suppliers.id))
-    .leftJoin(users, eq(purchaseOrders.createdById, users.id));
+    .leftJoin(users, eq(purchaseOrders.createdById, users.id))
+    .leftJoin(
+      purchaseRequisitions,
+      eq(purchaseOrders.prId, purchaseRequisitions.id)
+    );
+
+  let query: any = baseQuery;
 
   if (conditions.length > 0) {
     query = query.where(and(...conditions)) as typeof query;
@@ -95,10 +115,18 @@ purchaseOrdersRoute.get('/', async (c) => {
   const total = countResult[0]?.count || 0;
 
   return c.json({
-    data: result.map((r: any) => ({
+    data: (
+      result as {
+        po: any;
+        supplier: any;
+        createdBy: any;
+        prNumber: string | null;
+      }[]
+    ).map((r) => ({
       ...r.po,
       supplier: r.supplier,
-      createdBy: r.createdBy
+      createdBy: r.createdBy,
+      prNumber: r.prNumber
     })),
     pagination: {
       page,

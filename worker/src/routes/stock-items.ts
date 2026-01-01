@@ -1,7 +1,13 @@
 import { Hono } from 'hono';
 import { eq, like, or, desc, asc, sql } from 'drizzle-orm';
 import { Env } from '../types/env';
-import { stockItems, NewStockItem } from '../db/schema';
+import {
+  stockItems,
+  NewStockItem,
+  purchaseOrders,
+  poItems,
+  suppliers
+} from '../db/schema';
 
 export const stockItemsRoute = new Hono<{ Bindings: Env }>();
 
@@ -229,4 +235,24 @@ stockItemsRoute.patch('/:id/stock', async (c) => {
     .returning();
 
   return c.json({ data: result[0] });
+});
+// Get price history for a stock item
+stockItemsRoute.get('/:stockCode/price-history', async (c) => {
+  const db = c.get('db');
+  const stockCode = c.req.param('stockCode');
+
+  const history = await db
+    .select({
+      date: purchaseOrders.orderDate,
+      documentNo: purchaseOrders.poNumber,
+      supplier: suppliers.name,
+      price: poItems.unitPrice
+    })
+    .from(poItems)
+    .innerJoin(purchaseOrders, eq(poItems.poId, purchaseOrders.id))
+    .innerJoin(suppliers, eq(purchaseOrders.supplierId, suppliers.id))
+    .where(eq(poItems.stockCode, stockCode))
+    .orderBy(desc(purchaseOrders.orderDate));
+
+  return c.json({ data: history });
 });

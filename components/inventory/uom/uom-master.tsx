@@ -8,308 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UOMTable } from './uom-table';
 import { UOMDialog } from './uom-dialog';
 import { DeleteConfirmation } from '@/components/delete-confirmation';
+import { useToast } from '@/components/ui/use-toast';
 import type { UOM, UOMRelationship } from '@/types/uom';
-
-// Mock data
-const mockUoms: UOM[] = [
-  {
-    id: '1',
-    code: 'BAG',
-    description: 'BAG',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '2',
-    code: 'BOT',
-    description: 'BOTTLE',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '3',
-    code: 'BOX',
-    description: 'BOX',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '4',
-    code: 'CAN',
-    description: 'CAN',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '5',
-    code: 'CARBOY',
-    description: 'CARBOY',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '6',
-    code: 'CART',
-    description: 'CARTON',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '7',
-    code: 'COIL',
-    description: 'COIL',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '8',
-    code: 'CYL',
-    description: 'CYLINDER',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '9',
-    code: 'DAY',
-    description: 'DAY',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '10',
-    code: 'DOZEN',
-    description: 'DOZEN',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '11',
-    code: 'DRUM',
-    description: 'DRUM',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '12',
-    code: 'FT',
-    description: 'FEET',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '13',
-    code: 'GAL',
-    description: 'GALLON',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '14',
-    code: 'INC',
-    description: 'INCH',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '15',
-    code: 'JOB',
-    description: 'JOB',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '16',
-    code: 'KG',
-    description: 'KILOGRAMS',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '17',
-    code: 'KM',
-    description: 'KILOMETERS',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '18',
-    code: 'LGTH',
-    description: 'LENGTH',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '19',
-    code: 'LOT',
-    description: 'LOT',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '20',
-    code: 'LTR',
-    description: 'LITER',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '21',
-    code: 'MTR',
-    description: 'METER',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '22',
-    code: 'NIGHT',
-    description: 'NIGHT',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '23',
-    code: 'NO',
-    description: 'NO',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '24',
-    code: 'PAD',
-    description: 'PAD',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '25',
-    code: 'PAIL',
-    description: 'PAIL',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '26',
-    code: 'PAIR',
-    description: 'PAIR',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '27',
-    code: 'PAL',
-    description: 'PALLET',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '28',
-    code: 'PCS',
-    description: 'PIECES',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '29',
-    code: 'PERSON',
-    description: 'PERSON',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '30',
-    code: 'PKT',
-    description: 'PACKET',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '31',
-    code: 'POINT',
-    description: 'POINT',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '32',
-    code: 'REAM',
-    description: 'REAM',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '33',
-    code: 'ROLL',
-    description: 'ROLL',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '34',
-    code: 'SET',
-    description: 'SET',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '35',
-    code: 'SHEET',
-    description: 'SHEET',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '36',
-    code: 'TIME',
-    description: 'TIME',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '37',
-    code: 'TIN',
-    description: 'TIN',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '38',
-    code: 'TON',
-    description: 'TON',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '39',
-    code: 'TRIP',
-    description: 'TRIP',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '40',
-    code: 'TUBE',
-    description: 'TUBE',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '41',
-    code: 'UNIT',
-    description: 'UNIT',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '42',
-    code: 'BDL',
-    description: 'BUNDLE',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
+import { Loader2 } from 'lucide-react';
 
 export function UOMMaster() {
-  const [uoms, setUoms] = React.useState<UOM[]>(mockUoms);
+  const { toast } = useToast();
+  const [uoms, setUoms] = React.useState<UOM[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [deleteOpen, setDeleteOpen] = React.useState(false);
   const [selectedUom, setSelectedUom] = React.useState<UOM | null>(null);
@@ -320,6 +26,41 @@ export function UOMMaster() {
   } | null>(null);
   const [deleteRelationshipOpen, setDeleteRelationshipOpen] =
     React.useState(false);
+
+  // Fetch Uoms
+  const fetchUoms = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+        }/uom`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      const data = await response.json();
+      if (data.data) {
+        setUoms(data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch UOMs:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to fetch UOMs.'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
+
+  React.useEffect(() => {
+    fetchUoms();
+  }, [fetchUoms]);
 
   const handleCreate = () => {
     setSelectedUom(null);
@@ -338,10 +79,40 @@ export function UOMMaster() {
 
   const handleDeleteConfirm = async () => {
     if (uomToDelete) {
-      // In a real app, you would call an API here
-      setUoms(uoms.filter((uom) => uom.id !== uomToDelete.id));
-      setDeleteOpen(false);
-      setUomToDelete(null);
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+          }/uom/${uomToDelete.id}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to delete UOM');
+        }
+
+        toast({
+          title: 'Success',
+          description: 'UOM deleted successfully.'
+        });
+        fetchUoms();
+      } catch (error) {
+        console.error('Delete error:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete UOM.'
+        });
+      } finally {
+        setDeleteOpen(false);
+        setUomToDelete(null);
+      }
     }
   };
 
@@ -355,7 +126,7 @@ export function UOMMaster() {
 
   const handleDeleteRelationshipConfirm = async () => {
     if (relationshipToDelete) {
-      // Todo: Call an API here
+      // Todo: Call an API here (relationships not implemented in DB yet)
       setUoms(
         uoms.map((uom) => {
           if (uom.id === relationshipToDelete.uomId) {
@@ -372,40 +143,62 @@ export function UOMMaster() {
       );
       setDeleteRelationshipOpen(false);
       setRelationshipToDelete(null);
+      toast({
+        title: 'Success',
+        description: 'Relationship deleted (local only).'
+      });
     }
   };
 
   const handleSave = async (
     data: Partial<UOM> & { relationships?: UOMRelationship[] }
   ) => {
-    if (selectedUom) {
-      // Update existing UOM
-      setUoms(
-        uoms.map((uom) =>
-          uom.id === selectedUom.id
-            ? {
-                ...selectedUom,
-                ...data,
-                relationships:
-                  data.relationships || selectedUom.relationships || [],
-                updatedAt: new Date().toISOString()
-              }
-            : uom
-        )
-      );
-    } else {
-      // Create new UOM
-      const newUom: UOM = {
-        id: Math.random().toString(36).substr(2, 9),
-        ...data,
-        relationships: data.relationships || [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      } as UOM;
-      setUoms([...uoms, newUom]);
+    try {
+      const token = localStorage.getItem('token');
+      const url = `${
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+      }/uom${selectedUom ? `/${selectedUom.id}` : ''}`;
+
+      const response = await fetch(url, {
+        method: selectedUom ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save UOM');
+      }
+
+      toast({
+        title: 'Success',
+        description: `UOM ${selectedUom ? 'updated' : 'created'} successfully.`
+      });
+      fetchUoms();
+      setOpen(false);
+    } catch (error) {
+      console.error('Save error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description:
+          error instanceof Error ? error.message : 'Failed to save UOM.'
+      });
     }
-    setOpen(false);
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex h-40 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>

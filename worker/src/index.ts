@@ -20,6 +20,7 @@ import { stockMovementsRoute } from './routes/stock-movements';
 import { attachmentsRoute } from './routes/attachments';
 import { goodsReceivedNotesRoute } from './routes/grn';
 import { internalTransfersRoute } from './routes/internal-transfers';
+import { uomRoute } from './routes/uom';
 
 // Create Hono app
 const app = new Hono<{ Bindings: Env }>();
@@ -82,6 +83,7 @@ api.route('/stock-movements', stockMovementsRoute);
 api.route('/attachments', attachmentsRoute);
 api.route('/grn', goodsReceivedNotesRoute);
 api.route('/internal-transfers', internalTransfersRoute);
+api.route('/uom', uomRoute);
 
 // 404 handler
 app.notFound((c) => {

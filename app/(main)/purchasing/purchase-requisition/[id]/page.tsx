@@ -1,6 +1,5 @@
 export const runtime = 'edge';
 
-import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { PurchaseFlowStepper } from '@/components/purchase-flow-stepper';
 import { Button } from '@/components/ui/button';
