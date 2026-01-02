@@ -97,9 +97,7 @@ export function InventoryCreateForm() {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-          }/stock-items`,
+          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items',
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await response.json();
@@ -121,9 +119,7 @@ export function InventoryCreateForm() {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-          }/uom`,
+          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom',
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await response.json();
@@ -142,9 +138,7 @@ export function InventoryCreateForm() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-        }/stock-movements/in`,
+        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-movements/in',
         {
           method: 'POST',
           headers: {

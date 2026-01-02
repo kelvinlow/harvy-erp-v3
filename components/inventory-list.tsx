@@ -55,9 +55,7 @@ export function InventoryList() {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-          }/stock-items`,
+          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items',
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -96,9 +94,7 @@ export function InventoryList() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-        }/stock-items/${item.stockCode}/price-history`,
+        `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items/${item.stockCode}/price-history`,
         {
           headers: {
             Authorization: `Bearer ${token}`

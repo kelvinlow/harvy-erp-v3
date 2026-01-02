@@ -85,9 +85,7 @@ export default function PurchaseRequisitionPage() {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-          }/purchase-requisitions/${params.id}`,
+          `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/purchase-requisitions/${params.id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

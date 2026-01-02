@@ -75,9 +75,7 @@ export function PurchaseRequisitionForm() {
         setIsInventoryLoading(true);
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-          }/stock-items`,
+          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items',
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -167,9 +165,7 @@ export function PurchaseRequisitionForm() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-        }/purchase-requisitions`,
+        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/purchase-requisitions',
         {
           method: 'POST',
           headers: {

@@ -33,9 +33,7 @@ export function UOMMaster() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-        }/uom`,
+        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom',
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -82,9 +80,7 @@ export function UOMMaster() {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-          }/uom/${uomToDelete.id}`,
+          `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom/${uomToDelete.id}`,
           {
             method: 'DELETE',
             headers: {
@@ -155,9 +151,9 @@ export function UOMMaster() {
   ) => {
     try {
       const token = localStorage.getItem('token');
-      const url = `${
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
-      }/uom${selectedUom ? `/${selectedUom.id}` : ''}`;
+      const url = `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom${
+        selectedUom ? `/${selectedUom.id}` : ''
+      }`;
 
       const response = await fetch(url, {
         method: selectedUom ? 'PUT' : 'POST',
