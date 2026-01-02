@@ -34,11 +34,25 @@ app.use('*', secureHeaders());
 app.use(
   '*',
   cors({
-    origin: [
-      'http://localhost:3000',
-      'https://havys-erp.pages.dev',
-      'https://main.havys-erp-v3.pages.dev'
-    ],
+    origin: (origin) => {
+      // Allow localhost for development
+      if (origin.startsWith('http://localhost:')) {
+        return origin;
+      }
+      // Allow Cloudflare Pages domains and subdomains
+      if (
+        origin.endsWith('.harvy-erp-v3.pages.dev') ||
+        origin === 'https://harvy-erp-v3.pages.dev' ||
+        origin.endsWith('.havys-erp-pages.pages.dev') ||
+        origin === 'https://havys-erp-pages.pages.dev' ||
+        origin.endsWith('.havys-erp.pages.dev') ||
+        origin === 'https://havys-erp.pages.dev'
+      ) {
+        return origin;
+      }
+      // Default to the first allowed production domain if no origin or unknown
+      return 'https://harvy-erp-v3.pages.dev';
+    },
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
     exposeHeaders: ['Content-Length'],
@@ -70,6 +84,14 @@ app.get('/', (c) => {
 
 // API routes
 const api = app.basePath('/api/v1');
+
+// API Health check
+api.get('/', (c) => {
+  return c.json({
+    message: 'Havys ERP API v1',
+    status: 'online'
+  });
+});
 
 // Public auth routes (no auth required)
 api.route('/auth', authRoute);

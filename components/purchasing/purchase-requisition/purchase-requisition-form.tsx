@@ -36,6 +36,14 @@ import { Textarea } from '@/components/ui/textarea';
 import type { PurchaseRequisition } from '@/types';
 import { CompanySelector } from '@/components/company-selector';
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -145,7 +153,7 @@ export function PurchaseRequisitionForm() {
     name: 'items'
   });
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: PurchaseRequisition) {
     if (!user) {
       toast({
         variant: 'destructive',
@@ -178,7 +186,7 @@ export function PurchaseRequisitionForm() {
             notes: data.remarks,
             requestedById: user.id,
             urgency: 'Medium',
-            items: data.items.map((item: any) => ({
+            items: data.items.map((item) => ({
               stockCode: item.stockCode,
               description: item.description,
               quantity: item.quantity,
@@ -364,216 +372,318 @@ export function PurchaseRequisitionForm() {
             <CardTitle>Items</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-lg border bg-card p-6">
-              <div className="grid gap-6">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="grid grid-cols-[2fr,3fr,1fr,1fr,1fr,auto] items-end gap-4"
-                  >
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.stockCode`}
-                      render={({ field: itemField }) => (
-                        <FormItem className="flex flex-col">
-                          {index === 0 && <FormLabel>Stock Code</FormLabel>}
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant="outline"
-                                  role="combobox"
-                                  className={cn(
-                                    'w-full justify-between',
-                                    !field.stockCode && 'text-muted-foreground'
-                                  )}
-                                >
-                                  {field.stockCode || 'Select stock'}
-                                  <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[300px] p-0">
-                              <Command>
-                                <CommandInput placeholder="Search stock..." />
-                                <CommandList>
-                                  <CommandEmpty>No stock found.</CommandEmpty>
-                                  <CommandGroup>
-                                    {isInventoryLoading ? (
-                                      <div className="flex items-center justify-center p-4">
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                        <span className="ml-2 text-sm">
-                                          Loading stock...
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      inventoryItems.map((item) => (
-                                        <CommandItem
-                                          key={item.stockCode}
-                                          value={item.stockCode}
-                                          onSelect={() => {
-                                            itemField.onChange(item.stockCode);
-                                            form.setValue(
-                                              `items.${index}.description`,
-                                              item.description
-                                            );
-                                            form.setValue(
-                                              `items.${index}.uom`,
-                                              item.uomCode
-                                            );
-                                            form.setValue(
-                                              `items.${index}.unitPrice`,
-                                              item.lastPrice
-                                            );
-                                          }}
+            <div className="rounded-xl border bg-card/30 shadow-sm">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-muted/50">
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="w-[180px] font-bold">
+                        Stock Code
+                      </TableHead>
+                      <TableHead className="min-w-[250px] font-bold">
+                        Description
+                      </TableHead>
+                      <TableHead className="w-[100px] text-right font-bold">
+                        Quantity
+                      </TableHead>
+                      <TableHead className="w-[80px] text-center font-bold">
+                        UOM
+                      </TableHead>
+                      <TableHead className="w-[130px] text-right font-bold">
+                        Unit Price
+                      </TableHead>
+                      <TableHead className="w-[130px] text-right font-bold">
+                        Amount
+                      </TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fields.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={7}
+                          className="h-24 text-center text-muted-foreground italic"
+                        >
+                          No items added yet. Click &quot;Add New Line&quot; to
+                          start.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      fields.map((field, index) => (
+                        <TableRow
+                          key={field.id}
+                          className="group transition-colors"
+                        >
+                          <TableCell className="align-top">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.stockCode`}
+                              render={({ field: itemField }) => (
+                                <FormItem>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button
+                                          variant="outline"
+                                          role="combobox"
+                                          className={cn(
+                                            'w-full justify-between font-normal hover:border-primary/50 transition-all truncate',
+                                            !field.stockCode &&
+                                              'text-muted-foreground'
+                                          )}
                                         >
-                                          {item.stockCode} - {item.description}
-                                        </CommandItem>
-                                      ))
-                                    )}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.description`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Description</FormLabel>}
-                          <FormControl>
-                            <Input {...field} readOnly className="bg-muted" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.quantity`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Quantity</FormLabel>}
-                          <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(e) => {
-                                field.onChange(Number(e.target.value));
-                                const quantity = Number(e.target.value);
-                                const unitPrice = form.getValues(
-                                  `items.${index}.unitPrice`
-                                );
-                                const subAmount = quantity * unitPrice;
-                                form.setValue(
-                                  `items.${index}.subAmount`,
-                                  subAmount
-                                );
-                                form.setValue(
-                                  `items.${index}.totalAmount`,
-                                  subAmount
-                                );
-                              }}
+                                          {field.stockCode || 'Select stock...'}
+                                          <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-[350px] p-0"
+                                      align="start"
+                                    >
+                                      <Command>
+                                        <CommandInput placeholder="Search stock or description..." />
+                                        <CommandList>
+                                          <CommandEmpty>
+                                            No stock found.
+                                          </CommandEmpty>
+                                          <CommandGroup heading="Inventory Items">
+                                            {isInventoryLoading ? (
+                                              <div className="flex items-center justify-center p-8">
+                                                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                                <span className="ml-2 text-sm font-medium">
+                                                  Loading inventory...
+                                                </span>
+                                              </div>
+                                            ) : (
+                                              inventoryItems.map((item) => (
+                                                <CommandItem
+                                                  key={item.stockCode}
+                                                  value={`${item.stockCode} ${item.description}`}
+                                                  onSelect={() => {
+                                                    itemField.onChange(
+                                                      item.stockCode
+                                                    );
+                                                    form.setValue(
+                                                      `items.${index}.description`,
+                                                      item.description
+                                                    );
+                                                    form.setValue(
+                                                      `items.${index}.uom`,
+                                                      item.uomCode
+                                                    );
+                                                    form.setValue(
+                                                      `items.${index}.unitPrice`,
+                                                      item.lastPrice || 0
+                                                    );
+                                                    const qty =
+                                                      form.getValues(
+                                                        `items.${index}.quantity`
+                                                      ) || 0;
+                                                    form.setValue(
+                                                      `items.${index}.totalAmount`,
+                                                      qty *
+                                                        (item.lastPrice || 0)
+                                                    );
+                                                  }}
+                                                  className="flex flex-col items-start py-3"
+                                                >
+                                                  <div className="font-bold">
+                                                    {item.stockCode}
+                                                  </div>
+                                                  <div className="text-xs text-muted-foreground line-clamp-1">
+                                                    {item.description}
+                                                  </div>
+                                                  <div className="mt-1 flex gap-2 text-[10px] font-bold text-primary italic uppercase">
+                                                    <span>{item.uomCode}</span>
+                                                    <span>•</span>
+                                                    <span>
+                                                      Price:{' '}
+                                                      {item.lastPrice?.toFixed(
+                                                        2
+                                                      )}
+                                                    </span>
+                                                  </div>
+                                                </CommandItem>
+                                              ))
+                                            )}
+                                          </CommandGroup>
+                                        </CommandList>
+                                      </Command>
+                                    </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          </TableCell>
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.uom`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>UOM</FormLabel>}
-                          <FormControl>
-                            <Input {...field} readOnly className="bg-muted" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.unitPrice`}
-                      render={({ field }) => (
-                        <FormItem>
-                          {index === 0 && <FormLabel>Unit Price</FormLabel>}
-                          <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(e) => {
-                                field.onChange(Number(e.target.value));
-                                const unitPrice = Number(e.target.value);
-                                const quantity = form.getValues(
-                                  `items.${index}.quantity`
-                                );
-                                const subAmount = quantity * unitPrice;
-                                form.setValue(
-                                  `items.${index}.subAmount`,
-                                  subAmount
-                                );
-                                form.setValue(
-                                  `items.${index}.totalAmount`,
-                                  subAmount
-                                );
-                              }}
+                          <TableCell className="align-top">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.description`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      readOnly
+                                      className="bg-muted/30 border-dashed border-muted-foreground/30 cursor-default focus-visible:ring-0"
+                                      placeholder="Auto-filled"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          </TableCell>
 
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => remove(index)}
-                      className="h-10 w-10 text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Remove item</span>
-                    </Button>
-                  </div>
-                ))}
+                          <TableCell className="align-top">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      {...field}
+                                      className="text-right focus:border-primary/50 transition-all font-medium"
+                                      onChange={(e) => {
+                                        const qty =
+                                          e.target.value === ''
+                                            ? 0
+                                            : Number(e.target.value);
+                                        field.onChange(qty);
+                                        const price =
+                                          form.getValues(
+                                            `items.${index}.unitPrice`
+                                          ) || 0;
+                                        form.setValue(
+                                          `items.${index}.totalAmount`,
+                                          qty * price
+                                        );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+
+                          <TableCell className="align-top">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.uom`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      readOnly
+                                      className="text-center bg-muted/30 border-dashed border-muted-foreground/30 cursor-default focus-visible:ring-0"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+
+                          <TableCell className="align-top">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.unitPrice`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      step="0.01"
+                                      {...field}
+                                      className="text-right focus:border-primary/50 transition-all"
+                                      onChange={(e) => {
+                                        const price =
+                                          e.target.value === ''
+                                            ? 0
+                                            : Number(e.target.value);
+                                        field.onChange(price);
+                                        const qty =
+                                          form.getValues(
+                                            `items.${index}.quantity`
+                                          ) || 0;
+                                        form.setValue(
+                                          `items.${index}.totalAmount`,
+                                          qty * price
+                                        );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+
+                          <TableCell className="align-top text-right">
+                            <div className="h-10 flex items-center justify-end px-3 font-mono font-bold text-primary">
+                              {form
+                                .watch(`items.${index}.totalAmount`)
+                                ?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }) || '0.00'}
+                            </div>
+                          </TableCell>
+
+                          <TableCell className="align-top">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => remove(index)}
+                              className="h-10 w-10 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Remove item</span>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
               </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="mt-6"
-                onClick={() =>
-                  append({
-                    id: String(fields.length + 1),
-                    stockCode: '',
-                    description: '',
-                    quantity: 0,
-                    uom: '',
-                    unitPrice: 0,
-                    discount: 0,
-                    subAmount: 0,
-                    taxCode: '',
-                    taxRate: 0,
-                    station: '',
-                    totalAmount: 0
-                  })
-                }
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Item
-              </Button>
+              <div className="p-4 bg-muted/20 border-t">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-12 border-dashed hover:bg-primary/5 hover:text-primary hover:border-primary/50 transition-all font-semibold"
+                  onClick={() =>
+                    append({
+                      id: crypto.randomUUID(),
+                      stockCode: '',
+                      description: '',
+                      quantity: 0,
+                      uom: '',
+                      unitPrice: 0,
+                      discount: 0,
+                      subAmount: 0,
+                      taxCode: '',
+                      taxRate: 0,
+                      station: '',
+                      totalAmount: 0
+                    })
+                  }
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add New Line Item
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -597,18 +707,35 @@ export function PurchaseRequisitionForm() {
               )}
             />
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <div className="text-sm">
-              Total: MYR{' '}
-              {fields
-                .reduce((sum, item) => sum + item.totalAmount, 0)
-                .toFixed(2)}
+          <CardFooter className="flex flex-col items-end gap-4 border-t p-6 sm:flex-row sm:justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                Total Amount:
+              </span>
+              <span className="text-2xl font-bold tracking-tight text-primary">
+                MYR{' '}
+                {fields
+                  .reduce((sum, item) => sum + (item.totalAmount || 0), 0)
+                  .toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })}
+              </span>
             </div>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto px-8"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                'Submit Requisition'
               )}
-              Submit
             </Button>
           </CardFooter>
         </Card>

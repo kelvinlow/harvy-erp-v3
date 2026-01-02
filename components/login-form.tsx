@@ -81,7 +81,7 @@ export function LoginForm({
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card className="overflow-hidden p-0 shadow-xl border-none">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={onSubmit}>
+          <form className="p-6 md:p-8" onSubmit={onSubmit} method="POST">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center mb-4">
                 <h1 className="text-3xl font-black tracking-tighter text-primary">
