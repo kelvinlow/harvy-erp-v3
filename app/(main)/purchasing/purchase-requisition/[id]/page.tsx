@@ -1,5 +1,6 @@
-export const runtime = 'edge';
+'use client';
 
+import * as React from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { PurchaseFlowStepper } from '@/components/purchase-flow-stepper';
 import { Button } from '@/components/ui/button';
@@ -19,102 +20,119 @@ import {
   User,
   Building,
   DollarSign,
-  ClipboardList
+  ClipboardList,
+  Loader2
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { useToast } from '@/components/ui/use-toast';
 
-// This would normally come from your database
-const mockPurchaseRequisition = {
-  id: 'PR001',
-  status: 'MANAGER_APPROVAL_1',
-  title: 'Office Supplies Requisition',
-  date: '2025-03-15',
-  requestedBy: 'John Doe',
-  department: 'Administration',
-  company: 'Nova Gadget House',
-  urgency: 'Medium',
-  totalAmount: 1250.75,
-  currency: 'USD',
-  notes: 'Required for the new office setup',
-  items: [
-    {
-      id: '1',
-      stockCode: 'A123',
-      description: 'Office Desk',
-      quantity: 5,
-      uom: 'EA',
-      unitPrice: 150.0,
-      totalPrice: 750.0
-    },
-    {
-      id: '2',
-      stockCode: 'B456',
-      description: 'Office Chair',
-      quantity: 5,
-      uom: 'EA',
-      unitPrice: 85.5,
-      totalPrice: 427.5
-    },
-    {
-      id: '3',
-      stockCode: 'C789',
-      description: 'Filing Cabinet',
-      quantity: 2,
-      uom: 'EA',
-      unitPrice: 36.75,
-      totalPrice: 73.5
-    }
-  ],
-  approvals: [
-    {
-      stage: 'MANAGER_APPROVAL_1',
-      approver: 'Jane Smith',
-      status: 'Pending',
-      date: null
-    },
-    {
-      stage: 'MANAGER_APPROVAL_2',
-      approver: 'Mike Johnson',
-      status: 'Not Started',
-      date: null
-    },
-    {
-      stage: 'MANAGER_APPROVAL_3',
-      approver: 'Sarah Williams',
-      status: 'Not Started',
-      date: null
-    }
-  ],
-  attachments: [
-    {
-      id: 'att1',
-      name: 'Requirements.pdf',
-      size: '1.2 MB',
-      uploadedBy: 'John Doe',
-      uploadedAt: '2025-03-15'
-    }
-  ],
-  history: [
-    {
-      action: 'Created',
-      user: 'John Doe',
-      timestamp: '2025-03-15T09:30:00Z',
-      notes: 'Initial requisition created'
-    },
-    {
-      action: 'Submitted for Approval',
-      user: 'John Doe',
-      timestamp: '2025-03-15T10:15:00Z',
-      notes: 'Submitted to Jane Smith for approval'
-    }
-  ]
-};
+interface PurchaseRequisition {
+  id: number;
+  prNumber: string;
+  status: string;
+  title: string;
+  createdAt: string;
+  requestedBy: string;
+  department: string;
+  company: string;
+  urgency: string;
+  totalAmount: number;
+  currency: string;
+  notes: string;
+  items: Array<{
+    id: number;
+    stockCode: string;
+    description: string;
+    quantity: number;
+    uom: string;
+    unitPrice: number;
+    totalPrice: number;
+  }>;
+  approvals: Array<{
+    stage: string;
+    approver: string;
+    status: string;
+    date: string | null;
+  }>;
+  attachments: Array<{
+    id: string;
+    name: string;
+    size: string;
+    uploadedBy: string;
+    uploadedAt: string;
+  }>;
+  history: Array<{
+    action: string;
+    user: string;
+    timestamp: string;
+    notes: string;
+  }>;
+}
 
 export default function PurchaseRequisitionPage({
   params
 }: {
   params: { id: string };
 }) {
+  const { toast } = useToast();
+  const [pr, setPr] = React.useState<PurchaseRequisition | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    async function fetchPR() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api/v1'
+          }/purchase-requisitions/${params.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (!response.ok) {
+          if (response.status === 404)
+            throw new Error('Purchase Requisition not found');
+          throw new Error('Failed to fetch purchase requisition');
+        }
+
+        const json = await response.json();
+        setPr(json.data);
+      } catch (err) {
+        console.error(err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description:
+            err instanceof Error ? err.message : 'Failed to load data'
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPR();
+  }, [params.id, toast]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error || !pr) {
+    return (
+      <div className="flex h-screen items-center justify-center flex-col gap-4">
+        <h2 className="text-xl font-semibold text-destructive">
+          {error || 'Requisition not found'}
+        </h2>
+        <Button onClick={() => window.history.back()}>Go Back</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen">
       <SidebarProvider>
@@ -122,11 +140,9 @@ export default function PurchaseRequisitionPage({
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">
-                Purchase Requisition #{params.id}
+                Purchase Requisition #{pr.prNumber || pr.id}
               </h1>
-              <p className="text-muted-foreground">
-                {mockPurchaseRequisition.title}
-              </p>
+              <p className="text-muted-foreground">{pr.title}</p>
             </div>
             <div className="flex space-x-2">
               <Button variant="outline" size="sm">
@@ -139,8 +155,8 @@ export default function PurchaseRequisitionPage({
 
           {/* Status Badge */}
           <div className="flex items-center">
-            <Badge variant="outline" className="px-3 py-1 text-sm">
-              Status: {mockPurchaseRequisition.status.replace(/_/g, ' ')}
+            <Badge variant="outline" className="px-3 py-1 text-sm uppercase">
+              Status: {pr.status.replace(/_/g, ' ')}
             </Badge>
           </div>
 
@@ -153,9 +169,7 @@ export default function PurchaseRequisitionPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <PurchaseFlowStepper
-                currentStatus={mockPurchaseRequisition.status as any}
-              />
+              <PurchaseFlowStepper currentStatus={pr.status as any} />
             </CardContent>
           </Card>
 
@@ -182,7 +196,9 @@ export default function PurchaseRequisitionPage({
                       </span>
                       <span className="flex items-center">
                         <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {format(new Date(mockPurchaseRequisition.date), 'PPP')}
+                        {pr.createdAt
+                          ? format(new Date(pr.createdAt), 'PPP')
+                          : 'N/A'}
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1">
@@ -191,7 +207,7 @@ export default function PurchaseRequisitionPage({
                       </span>
                       <span className="flex items-center">
                         <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {mockPurchaseRequisition.requestedBy}
+                        {pr.requestedBy}
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1">
@@ -200,7 +216,7 @@ export default function PurchaseRequisitionPage({
                       </span>
                       <span className="flex items-center">
                         <Building className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {mockPurchaseRequisition.department}
+                        {pr.department}
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1">
@@ -209,7 +225,7 @@ export default function PurchaseRequisitionPage({
                       </span>
                       <span className="flex items-center">
                         <Building className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {mockPurchaseRequisition.company}
+                        {pr.company}
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1">
@@ -218,8 +234,7 @@ export default function PurchaseRequisitionPage({
                       </span>
                       <span className="flex items-center">
                         <DollarSign className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {mockPurchaseRequisition.totalAmount.toFixed(2)}{' '}
-                        {mockPurchaseRequisition.currency}
+                        {pr.totalAmount.toFixed(2)} {pr.currency}
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1">
@@ -229,14 +244,14 @@ export default function PurchaseRequisitionPage({
                       <span className="flex items-center">
                         <Badge
                           variant={
-                            mockPurchaseRequisition.urgency === 'High'
+                            pr.urgency === 'High'
                               ? 'destructive'
-                              : mockPurchaseRequisition.urgency === 'Medium'
+                              : pr.urgency === 'Medium'
                               ? 'default'
                               : 'outline'
                           }
                         >
-                          {mockPurchaseRequisition.urgency}
+                          {pr.urgency}
                         </Badge>
                       </span>
                     </div>
@@ -248,7 +263,7 @@ export default function PurchaseRequisitionPage({
                       Notes
                     </h3>
                     <p className="mt-1 text-sm">
-                      {mockPurchaseRequisition.notes}
+                      {pr.notes || 'No notes provided.'}
                     </p>
                   </div>
 
@@ -258,27 +273,38 @@ export default function PurchaseRequisitionPage({
                       Attachments
                     </h3>
                     <div className="mt-2 space-y-2">
-                      {mockPurchaseRequisition.attachments.map((attachment) => (
-                        <div
-                          key={attachment.id}
-                          className="flex items-center rounded-md border p-2"
-                        >
-                          <FileText className="mr-2 h-4 w-4 text-muted-foreground" />
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">
-                              {attachment.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {attachment.size} • Uploaded by{' '}
-                              {attachment.uploadedBy} on{' '}
-                              {format(new Date(attachment.uploadedAt), 'PP')}
-                            </p>
+                      {pr.attachments && pr.attachments.length > 0 ? (
+                        pr.attachments.map((attachment) => (
+                          <div
+                            key={attachment.id}
+                            className="flex items-center rounded-md border p-2"
+                          >
+                            <FileText className="mr-2 h-4 w-4 text-muted-foreground" />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium">
+                                {attachment.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {attachment.size} • Uploaded by{' '}
+                                {attachment.uploadedBy} on{' '}
+                                {attachment.uploadedAt
+                                  ? format(
+                                      new Date(attachment.uploadedAt),
+                                      'PP'
+                                    )
+                                  : ''}
+                              </p>
+                            </div>
+                            <Button variant="ghost" size="sm">
+                              View
+                            </Button>
                           </div>
-                          <Button variant="ghost" size="sm">
-                            View
-                          </Button>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No attachments.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -320,13 +346,11 @@ export default function PurchaseRequisitionPage({
                         </tr>
                       </thead>
                       <tbody>
-                        {mockPurchaseRequisition.items.map((item, index) => (
+                        {pr.items.map((item, index) => (
                           <tr
                             key={item.id}
                             className={
-                              index !== mockPurchaseRequisition.items.length - 1
-                                ? 'border-b'
-                                : ''
+                              index !== pr.items.length - 1 ? 'border-b' : ''
                             }
                           >
                             <td className="px-4 py-3 text-sm">
@@ -359,8 +383,7 @@ export default function PurchaseRequisitionPage({
                             Total:
                           </td>
                           <td className="px-4 py-3 text-right text-sm font-bold">
-                            {mockPurchaseRequisition.totalAmount.toFixed(2)}{' '}
-                            {mockPurchaseRequisition.currency}
+                            {pr.totalAmount.toFixed(2)} {pr.currency}
                           </td>
                         </tr>
                       </tfoot>
@@ -381,65 +404,68 @@ export default function PurchaseRequisitionPage({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {mockPurchaseRequisition.approvals.map(
-                      (approval, index) => (
+                    {pr.approvals.map((approval, index) => (
+                      <div
+                        key={approval.stage}
+                        className="flex items-start space-x-4 rounded-md border p-4"
+                      >
                         <div
-                          key={approval.stage}
-                          className="flex items-start space-x-4 rounded-md border p-4"
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                            approval.status === 'Approved'
+                              ? 'bg-green-100'
+                              : approval.status === 'Pending'
+                              ? 'bg-amber-100'
+                              : 'bg-gray-100'
+                          }`}
                         >
-                          <div
-                            className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                          <ClipboardList
+                            className={`h-5 w-5 ${
                               approval.status === 'Approved'
-                                ? 'bg-green-100'
+                                ? 'text-green-600'
                                 : approval.status === 'Pending'
-                                ? 'bg-amber-100'
-                                : 'bg-gray-100'
+                                ? 'text-amber-600'
+                                : 'text-gray-600'
                             }`}
-                          >
-                            <ClipboardList
-                              className={`h-5 w-5 ${
-                                approval.status === 'Approved'
-                                  ? 'text-green-600'
-                                  : approval.status === 'Pending'
-                                  ? 'text-amber-600'
-                                  : 'text-gray-600'
-                              }`}
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="text-sm font-medium">
-                              Stage {index + 1}:{' '}
-                              {approval.stage.replace(/_/g, ' ')}
-                            </h3>
-                            <div className="mt-1 flex items-center text-sm text-muted-foreground">
-                              <User className="mr-1 h-4 w-4" />
-                              Approver: {approval.approver}
-                            </div>
-                            <div className="mt-2 flex items-center">
-                              <Badge
-                                variant={
-                                  approval.status === 'Approved'
-                                    ? 'success'
-                                    : approval.status === 'Pending'
-                                    ? 'outline'
-                                    : 'secondary'
-                                }
-                              >
-                                {approval.status}
-                              </Badge>
-                              {approval.date && (
-                                <span className="ml-2 text-xs text-muted-foreground">
-                                  {format(new Date(approval.date), 'PPP')}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          {approval.status === 'Pending' && (
-                            <Button size="sm">Approve</Button>
-                          )}
+                          />
                         </div>
-                      )
-                    )}
+                        <div className="flex-1">
+                          <h3 className="text-sm font-medium">
+                            Stage {index + 1}:{' '}
+                            {approval.stage.replace(/_/g, ' ')}
+                          </h3>
+                          <div className="mt-1 flex items-center text-sm text-muted-foreground">
+                            <User className="mr-1 h-4 w-4" />
+                            Approver: {approval.approver}
+                          </div>
+                          <div className="mt-2 flex items-center">
+                            <Badge
+                              variant={
+                                approval.status === 'Approved'
+                                  ? 'success' // Ensure variant exists or use default style
+                                  : approval.status === 'Pending'
+                                  ? 'outline'
+                                  : 'secondary'
+                              }
+                              className={
+                                approval.status === 'Approved'
+                                  ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                  : ''
+                              }
+                            >
+                              {approval.status}
+                            </Badge>
+                            {approval.date && (
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                {format(new Date(approval.date), 'PPP')}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {approval.status === 'Pending' && (
+                          <Button size="sm">Approve</Button>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -456,14 +482,13 @@ export default function PurchaseRequisitionPage({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {mockPurchaseRequisition.history.map((event, index) => (
+                    {pr.history.map((event, index) => (
                       <div key={index} className="flex space-x-4">
                         <div className="flex-none">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
                             <FileText className="h-4 w-4 text-primary" />
                           </div>
-                          {index !==
-                            mockPurchaseRequisition.history.length - 1 && (
+                          {index !== pr.history.length - 1 && (
                             <div className="mx-auto mt-1 h-12 w-0.5 bg-border" />
                           )}
                         </div>
@@ -473,7 +498,9 @@ export default function PurchaseRequisitionPage({
                               {event.action}
                             </h3>
                             <span className="text-xs text-muted-foreground">
-                              {format(new Date(event.timestamp), 'PPp')}
+                              {event.timestamp
+                                ? format(new Date(event.timestamp), 'PPp')
+                                : ''}
                             </span>
                           </div>
                           <p className="mt-1 text-sm text-muted-foreground">

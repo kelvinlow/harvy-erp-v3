@@ -291,7 +291,7 @@ export function PurchaseRequisitionList() {
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/purchase-requisition/${pr.id}`}>
+                      <Link href={`/purchasing/purchase-requisition/${pr.id}`}>
                         View Details
                       </Link>
                     </Button>
