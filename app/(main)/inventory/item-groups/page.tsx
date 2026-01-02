@@ -1,7 +1,7 @@
 import { ItemGroupManagement } from '@/components/inventory/item-groups/item-group-management';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Item Groups - Harvy' };
+export const metadata: Metadata = { title: 'Item Groups - Havys' };
 
 export default function ItemGroupsPage() {
   return (

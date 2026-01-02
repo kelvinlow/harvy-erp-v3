@@ -1,7 +1,7 @@
 import { InventoryList } from '@/components/inventory-list';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Inventory - Harvy' };
+export const metadata: Metadata = { title: 'Inventory - Havys' };
 
 export default function InventoryPage() {
   return (

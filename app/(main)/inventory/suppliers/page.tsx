@@ -1,7 +1,7 @@
 import { SupplierManagement } from '@/components/inventory/suppliers/supplier-management';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Suppliers - Harvy' };
+export const metadata: Metadata = { title: 'Suppliers - Havys' };
 
 export default function SuppliersPage() {
   return (

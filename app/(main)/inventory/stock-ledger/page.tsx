@@ -1,7 +1,7 @@
 import { StockLedgerView } from '@/components/inventory/stock-ledger/stock-ledger-view';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Stock Ledger - Harvy' };
+export const metadata: Metadata = { title: 'Stock Ledger - Havys' };
 
 export default function StockLedgerPage() {
   return (

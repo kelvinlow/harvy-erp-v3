@@ -1,7 +1,7 @@
 import StockBalanceView from '@/components/inventory/stock-balance/stock-balance-view';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Stock Balance - Harvy' };
+export const metadata: Metadata = { title: 'Stock Balance - Havys' };
 
 export default function StockBalancePage() {
   return (

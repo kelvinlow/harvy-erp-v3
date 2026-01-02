@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Gatepass - Harvy' };
+export const metadata: Metadata = { title: 'Gatepass - Havys' };
 
 export default function GatepassPage() {
   return (

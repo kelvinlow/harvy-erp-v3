@@ -1,7 +1,7 @@
 import { StockIssueList } from '@/components/purchasing/stock-issue/stock-issue-list';
 
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Stock Issue - Harvy' };
+export const metadata: Metadata = { title: 'Stock Issue - Havys' };
 
 export default function StockIssuePage() {
   return (
