@@ -209,7 +209,7 @@ Created `generate-hash.js`:
 // 1. Login
 POST /api/v1/auth/login
 {
-  "email": "admin@harvy.com",
+  "email": "admin@havys.com",
   "password": "Admin123!"
 }
 
@@ -370,7 +370,7 @@ Applied migrations:
 To apply to remote:
 
 ```bash
-npx wrangler d1 migrations apply harvy-erp-db --remote
+npx wrangler d1 migrations apply havys-erp-db --remote
 ```
 
 ## ✨ Summary

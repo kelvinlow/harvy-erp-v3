@@ -437,3 +437,26 @@ export const unitsOfMeasure = sqliteTable('units_of_measure', {
 
 export type UOM = typeof unitsOfMeasure.$inferSelect;
 export type NewUOM = typeof unitsOfMeasure.$inferInsert;
+
+// Staff Table
+export const staff = sqliteTable('staff', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  staffId: text('staff_id').notNull().unique(), // e.g. ST1001
+  fullName: text('full_name').notNull(),
+  nric: text('nric'),
+  email: text('email'),
+  position: text('position'),
+  department: text('department'),
+  managerStaffId: text('manager_staff_id'), // References staffId
+  phone: text('phone'),
+  photoUrl: text('photo_url'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(
+    sql`(unixepoch())`
+  ),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(
+    sql`(unixepoch())`
+  )
+});
+
+export type Staff = typeof staff.$inferSelect;
+export type NewStaff = typeof staff.$inferInsert;

@@ -84,7 +84,7 @@ export const mockUsers: User[] = [
   {
     id: 'U1009',
     name: 'ERP Admin',
-    email: 'erp-admin@harvy.com.my',
+    email: 'erp-admin@havys.com.my',
     role: 'GENERAL_MANAGER',
     department: 'IT',
     avatarUrl: '/placeholder.svg?height=128&width=128',

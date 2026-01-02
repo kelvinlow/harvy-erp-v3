@@ -85,7 +85,7 @@ export function LoginForm({
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center mb-4">
                 <h1 className="text-3xl font-black tracking-tighter text-primary">
-                  HARVY ERP
+                  HAVYS ERP
                 </h1>
                 <p className="text-muted-foreground text-balance text-sm font-medium">
                   Integrated Management System of Business Processes
@@ -128,7 +128,7 @@ export function LoginForm({
                       Authenticating...
                     </>
                   ) : (
-                    'Login to Harvy ERP'
+                    'Login to Havys ERP'
                   )}
                 </Button>
               </Field>

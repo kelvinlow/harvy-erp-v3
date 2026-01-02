@@ -8,10 +8,10 @@
 cd worker
 
 # Local database
-npx wrangler d1 migrations apply harvy-erp-db --local
+npx wrangler d1 migrations apply havys-erp-db --local
 
 # Remote database (for production)
-npx wrangler d1 migrations apply harvy-erp-db --remote
+npx wrangler d1 migrations apply havys-erp-db --remote
 ```
 
 ### 2. Create Admin User
@@ -21,7 +21,7 @@ npx wrangler d1 migrations apply harvy-erp-db --remote
 node generate-hash.js "YourSecurePassword123!"
 
 # Copy the hash from output, then run:
-npx wrangler d1 execute harvy-erp-db --local --command "UPDATE users SET password_hash='<paste-hash-here>' WHERE email='admin@harvy.com'"
+npx wrangler d1 execute havys-erp-db --local --command "UPDATE users SET password_hash='<paste-hash-here>' WHERE email='admin@havys.com'"
 ```
 
 ### 3. Start Development Server
@@ -38,7 +38,7 @@ npx wrangler dev --local
 curl -X POST http://localhost:8787/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@harvy.com",
+    "email": "admin@havys.com",
     "password": "YourSecurePassword123!"
   }'
 ```
@@ -66,7 +66,7 @@ curl -X POST http://localhost:8787/api/v1/auth/register \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "user@harvy.com",
+    "email": "user@havys.com",
     "password": "User123!",
     "name": "Regular User",
     "role": "user",
@@ -198,7 +198,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ```bash
 # Apply migrations to production
-npx wrangler d1 migrations apply harvy-erp-db --remote
+npx wrangler d1 migrations apply havys-erp-db --remote
 
 # Deploy worker
 npx wrangler deploy
@@ -211,7 +211,7 @@ npx wrangler deploy
 node generate-hash.js "ProductionAdminPassword123!"
 
 # Update remote database
-npx wrangler d1 execute harvy-erp-db --remote --command "UPDATE users SET password_hash='<hash>' WHERE email='admin@harvy.com'"
+npx wrangler d1 execute havys-erp-db --remote --command "UPDATE users SET password_hash='<hash>' WHERE email='admin@havys.com'"
 ```
 
 ## Common Issues
@@ -219,7 +219,7 @@ npx wrangler d1 execute harvy-erp-db --remote --command "UPDATE users SET passwo
 ### "Invalid credentials"
 
 - Check password is correct
-- Verify user exists: `npx wrangler d1 execute harvy-erp-db --local --command "SELECT * FROM users WHERE email='admin@harvy.com'"`
+- Verify user exists: `npx wrangler d1 execute havys-erp-db --local --command "SELECT * FROM users WHERE email='admin@havys.com'"`
 - Ensure user status is 'active'
 
 ### "Unauthorized"

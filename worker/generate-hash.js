@@ -31,6 +31,6 @@ hashPassword(password).then(hash => {
     console.log('Password:', password);
     console.log('Hash:', hash);
     console.log('\n📝 SQL Command:\n');
-    console.log(`npx wrangler d1 execute harvy-erp-db --local --command "UPDATE users SET password_hash='${hash}' WHERE email='lowshinsheng@gmail.com'"`);
+    console.log(`npx wrangler d1 execute havys-erp-db --local --command "UPDATE users SET password_hash='${hash}' WHERE email='lowshinsheng@gmail.com'"`);
     console.log('\n');
 }).catch(console.error);

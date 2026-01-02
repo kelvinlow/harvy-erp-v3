@@ -30,7 +30,7 @@ async function seed() {
 
   console.log('\n📝 Run this SQL command to create the admin user:');
   console.log(
-    `\nnpx wrangler d1 execute harvy-erp-db --local --command "UPDATE users SET password_hash='${passwordHash}', status='active' WHERE email='${adminEmail}'"\n`
+    `\nnpx wrangler d1 execute havys-erp-db --local --command "UPDATE users SET password_hash='${passwordHash}', status='active' WHERE email='${adminEmail}'"\n`
   );
 }
 

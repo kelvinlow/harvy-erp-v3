@@ -1,4 +1,4 @@
-# 🚀 Harvy ERP Backend - Complete Setup Guide
+# 🚀 Havys ERP Backend - Complete Setup Guide
 
 ## ✅ What We've Built
 
@@ -29,14 +29,14 @@ Cloudflare Worker backend is now scaffolded with:
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
 2. Navigate to **Workers & Pages** → **D1**
 3. Click **Create database**
-4. Name it: `harvy-erp-db`
+4. Name it: `havys-erp-db`
 5. Copy the **Database ID** shown after creation
 6. Open `worker/wrangler.toml` and paste it:
 
 ```toml
 [[d1_databases]]
 binding = "DB"
-database_name = "harvy-erp-db"
+database_name = "havys-erp-db"
 database_id = "YOUR_DATABASE_ID_HERE"  # ← Paste here
 ```
 
@@ -44,7 +44,7 @@ database_id = "YOUR_DATABASE_ID_HERE"  # ← Paste here
 
 1. In Cloudflare Dashboard, go to **R2**
 2. Click **Create bucket**
-3. Name it: `harvy-erp-files`
+3. Name it: `havys-erp-files`
 4. That's it! (The name in `wrangler.toml` already matches)
 
 ### Step 3: Generate Database Migrations
@@ -216,7 +216,7 @@ export function PurchaseRequisitionList() {
 ## 📂 Project Structure
 
 ```
-harvy-erp-v3/
+havys-erp-v3/
 ├── app/                          # Next.js frontend
 ├── components/                   # React components
 ├── worker/                       # ← NEW: Cloudflare Worker
@@ -254,7 +254,7 @@ This deploys your API to Cloudflare's edge network globally!
 Add to `.env.production`:
 
 ```env
-NEXT_PUBLIC_API_URL=https://harvy-erp-api.your-subdomain.workers.dev/trpc
+NEXT_PUBLIC_API_URL=https://havys-erp-api.your-subdomain.workers.dev/trpc
 ```
 
 Replace with your actual Workers URL

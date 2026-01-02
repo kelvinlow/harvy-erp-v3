@@ -21,6 +21,7 @@ import { attachmentsRoute } from './routes/attachments';
 import { goodsReceivedNotesRoute } from './routes/grn';
 import { internalTransfersRoute } from './routes/internal-transfers';
 import { uomRoute } from './routes/uom';
+import { staffRoute } from './routes/staff';
 
 // Create Hono app
 const app = new Hono<{ Bindings: Env }>();
@@ -35,8 +36,8 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'https://harvy-erp.pages.dev',
-      'https://main.harvy-erp-v3.pages.dev'
+      'https://havys-erp.pages.dev',
+      'https://main.havys-erp-v3.pages.dev'
     ],
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
@@ -59,7 +60,7 @@ app.use('*', authMiddleware);
 // Health check endpoint
 app.get('/', (c) => {
   return c.json({
-    name: 'Harvy ERP API',
+    name: 'Havys ERP API',
     version: '1.0.0',
     status: 'healthy',
     environment: c.env.ENVIRONMENT,
@@ -84,6 +85,7 @@ api.route('/attachments', attachmentsRoute);
 api.route('/grn', goodsReceivedNotesRoute);
 api.route('/internal-transfers', internalTransfersRoute);
 api.route('/uom', uomRoute);
+api.route('/staff', staffRoute);
 
 // 404 handler
 app.notFound((c) => {

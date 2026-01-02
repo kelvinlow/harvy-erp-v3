@@ -1,6 +1,6 @@
-# Deployment Guide for Harvy ERP v3
+# Deployment Guide for Havys ERP v3
 
-This guide documents the steps to deploy the Harvy ERP application to Cloudflare. The application consists of a **Next.js Frontend** (Cloudflare Pages) and a **Hono Backend** (Cloudflare Workers) with **D1 Database**.
+This guide documents the steps to deploy the Havys ERP application to Cloudflare. The application consists of a **Next.js Frontend** (Cloudflare Pages) and a **Hono Backend** (Cloudflare Workers) with **D1 Database**.
 
 ## Prerequisites
 
@@ -25,14 +25,14 @@ npm install
     Sync your database schema changes to the remote Cloudflare D1 database.
 
     ```bash
-    npx wrangler d1 migrations apply harvy-erp-db --remote
+    npx wrangler d1 migrations apply havys-erp-db --remote
     ```
 
 2.  **Seed Database (Optional)**
     Populate the remote database with initial production data (Stock items, UOMs, Admin user).
     Ensure `seed_production.sql` is present in the `worker/` directory.
     ```bash
-    npx wrangler d1 execute harvy-erp-db --remote --file=seed_production.sql
+    npx wrangler d1 execute havys-erp-db --remote --file=seed_production.sql
     ```
 
 ### Deploy Worker API
@@ -72,20 +72,20 @@ yarn build
 Deploy the built `.next` folder to Cloudflare Pages.
 
 ```bash
-npx wrangler pages deploy .next --project-name harvy-erp-v3 --branch main
+npx wrangler pages deploy .next --project-name havys-erp-pages --branch main
 ```
 
-_Note: Ensure the project name `harvy-erp-v3` matches your Cloudflare Pages project name._
+_Note: Ensure the project name `havys-erp-pages` matches your Cloudflare Pages project name._
 
 ## 3. Database Management Cheatsheet
 
 | Task                 | Command                                                                     |
 | -------------------- | --------------------------------------------------------------------------- |
-| **Local Migration**  | `npx wrangler d1 migrations apply harvy-erp-db --local`                     |
-| **Remote Migration** | `npx wrangler d1 migrations apply harvy-erp-db --remote`                    |
-| **Local Seed**       | `npx wrangler d1 execute harvy-erp-db --local --file=seed_local.sql`        |
-| **Remote Seed**      | `npx wrangler d1 execute harvy-erp-db --remote --file=seed_production.sql`  |
-| **Update Admin Pwd** | `npx wrangler d1 execute harvy-erp-db --remote --command "UPDATE users..."` |
+| **Local Migration**  | `npx wrangler d1 migrations apply havys-erp-db --local`                     |
+| **Remote Migration** | `npx wrangler d1 migrations apply havys-erp-db --remote`                    |
+| **Local Seed**       | `npx wrangler d1 execute havys-erp-db --local --file=seed_local.sql`        |
+| **Remote Seed**      | `npx wrangler d1 execute havys-erp-db --remote --file=seed_production.sql`  |
+| **Update Admin Pwd** | `npx wrangler d1 execute havys-erp-db --remote --command "UPDATE users..."` |
 
 ## 4. Troubleshooting
 

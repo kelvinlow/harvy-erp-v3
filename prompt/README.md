@@ -1,6 +1,6 @@
-# Harvy ERP API
+# Havys ERP API
 
-Backend API for Harvy ERP built with **Hono** and **Drizzle ORM** on **Cloudflare Workers**.
+Backend API for Havys ERP built with **Hono** and **Drizzle ORM** on **Cloudflare Workers**.
 
 ## Tech Stack
 
@@ -88,7 +88,7 @@ yarn install
 1. **Apply migrations to local D1:**
 
 ```bash
-npx wrangler d1 migrations apply harvy-erp-db --local
+npx wrangler d1 migrations apply havys-erp-db --local
 ```
 
 2. **Create initial admin user:**
@@ -102,7 +102,7 @@ node generate-hash.js "YourSecurePassword123!"
 Then update the existing user with the hash:
 
 ```bash
-npx wrangler d1 execute harvy-erp-db --local --command "UPDATE users SET password_hash='<hash-from-above>' WHERE email='admin@harvy.com'"
+npx wrangler d1 execute havys-erp-db --local --command "UPDATE users SET password_hash='<hash-from-above>' WHERE email='admin@havys.com'"
 ```
 
 ### Local Development
@@ -130,7 +130,7 @@ npx drizzle-kit generate
 Apply migrations to remote D1:
 
 ```bash
-npx wrangler d1 migrations apply harvy-erp-db --remote
+npx wrangler d1 migrations apply havys-erp-db --remote
 ```
 
 ## Authentication
@@ -142,7 +142,7 @@ POST /api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@harvy.com",
+  "email": "admin@havys.com",
   "password": "YourPassword123!"
 }
 
@@ -153,7 +153,7 @@ Content-Type: application/json
     "expiresAt": "2025-01-03T00:00:00.000Z",
     "user": {
       "id": 1,
-      "email": "admin@harvy.com",
+      "email": "admin@havys.com",
       "name": "Admin User",
       "role": "admin",
       "department": null
@@ -323,7 +323,7 @@ vars = { ENVIRONMENT = "production", JWT_SECRET = "your-very-long-random-secret-
 2. **Apply migrations to remote D1**:
 
 ```bash
-npx wrangler d1 migrations apply harvy-erp-db --remote
+npx wrangler d1 migrations apply havys-erp-db --remote
 ```
 
 3. **Deploy**:

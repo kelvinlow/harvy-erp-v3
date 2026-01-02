@@ -146,5 +146,5 @@ export function getPageTitle(pathname: string): string {
     }
   }
 
-  return 'Harvy ERP System';
+  return 'Havys ERP System';
 }

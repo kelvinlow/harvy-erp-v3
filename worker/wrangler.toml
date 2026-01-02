@@ -1,4 +1,4 @@
-name = "harvy-erp-api"
+name = "havys-erp-worker"
 main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
@@ -6,13 +6,13 @@ compatibility_flags = ["nodejs_compat"]
 # D1 Database Binding
 [[d1_databases]]
 binding = "DB"
-database_name = "harvy-erp-db"
+database_name = "havys-erp-db"
 database_id = "a2805b91-3139-4d25-b5a1-3b47a565aab3"
 
 # R2 Bucket Binding
 [[r2_buckets]]
 binding = "BUCKET"
-bucket_name = "harvy-erp-bucket"
+bucket_name = "havys-erp-bucket"
 
 # Environment variables
 [vars]
@@ -31,10 +31,10 @@ vars = { ENVIRONMENT = "production", JWT_SECRET = "K3LV1N2_sXQMP8ZL0V3#TH14NH39A
 # D1 Database Binding for Production
 [[env.production.d1_databases]]
 binding = "DB"
-database_name = "harvy-erp-db"
+database_name = "havys-erp-db"
 database_id = "a2805b91-3139-4d25-b5a1-3b47a565aab3"
 
 # R2 Bucket Binding for Production
 [[env.production.r2_buckets]]
 binding = "BUCKET"
-bucket_name = "harvy-erp-bucket"
+bucket_name = "havys-erp-bucket"
