@@ -11,6 +11,7 @@ import { DeleteConfirmation } from '@/components/delete-confirmation';
 import { useToast } from '@/components/ui/use-toast';
 import type { UOM, UOMRelationship } from '@/types/uom';
 import { Loader2 } from 'lucide-react';
+import { API_URL } from '@/lib/api-config';
 
 export function UOMMaster() {
   const { toast } = useToast();
@@ -32,14 +33,11 @@ export function UOMMaster() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(
-        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      const response = await fetch(`${API_URL}/uom`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
       const data = await response.json();
       if (data.data) {
         setUoms(data.data);
@@ -79,15 +77,12 @@ export function UOMMaster() {
     if (uomToDelete) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(
-          `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom/${uomToDelete.id}`,
-          {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const response = await fetch(`${API_URL}/uom/${uomToDelete.id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        );
+        });
 
         if (!response.ok) {
           throw new Error('Failed to delete UOM');
@@ -151,9 +146,7 @@ export function UOMMaster() {
   ) => {
     try {
       const token = localStorage.getItem('token');
-      const url = `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom${
-        selectedUom ? `/${selectedUom.id}` : ''
-      }`;
+      const url = `${API_URL}/uom${selectedUom ? `/${selectedUom.id}` : ''}`;
 
       const response = await fetch(url, {
         method: selectedUom ? 'PUT' : 'POST',

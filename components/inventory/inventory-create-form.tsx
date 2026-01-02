@@ -45,6 +45,7 @@ import {
   CardDescription
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { API_URL } from '@/lib/api-config';
 
 const formSchema = z.object({
   stockCode: z.string().min(1, 'Please select a stock item.'),
@@ -96,10 +97,9 @@ export function InventoryCreateForm() {
       setIsLoadingItems(true);
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(
-          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const response = await fetch(`${API_URL}/stock-items`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         const data = await response.json();
         if (data.data) {
           setStockItems(data.data);
@@ -118,10 +118,9 @@ export function InventoryCreateForm() {
     async function fetchUoms() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(
-          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/uom',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const response = await fetch(`${API_URL}/uom`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         const data = await response.json();
         if (data.data) {
           setUoms(data.data);
@@ -137,22 +136,19 @@ export function InventoryCreateForm() {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(
-        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-movements/in',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            stockCode: data.stockCode,
-            quantity: data.quantity,
-            uom: data.uom,
-            remarks: data.remarks
-          })
-        }
-      );
+      const response = await fetch(`${API_URL}/stock-movements/in`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          stockCode: data.stockCode,
+          quantity: data.quantity,
+          uom: data.uom,
+          remarks: data.remarks
+        })
+      });
 
       if (!response.ok) {
         const result = await response.json();

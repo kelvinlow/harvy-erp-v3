@@ -58,6 +58,7 @@ interface InventoryItem {
   uomCode: string;
   lastPrice: number;
 }
+import { API_URL } from '@/lib/api-config';
 
 export function PurchaseRequisitionForm() {
   const { toast } = useToast();
@@ -74,14 +75,11 @@ export function PurchaseRequisitionForm() {
       try {
         setIsInventoryLoading(true);
         const token = localStorage.getItem('token');
-        const response = await fetch(
-          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const response = await fetch(`${API_URL}/stock-items`, {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        );
+        });
 
         if (!response.ok) {
           throw new Error('Failed to fetch inventory');
@@ -164,39 +162,36 @@ export function PurchaseRequisitionForm() {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(
-        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/purchase-requisitions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            company: data.company,
-            department: data.department,
-            departmentCode: data.departmentCode,
-            employeeNo: data.employeeNo,
-            employeeName: data.employeeName,
-            referenceNo: data.referenceNo,
-            notes: data.remarks,
-            requestedById: user.id,
-            urgency: 'Medium',
-            items: data.items.map((item) => ({
-              stockCode: item.stockCode,
-              description: item.description,
-              quantity: item.quantity,
-              uom: item.uom,
-              unitPrice: item.unitPrice,
-              totalPrice: item.totalAmount,
-              discount: item.discount || 0,
-              taxCode: item.taxCode,
-              taxRate: item.taxRate || 0,
-              station: item.station
-            }))
-          })
-        }
-      );
+      const response = await fetch(`${API_URL}/purchase-requisitions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          company: data.company,
+          department: data.department,
+          departmentCode: data.departmentCode,
+          employeeNo: data.employeeNo,
+          employeeName: data.employeeName,
+          referenceNo: data.referenceNo,
+          notes: data.remarks,
+          requestedById: user.id,
+          urgency: 'Medium',
+          items: data.items.map((item) => ({
+            stockCode: item.stockCode,
+            description: item.description,
+            quantity: item.quantity,
+            uom: item.uom,
+            unitPrice: item.unitPrice,
+            totalPrice: item.totalAmount,
+            discount: item.discount || 0,
+            taxCode: item.taxCode,
+            taxRate: item.taxRate || 0,
+            station: item.station
+          }))
+        })
+      });
 
       if (!response.ok) {
         throw new Error('Failed to submit purchase requisition');

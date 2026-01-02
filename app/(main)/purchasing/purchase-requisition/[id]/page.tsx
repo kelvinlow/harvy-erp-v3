@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
+import { API_URL } from '@/lib/api-config';
 
 interface PurchaseRequisition {
   id: number;
@@ -85,7 +86,7 @@ export default function PurchaseRequisitionPage() {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(
-          `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/purchase-requisitions/${params.id}`,
+          `${API_URL}/purchase-requisitions/${params.id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

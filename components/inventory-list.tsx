@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { mockItemGroups } from '@/data/mock-item-groups';
+import { API_URL } from '@/lib/api-config';
 
 interface InventoryItem {
   stockCode: string;
@@ -54,14 +55,11 @@ export function InventoryList() {
     async function fetchItems() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(
-          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const response = await fetch(`${API_URL}/stock-items`, {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        );
+        });
         const data = await response.json();
 
         if (data.data) {
@@ -94,7 +92,7 @@ export function InventoryList() {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/stock-items/${item.stockCode}/price-history`,
+        `${API_URL}/stock-items/${item.stockCode}/price-history`,
         {
           headers: {
             Authorization: `Bearer ${token}`

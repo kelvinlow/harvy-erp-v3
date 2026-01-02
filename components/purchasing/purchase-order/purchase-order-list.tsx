@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { API_URL } from '@/lib/api-config';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -66,14 +67,11 @@ export function PurchaseOrderList() {
       try {
         setIsLoading(true);
         const token = localStorage.getItem('token');
-        const response = await fetch(
-          'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/purchase-orders',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const response = await fetch(`${API_URL}/purchase-orders`, {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        );
+        });
 
         if (!response.ok) {
           throw new Error('Failed to fetch purchase orders');

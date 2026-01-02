@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { API_URL } from '@/lib/api-config';
 
 export function LoginForm({
   className,
@@ -33,16 +34,13 @@ export function LoginForm({
     const password = formData.get('password') as string;
 
     try {
-      const response = await fetch(
-        'https://havys-erp-worker-production.lowshinsheng.workers.dev/api/v1/auth/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        }
-      );
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
       const result = await response.json();
 
