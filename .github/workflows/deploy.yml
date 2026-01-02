@@ -85,6 +85,8 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: ${{ env.API_URL }}
         run: |
+          # Build the Next.js application first
+          yarn build
           # Use next-on-pages to generate the Cloudflare Pages compatible output
           npx @cloudflare/next-on-pages
 
